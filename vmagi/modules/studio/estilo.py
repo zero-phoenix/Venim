@@ -154,6 +154,47 @@ def informe_instrumento() -> dict[str, bool]:
     }
 
 
+#: LA RESOLUCIÓN DEL INSTRUMENTO, eje a eje. El escalón más pequeño que este
+#: medidor puede distinguir.
+#:
+#: EL FALLO QUE ESTO CIERRA, ENCONTRADO EN LA PRIMERA CORRIDA DE VERDAD
+#: ====================================================================
+#: La referencia sintética se rodó con la cámara literalmente clavada —es un
+#: `color=` de FFmpeg, no se mueve nada— y el medidor dijo `camara_px = 1.00`.
+#: Parecía un fallo. No lo es: `_desplazamiento_global` busca el desplazamiento
+#: ENTERO que mejor casa dos fotogramas, así que su salida solo puede valer 0,
+#: 1, 2... No hay ningún 0,3 que devolver.
+#:
+#: Lo que SÍ estaba mal era lo que la biblia hacía con ese número. Con una
+#: holgura del 12% sobre 1,0, el contrato pedía `camara_px = 1 ± 0,12` sobre
+#: una cantidad que solo toma valores enteros. Eso no es una tolerancia
+#: estrecha: es exigir el valor exacto y llamarlo margen. Un candidato que
+#: midiera 0 o 2 —el escalón de al lado, indistinguible para el instrumento—
+#: suspendería, y ninguna cantidad de búsqueda arreglaría eso, porque no hay
+#: nada entre medias que encontrar.
+#:
+#: Una tolerancia más fina que la resolución del instrumento no mide estilo:
+#: mide suerte. Así que la biblia usa esto como SUELO del margen.
+RESOLUCION: dict[str, float] = {
+    # Búsqueda por desplazamiento entero: el escalón es un píxel de la imagen
+    # ya reducida a ANCHO_ANALISIS.
+    "camara_px": 1.0,
+    # Fracción sobre pares de fotogramas muestreados. Con 5 fps y un tráiler
+    # corto son pocos pares, y cada uno pesa lo suyo.
+    "fraccion_camara_fija": 1.0 / MUESTREO_FPS,
+    # Los cortes se localizan en la rejilla del muestreo: no se puede saber
+    # dónde cae un corte con más finura que el periodo de muestreo.
+    "duracion_media_plano": 1.0 / MUESTREO_FPS,
+    # El aspecto se lee del área activa de una imagen de ANCHO_ANALISIS de
+    # ancho: un píxel de borde arriba o abajo mueve la relación esto.
+    "aspecto": 2.0 / ANCHO_ANALISIS,
+    # Ritmo del diálogo: la envolvente se calcula por ventanas de AUDIO_VENTANA
+    # y los turnos se delimitan en esa rejilla.
+    "duracion_media_turno": AUDIO_VENTANA * 2,
+    "pausa_media": AUDIO_VENTANA * 2,
+}
+
+
 # ------------------------------------------------------------------ resultado
 
 @dataclass

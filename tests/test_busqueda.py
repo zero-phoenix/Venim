@@ -434,6 +434,42 @@ async def test_un_eje_que_solo_ALGUNOS_esquivan_se_sigue_pagando_entero():
         "Con eso, esquivar la medición vuelve a ser una estrategia ganadora")
 
 
+def test_un_genoma_pegado_a_la_pared_se_reconoce():
+    """Los dos casos se ven idénticos en el informe y llevan a sitios opuestos.
+
+    «Mejor distancia X» con el óptimo en el interior significa que la búsqueda
+    terminó. Con el óptimo pegado al tope significa que la jaula era pequeña, y
+    entonces más plazo no arregla nada: la respuesta está fuera de la valla.
+    """
+    bajo, alto = S.LIMITES["contraste"]
+    pegado = S.Genoma(contraste=bajo)
+    dentro = S.Genoma(contraste=(bajo + alto) / 2)
+
+    assert any("contraste" in x for x in S.genes_en_el_borde(pegado))
+    assert not any("contraste" in x for x in S.genes_en_el_borde(dentro))
+    assert "mínimo" in " ".join(S.genes_en_el_borde(pegado))
+
+
+async def test_el_aviso_de_la_jaula_solo_sale_si_queda_algo_incumplido():
+    """Un ganador pegado a un tope que CUMPLE la biblia entera no tiene nada de
+    malo: el tope resultó estar en el sitio correcto. Avisar ahí sería ruido, y
+    el ruido es lo que enseña a saltarse los avisos."""
+    b = BibliaDeEstilo(tolerancias=[
+        Tolerancia(eje="saturacion", objetivo=0.30, margen=0.05)])
+
+    async def medidor_perfecto(ruta, *, procedencia="generado"):
+        return MedidaEstilo(saturacion=0.30)
+
+    async def generar(g: S.Genoma, idx: int):
+        return _apunta(g)
+
+    f = await S.busca(b, generar, poblacion=4, generaciones=2, semilla=1,
+                      base=S.Genoma(contraste=S.LIMITES["contraste"][0]),
+                      medidor=medidor_perfecto, auditado=True)
+    assert f.mejor.incumplidos == 0
+    assert "LA JAULA" not in f.render()
+
+
 async def test_sin_auditar_el_medidor_la_busqueda_lo_dice():
     """Una búsqueda optimiza lo que se le mide. Si el medidor tiene un punto
     ciego, esto lo encuentra — y quien lea el informe tiene que saberlo antes
@@ -513,6 +549,16 @@ async def test_el_proxy_mide_lo_mismo_que_el_montaje_final(tmp_path):
 
     p, f = medidas["proxy"], medidas["final"]
     assert p.aspecto == pytest.approx(f.aspecto, rel=0.02)
+    # CON LA CÁMARA QUIETA el conteo de planos coincide. Con Ken Burns NO
+    # siempre, y eso está medido: el mismo montaje da 5 planos a 640x360 y 6 a
+    # 1920x1080, porque el detector de cortes queda justo en su umbral y el
+    # zoompan a 1080p da pasos mucho más grandes en píxeles absolutos.
+    #
+    # No se afloja este test para que pase el caso malo: se deja exigiendo lo
+    # que SÍ es cierto, y el caso malo lo caza el cotejo del conformado en
+    # `herramientas_estilo._coteja`, que mide lo que se entrega y lo enfrenta
+    # a la nota con la que ganó. Un test que se relaja para admitir el fallo
+    # que acaba de encontrarse deja de ser un test.
     assert p.planos == f.planos, (
         f"el proxy ve {p.planos} planos y el montaje final {f.planos}: la "
         f"búsqueda estaría optimizando un montaje distinto del que se entrega")
@@ -524,6 +570,65 @@ async def test_el_proxy_mide_lo_mismo_que_el_montaje_final(tmp_path):
     # el remuestreo desde 1920 suaviza más que desde 640.
     assert p.fraccion_camara_fija == pytest.approx(
         f.fraccion_camara_fija, abs=0.1)
+
+
+# =========================================== el cotejo del conformado
+
+async def test_el_cotejo_delata_una_nota_que_no_describe_lo_que_se_entrega():
+    """LA REFUTACIÓN DE LA NOTA, y salió de la corrida larga.
+
+    La búsqueda entregó «distancia 0,0000» tras 130 evaluaciones y
+    `juzgar_estilo` sobre el conformado dijo que la duración media de plano
+    fallaba: 11,95 contra 9 ± 1,08. Las dos cosas no pueden ser verdad, y el
+    informe no lo decía en ningún sitio.
+
+    Aquí se simula lo mismo: el proxy puntúa perfecto y el conformado no.
+    """
+    from vmagi.modules.studio.herramientas_estilo import _coteja
+
+    b = BibliaDeEstilo(tolerancias=[
+        Tolerancia(eje="duracion_media_plano", objetivo=9.0, margen=1.08),
+        Tolerancia(eje="saturacion", objetivo=0.27, margen=0.03)])
+    frontera = S.Frontera(
+        mejor=S.Candidato(S.Genoma(), distancia=0.0), evaluaciones=130)
+
+    async def medidor_del_conformado(ruta, *, procedencia="generado"):
+        # Lo que de verdad hay en el fichero que se entrega.
+        return MedidaEstilo(duracion_media_plano=11.95, saturacion=0.27)
+
+    from vmagi.modules.studio import estilo as E
+    guardado = E.medir
+    try:
+        E.medir = medidor_del_conformado
+        texto = await _coteja("ganador.mp4", b, frontera)
+    finally:
+        E.medir = guardado
+
+    assert "EL COTEJO NO CUADRA" in texto, texto
+    assert "duracion_media_plano" in texto
+    assert "Fíate del cotejo, no de la nota" in texto
+
+
+async def test_cuando_cuadra_el_cotejo_lo_dice_en_una_linea_y_no_alarma():
+    from vmagi.modules.studio.herramientas_estilo import _coteja
+
+    b = BibliaDeEstilo(tolerancias=[
+        Tolerancia(eje="saturacion", objetivo=0.27, margen=0.03)])
+    frontera = S.Frontera(mejor=S.Candidato(S.Genoma(), distancia=0.0))
+
+    async def medidor(ruta, *, procedencia="generado"):
+        return MedidaEstilo(saturacion=0.27)
+
+    from vmagi.modules.studio import estilo as E
+    guardado = E.medir
+    try:
+        E.medir = medidor
+        texto = await _coteja("ganador.mp4", b, frontera)
+    finally:
+        E.medir = guardado
+
+    assert "Cuadra" in texto
+    assert "NO CUADRA" not in texto
 
 
 # ==================================================== alcanzable desde el enjambre

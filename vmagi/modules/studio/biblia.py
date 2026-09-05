@@ -212,14 +212,29 @@ class BibliaDeEstilo:
             ("duracion_media_turno", medida.duracion_media_turno, False),
             ("pausa_media", medida.pausa_media, False),
         ]
+        # Import tardío: `estilo` importa este módulo al final, así que hacerlo
+        # arriba sería el ciclo que TYPE_CHECKING acaba de deshacer.
+        from .estilo import RESOLUCION
+
         for eje, valor, solo_max in pares:
             if valor is None:
                 continue
             if medida.procedencia == "trailer" and eje in EJES_SOLO_OBRA:
                 continue
+            margen = abs(float(valor)) * holgura or holgura
+            # EL MARGEN NUNCA BAJA DE LA RESOLUCIÓN DEL INSTRUMENTO.
+            #
+            # Medido: con la cámara literalmente clavada el medidor dice
+            # `camara_px = 1.00`, porque busca desplazamientos ENTEROS y no
+            # tiene ningún 0,3 que devolver. Una holgura del 12% sobre ese 1,0
+            # produce `1 ± 0,12` sobre una cantidad que solo toma enteros: eso
+            # no es una tolerancia estrecha, es exigir el valor exacto y
+            # llamarlo margen. El escalón de al lado —indistinguible para el
+            # instrumento— suspendería, y ninguna cantidad de búsqueda lo
+            # arreglaría porque no hay nada entre medias que encontrar.
+            margen = max(margen, RESOLUCION.get(eje, 0.0))
             b.tolerancias.append(Tolerancia(
-                eje=eje, objetivo=float(valor),
-                margen=abs(float(valor)) * holgura or holgura,
+                eje=eje, objetivo=float(valor), margen=margen,
                 solo_maximo=solo_max))
         return b
 

@@ -322,5 +322,32 @@
   "evidencia": "REFUTADA Y ARREGLADA. `estilo.py` reexporta al final lo de `biblia.py` y `biblia.py` importaba `MedidaEstilo` de `estilo.py`: un ciclo. No se veia porque TODOS los llamadores del repositorio importan `estilo` primero, que es el orden que lo deshace por casualidad. Lo destapo el primer test que importo `biblia` directamente. Un ciclo que solo aguanta porque nadie ha probado el otro orden no esta resuelto: esta sin tocar. Arreglado con TYPE_CHECKING, que es lo correcto porque ahi `MedidaEstilo` solo aparece en anotaciones.",
   "veces_ok": 0,
   "veces_mal": 1
+ },
+ {
+  "texto": "Una tolerancia mas fina que la resolucion del instrumento mide suerte, no estilo",
+  "prueba": "resolucion_del_instrumento",
+  "estado": "sostenida",
+  "ultima": "2026-09-05 00:00",
+  "evidencia": "La referencia sintetica se rodo con la camara literalmente clavada —es un `color=` de FFmpeg, no se mueve nada— y el medidor dijo camara_px = 1,00. Parecia un fallo del medidor y no lo era: `_desplazamiento_global` busca el desplazamiento ENTERO que mejor casa dos fotogramas, asi que su salida solo puede valer 0, 1, 2... No hay ningun 0,3 que devolver. Se comprobo descartando la hipotesis obvia: con rejilla de 61 px, de 150 px y sin rejilla (ruido) daba 1,0 igual, asi que no era aliasing de textura periodica sino la cuantizacion. Lo que SI estaba mal era el contrato: con holgura del 12% pedia 1+-0,12 sobre una cantidad que solo toma enteros, o sea exigir el valor exacto y llamarlo margen. El escalon de al lado —indistinguible para el instrumento— suspendia, y ninguna cantidad de busqueda lo arreglaba porque entre 1 y 2 no hay nada que encontrar. `RESOLUCION` declara el escalon de cada eje y la biblia lo usa como SUELO del margen.",
+  "veces_ok": 1,
+  "veces_mal": 0
+ },
+ {
+  "texto": "La nota que saca la busqueda describe lo que se entrega",
+  "prueba": "cotejo_del_conformado",
+  "estado": "refutada",
+  "ultima": "2026-09-05 00:00",
+  "evidencia": "REFUTADA POR LA CORRIDA LARGA. La busqueda entrego «distancia 0,0000» tras 130 evaluaciones y `juzgar_estilo` sobre el conformado dijo que la duracion media de plano fallaba: 11,95 contra 9+-1,08. Las dos cosas no pueden ser verdad y el informe no lo decia en ningun sitio. Causa medida despues: con Ken Burns el mismo montaje da 5 planos a 640x360 y 6 a 1920x1080. La paleta coincide hasta la tercera cifra (saturacion 0,2459 contra 0,2450; luma 68,15 contra 68,09), pero el detector de cortes esta justo en su umbral y un empujon lo cruza. La busqueda habia encontrado un punto donde la MEDIDA no es reproducible, y «distancia 0» ahi no significa nada. Se arregla cotejando: se mide lo que se entrega, se enfrenta a la nota con la que gano, y si no cuadran se dice con los ejes que bailan. Y NO se aflojo el test del proxy para que admitiera el caso malo: un test que se relaja para tragarse el fallo que acaba de encontrarse deja de ser un test.",
+  "veces_ok": 0,
+  "veces_mal": 1
+ },
+ {
+  "texto": "Un optimo pegado al tope de los limites es un optimo",
+  "prueba": "jaula_de_la_busqueda",
+  "estado": "refutada",
+  "ultima": "2026-09-05 00:00",
+  "evidencia": "REFUTADA CON ARITMETICA, no con intuicion. La busqueda no alcanzaba la luz ni el contraste de la biblia y parecia falta de plazo. Con el modelo de eq —luma = (luma-128)*contraste + 128 + brillo*255— y las cifras medidas de la corrida (laminas en neutro: luma 147,9, contraste 23,26; objetivo 64,35+-7,72 y 11,65+-1,40) el contraste del gen que cumple es [0,4408 · 0,5610] y el tope inferior era 0,55: de toda la ventana solo quedaba el 1%, pegado a la pared. Mas plazo no habria llegado nunca porque la respuesta estaba fuera de la valla. Con los topes ensanchados a lo que ADMITE el filtro, la corrida de 2700 s llego a distancia 0,0000 en 130 evaluaciones con contraste 0,487 — por debajo del tope viejo, justo donde decia la cuenta. `genes_en_el_borde` lo avisa ahora en el informe.",
+  "veces_ok": 0,
+  "veces_mal": 1
  }
 ]

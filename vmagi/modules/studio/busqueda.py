@@ -170,13 +170,33 @@ ANCHO_PROXY, ALTO_PROXY = 640, 360
 #: `eq=contrast=0` produce un fotograma plano que el medidor lee como negro.
 #: Una búsqueda que gasta la mitad de sus evaluaciones en candidatos inválidos
 #: es media búsqueda.
+#: LOS RANGOS DE ETALONAJE SE AMPLIARON DESPUÉS DE MEDIR, no por gusto.
+#:
+#: En la primera corrida contra material real la búsqueda no alcanzaba la luz
+#: ni el contraste de la biblia, y parecía culpa suya. Se hizo la cuenta con
+#: el modelo de `eq` —luma = (luma-128)·contraste + 128 + brillo·255— sobre
+#: las cifras medidas de esa corrida:
+#:
+#:     láminas en neutro ....... luma 147,9 · contraste 23,26
+#:     objetivo de la biblia ... luma 64,35 ± 7,72 · contraste 11,65 ± 1,40
+#:     contraste del gen que lo cumple ... [0,4408 · 0,5610]
+#:     tope inferior que tenía ........... 0,55
+#:
+#: O sea: de toda la ventana que cumple, dentro de los límites solo quedaba el
+#: trozo [0,550 · 0,561] — el 1% de la ventana, pegado a la pared. La búsqueda
+#: no estaba fallando: estaba empujando contra el borde de lo que se le dejaba
+#: probar, y ahí la mitad de cada mutación cae fuera y se recorta.
+#:
+#: Los topes de ahora salen de lo que ADMITE el filtro, no de mi prudencia:
+#: `eq` acepta brillo en [-1, 1] y contraste y saturación hasta 3. Se dejan
+#: holgados y que la biblia sea quien apriete — que para eso está.
 LIMITES: dict[str, tuple[float, float]] = {
     "segundos_plano": (0.8, 30.0),
     "crossfade": (0.0, 2.5),
     "zoom": (0.0, 0.30),
-    "brillo": (-0.35, 0.35),
-    "contraste": (0.55, 1.9),
-    "saturacion": (0.0, 2.2),
+    "brillo": (-0.60, 0.60),
+    "contraste": (0.25, 2.60),
+    "saturacion": (0.0, 2.6),
 }
 
 
@@ -235,6 +255,39 @@ class Genoma:
 def _acota(nombre: str, valor: float) -> float:
     bajo, alto = LIMITES[nombre]
     return max(bajo, min(alto, valor))
+
+
+#: Cuánto hay que arrimarse a un tope para considerar que el genoma está
+#: EMPUJANDO CONTRA LA PARED. Un 2% del rango: lo bastante cerca como para que
+#: la mitad de cada mutación se recorte.
+ARRIMADO = 0.02
+
+
+def genes_en_el_borde(g: Genoma) -> list[str]:
+    """Genes del genoma ganador pegados a un tope de `LIMITES`.
+
+    POR QUÉ ESTO SE INFORMA Y NO SE CALLA
+    =====================================
+    Un óptimo pegado a la pared casi nunca es el óptimo: es lo mejor que había
+    DENTRO DE LO QUE SE DEJÓ PROBAR. Los dos casos se ven idénticos en el
+    informe —«mejor distancia X»— y llevan a sitios opuestos: uno dice que la
+    búsqueda terminó, el otro que la jaula era pequeña.
+
+    Medido: la búsqueda no alcanzaba el contraste de la biblia y parecía culpa
+    suya. La cuenta decía que de toda la ventana que cumplía, dentro de los
+    límites solo quedaba el 1%, y pegado al tope. Sin este aviso, el
+    diagnóstico natural habría sido «hace falta más plazo» — y con más plazo
+    habría seguido sin llegar, porque la respuesta estaba fuera de la valla.
+    """
+    fuera = []
+    for nombre, (bajo, alto) in LIMITES.items():
+        v = getattr(g, nombre)
+        margen = (alto - bajo) * ARRIMADO
+        if v <= bajo + margen:
+            fuera.append(f"{nombre} pegado al mínimo ({bajo:g})")
+        elif v >= alto - margen:
+            fuera.append(f"{nombre} pegado al máximo ({alto:g})")
+    return fuera
 
 
 # ----------------------------------------------------------------- la aptitud
@@ -493,6 +546,19 @@ class Frontera:
             lineas.append(
                 f"  AVISO: {self.fallos_de_generacion} candidatos no llegaron "
                 f"a generarse. Eso es el generador, no la dirección artística.")
+        bordes = genes_en_el_borde(self.mejor.genoma)
+        if bordes and self.mejor.incumplidos:
+            # Solo si además queda algo incumplido. Un genoma ganador pegado a
+            # un tope pero que CUMPLE la biblia entera no tiene nada de malo:
+            # el tope resultó estar en el sitio correcto.
+            lineas.append(
+                f"  LA JAULA, NO LA BÚSQUEDA: el mejor genoma está "
+                f"{'; '.join(bordes)}.\n"
+                f"  Un óptimo pegado a la pared casi nunca es el óptimo: es lo "
+                f"mejor que había dentro de lo que se dejó probar. Antes de "
+                f"pedir más plazo, ensancha LIMITES en esos genes — con más "
+                f"plazo seguiría sin llegar, porque la respuesta está fuera de "
+                f"la valla.")
         if self.imposibles:
             lineas.append(
                 f"  FUERA DEL ALCANCE DE ESTE GENERADOR, y por eso no se "

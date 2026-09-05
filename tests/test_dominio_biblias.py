@@ -231,6 +231,59 @@ def test_una_biblia_vieja_sin_dominio_se_carga_igual():
     assert isinstance(b.avisos_de_dominio(), list)
 
 
+# ================================ la resolución del instrumento manda
+
+def test_el_margen_nunca_baja_de_lo_que_el_instrumento_distingue():
+    """LA REFUTACIÓN, y salió de mirar una corrida de verdad.
+
+    La referencia sintética se rodó con la cámara literalmente clavada —es un
+    `color=` de FFmpeg— y el medidor dijo `camara_px = 1.00`. No es un fallo:
+    `_desplazamiento_global` busca desplazamientos ENTEROS, así que su salida
+    solo puede valer 0, 1, 2...
+
+    Lo que estaba mal era el contrato. Con holgura del 12% pedía `1 ± 0,12`
+    sobre una cantidad que solo toma enteros: exigir el valor exacto y
+    llamarlo margen. El escalón de al lado —que el instrumento no puede
+    distinguir del bueno— suspendía, y ninguna cantidad de búsqueda lo
+    arreglaba, porque entre 1 y 2 no hay nada que encontrar.
+    """
+    from vmagi.modules.studio.estilo import RESOLUCION
+
+    m = MedidaEstilo(ruta="ref.mp4", duracion=27.0, planos=3,
+                     duracion_media_plano=9.0, aspecto=1.829, camara_px=1.0,
+                     fraccion_camara_fija=1.0, saturacion=0.2694)
+    b = BibliaDeEstilo.desde(m, holgura=0.12)
+    tol = {t.eje: t for t in b.tolerancias}
+
+    assert tol["camara_px"].margen >= RESOLUCION["camara_px"], (
+        f"margen {tol['camara_px'].margen} sobre una cantidad cuyo escalón "
+        f"mide {RESOLUCION['camara_px']}: eso no mide estilo, mide suerte")
+    # Y la comprobación que de verdad importa: el escalón de al lado ya no
+    # suspende, porque el instrumento no puede distinguirlo del bueno.
+    assert compara(MedidaEstilo(camara_px=2.0), b).desvios[0].cumple is not None
+
+    # Lo que NO debe pasar: que el suelo afloje un eje que ya era más ancho.
+    assert tol["saturacion"].margen == pytest.approx(0.2694 * 0.12), (
+        "el suelo de resolución ha ensanchado un margen que ya era mayor que "
+        "la resolución. Solo es un suelo, no un valor")
+
+
+def test_toda_resolucion_declarada_apunta_a_un_eje_que_existe():
+    """Una resolución para un eje que la biblia nunca pone no protege nada y
+    da la sensación de que sí. Mismo fallo que un techo de líneas huérfano."""
+    from vmagi.modules.studio.estilo import RESOLUCION
+
+    m = MedidaEstilo(
+        ruta="x.mp4", duracion=120.0, planos=20, aspecto=1.85,
+        duracion_media_plano=6.0, camara_px=0.4, fraccion_camara_fija=0.9,
+        saturacion=0.3, luma=90.0, contraste=30.0, escala_plano=0.2,
+        fraccion_silencio=0.4, turnos_por_minuto=10.0,
+        duracion_media_turno=2.0, pausa_media=1.5)
+    posibles = set(BibliaDeEstilo.desde(m).ejes)
+    sobran = set(RESOLUCION) - posibles
+    assert not sobran, f"resoluciones para ejes que no existen: {sobran}"
+
+
 # ==================================================== alcanzable desde el enjambre
 
 def test_combinar_biblias_esta_en_el_registro_del_enjambre():

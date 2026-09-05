@@ -40,6 +40,59 @@ def _carga_biblia(bp: Path):
         return None, f"biblia ilegible: {e}"
 
 
+#: Cuánto puede separarse la puntuación del conformado de la del proxy antes
+#: de que la corrida deje de valer. En unidades de la misma distancia.
+TOLERANCIA_DE_COTEJO = 0.05
+
+
+async def _coteja(conformado, biblia, frontera) -> str:
+    """Mide el conformado y lo enfrenta a la puntuación con la que ganó.
+
+    EL FALLO QUE ESTO CIERRA, ENCONTRADO EN LA CORRIDA LARGA
+    ========================================================
+    La búsqueda entregó «distancia 0,0000» tras 130 evaluaciones, y
+    `juzgar_estilo` sobre el conformado dijo que la duración media de plano
+    fallaba: 11,95 contra un objetivo de 9 ± 1,08. Las dos cosas no pueden ser
+    verdad, y el informe no lo decía en ningún sitio.
+
+    La causa, medida después: con Ken Burns puesto, el mismo montaje da 5
+    planos a 640x360 y 6 a 1920x1080. La paleta coincide hasta la tercera cifra
+    —saturación 0,2459 contra 0,2450, luma 68,15 contra 68,09—, pero el
+    detector de cortes está justo en su umbral y un empujón lo cruza. La
+    búsqueda había encontrado un punto donde la medida NO ES REPRODUCIBLE, y
+    «distancia 0» ahí no significa nada.
+
+    No se arregla escondiéndolo ni bajando la exigencia: se COTEJA. Se mide lo
+    que se entrega, se compara con la nota que sacó, y si no cuadran se dice —
+    con los ejes concretos que bailan. Una nota que solo existe en el borrador
+    no es una nota.
+    """
+    from .busqueda import distancia_de_veredicto
+    from .estilo import compara, medir
+
+    m = await medir(conformado, procedencia="generado")
+    v = compara(m, biblia)
+    d = distancia_de_veredicto(v, frozenset(frontera.imposibles))
+    hueco = abs(d - frontera.mejor.distancia)
+    if hueco <= TOLERANCIA_DE_COTEJO:
+        return (f"\ncotejo del conformado: distancia {d:.4f} contra "
+                f"{frontera.mejor.distancia:.4f} del proxy. Cuadra.")
+
+    bailan = [f"{x.eje}: {x.obtenido if x.obtenido is not None else 'sin medir'}"
+              for x in v.incumplidos if x.eje not in frontera.imposibles]
+    return (
+        f"\n\nEL COTEJO NO CUADRA, y esto invalida la nota:\n"
+        f"  el proxy con el que se decidió puntuó {frontera.mejor.distancia:.4f} "
+        f"y lo que se entrega puntúa {d:.4f}.\n"
+        f"  Ejes que bailan: {', '.join(bailan) or '(ninguno incumplido)'}.\n"
+        f"  La búsqueda ha encontrado un punto donde la MEDIDA no es "
+        f"reproducible entre tamaños, así que su nota no describe lo que hay "
+        f"en el fichero. Medido en su día: con Ken Burns, el mismo montaje da "
+        f"5 planos a 640x360 y 6 a 1920x1080 — la paleta coincide hasta la "
+        f"tercera cifra y el detector de cortes está en su umbral.\n"
+        f"  Fíate del cotejo, no de la nota.")
+
+
 def register_style_tools(reg: ToolRegistry) -> ToolRegistry:
 
     @reg.tool("medir_estilo",
@@ -546,20 +599,23 @@ def register_style_tools(reg: ToolRegistry) -> ToolRegistry:
         # CONFORMADO: el ganador se vuelve a montar a tamaño real. Entregar el
         # proxy sería entregar el borrador con el que se decidió, que es
         # exactamente lo que un montaje con proxies NO hace.
-        conformado = None
+        conformado, cotejo = None, ""
         if f.mejor is not None:
             conformado = await _monta(_spec(f.mejor.genoma, 1920, 1080),
                                       destino / "ganador-1080.mp4")
+        if conformado is not None:
+            cotejo = await _coteja(conformado, b, f)
         return ToolResult(
             f.mejor is not None,
             f.render() + (f"\nconformado a 1920x1080 -> {conformado}"
-                          if conformado else ""),
+                          if conformado else "") + cotejo,
             error=None if f.mejor else "ningún candidato llegó a evaluarse",
             meta={"mejor": str(conformado) if conformado else (
                       f.mejor.ruta if f.mejor else None),
                   "proxy": f.mejor.ruta if f.mejor else None,
                   "distancia": None if not f.mejor else f.mejor.distancia,
                   "evaluaciones": f.evaluaciones,
+                  "cotejo": cotejo,
                   "historial": f.historial})
 
     return reg
