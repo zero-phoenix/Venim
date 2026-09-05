@@ -30,6 +30,9 @@ vmagi-gui/.npm/
 scratch/
 *.log
 
+# Restos de las consolas que se abren para pilotar la aplicación desde fuera.
+auto_script_*.ps1
+
 # Salida de scripts/corrida_cine.py: vídeos, stills y candidatos de la
 # búsqueda. Son megas de material regenerable con un comando, y meterlos en
 # git convertiría cada corrida en un commit de cien megas.

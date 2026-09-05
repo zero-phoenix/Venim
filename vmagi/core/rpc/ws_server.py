@@ -38,6 +38,8 @@ class WSServer:
         self.register_handler("GET_TELEMETRY", self._handle_get_telemetry)
         self.register_handler("GET_FILE_TREE", self._handle_get_file_tree)
         self.register_handler("GET_FILE_CONTENT", self._handle_get_file_content)
+        self.register_handler("GET_WORKSPACE", self._handle_get_workspace)
+        self.register_handler("SET_WORKSPACE", self._handle_set_workspace)
 
     def register_handler(self, method: str, handler: Callable[[Any, Any], Awaitable[Any]]):
         self.handlers[method] = handler
@@ -250,6 +252,62 @@ class WSServer:
 
     async def _handle_get_telemetry(self, payload: Any, websocket: Any) -> Any:
         return await self.db.get_telemetry()
+
+    # ------------------------------------------------- la carpeta de trabajo
+    #
+    # POR QUÉ ESTO ES UN MÉTODO DE LA INTERFAZ Y NO UNA VARIABLE DE ENTORNO
+    # ====================================================================
+    # Pilotando la ventana el 2026-09-05: `read_file` falló 8 de 8 veces
+    # porque el enjambre buscaba el código del proyecto en la caja de arena,
+    # que tenía cero ficheros `.py`. La causa era una ruta, y la ruta no se
+    # podía ver ni cambiar desde ningún sitio de la ventana. Un ajuste que
+    # decide si el sistema sirve para algo no puede vivir solo en una variable
+    # de entorno que hay que saber que existe.
+
+    def _retrato_workspace(self) -> dict:
+        from vmagi.core.paths import (
+            workspace_dir,
+            workspace_es_la_caja_de_arena,
+            workspace_por_defecto,
+        )
+        w = workspace_dir()
+        ficheros = 0
+        try:
+            # Se cuenta poco y se para pronto: solo hace falta saber si hay
+            # material, no cuánto. Un recuento completo sobre un repositorio
+            # grande bloquearía la respuesta de la interfaz.
+            for i, _ in enumerate(w.rglob("*.py")):
+                ficheros = i + 1
+                if ficheros >= 200:
+                    break
+        except OSError:
+            ficheros = -1
+        return {
+            "ruta": str(w),
+            "por_defecto": str(workspace_por_defecto()),
+            "es_caja_de_arena": workspace_es_la_caja_de_arena(),
+            "ficheros_py": ficheros,
+            # El aviso lo redacta el servidor y no la interfaz para que la
+            # ventana no tenga que decidir cuándo algo es preocupante.
+            "aviso": (
+                "El enjambre trabaja sobre la caja de arena y no ve tu "
+                "proyecto: cualquier lectura de tu código va a fallar."
+                if workspace_es_la_caja_de_arena() and ficheros == 0 else ""),
+        }
+
+    async def _handle_get_workspace(self, payload: Any, websocket: Any) -> Any:
+        return self._retrato_workspace()
+
+    async def _handle_set_workspace(self, payload: Any, websocket: Any) -> Any:
+        from vmagi.core.paths import fija_workspace
+        ruta = (payload or {}).get("ruta")
+        # Cadena vacía significa «vuelve a la caja de arena», y se distingue
+        # de un `None` accidental a propósito.
+        fija_workspace(ruta if ruta else None)
+        retrato = self._retrato_workspace()
+        logger.info("[rpc] carpeta de trabajo -> %s (%s ficheros .py)",
+                    retrato["ruta"], retrato["ficheros_py"])
+        return retrato
 
     async def _handle_get_file_tree(self, payload: Any, websocket: Any) -> Any:
         import os

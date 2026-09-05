@@ -1,0 +1,405 @@
+<title>La ventana y el instrumento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,400;0,600;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+  :root{
+    --fondo:#F2F0EA; --panel:#FBFAF7; --hundido:#E4E1D8;
+    --tinta:#1A1916; --tinta-2:#4B4840; --apagado:#79756A;
+    --linea:#D2CEC2; --linea-2:#ABA697;
+    --mal:#A3372C; --ojo:#8A6410; --bien:#2C6742; --acento:#4A3F8C;
+    --display:"Chivo",-apple-system,"Segoe UI",Helvetica,sans-serif;
+    --cuerpo:"Source Serif 4",Georgia,"Times New Roman",serif;
+    --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+    --medida:64ch;
+    --e1:.45rem; --e2:.85rem; --e3:1.35rem; --e4:2.1rem; --e5:3.4rem; --e6:5.2rem;
+  }
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+    --fondo:#171614; --panel:#201E1B; --hundido:#100F0E;
+    --tinta:#EDE9E1; --tinta-2:#C4BFB4; --apagado:#8E887C;
+    --linea:#35322C; --linea-2:#4E4A42;
+    --mal:#E0705F; --ojo:#D9A441; --bien:#6FBF92; --acento:#A6A2F0;
+  }}
+  :root[data-theme="dark"]{
+    --fondo:#171614; --panel:#201E1B; --hundido:#100F0E;
+    --tinta:#EDE9E1; --tinta-2:#C4BFB4; --apagado:#8E887C;
+    --linea:#35322C; --linea-2:#4E4A42;
+    --mal:#E0705F; --ojo:#D9A441; --bien:#6FBF92; --acento:#A6A2F0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--fondo);color:var(--tinta);
+       font-family:var(--cuerpo);font-size:17px;line-height:1.62;
+       -webkit-font-smoothing:antialiased}
+  .env{max-width:1020px;margin:0 auto;padding:var(--e5) var(--e3) var(--e6)}
+
+  /* ---- cabecera ---- */
+  .claqueta{border-top:3px solid var(--tinta);padding-top:var(--e2);margin-bottom:var(--e5)}
+  .tira{display:flex;flex-wrap:wrap;gap:var(--e1) var(--e3);font-family:var(--mono);
+        font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+        color:var(--apagado);margin-bottom:var(--e3)}
+  .tira b{color:var(--tinta);font-weight:700}
+  h1{font-family:var(--display);font-weight:900;font-size:clamp(2.2rem,6vw,3.9rem);
+     line-height:.96;letter-spacing:-.03em;margin:0 0 var(--e2);text-wrap:balance}
+  .entradilla{max-width:var(--medida);font-size:1.14rem;color:var(--tinta-2);margin:0}
+  .entradilla strong{color:var(--tinta);font-weight:600}
+
+  /* ---- secciones ---- */
+  section{margin-top:var(--e6)}
+  .titulo{display:grid;grid-template-columns:6.5rem 1fr;gap:var(--e3);
+          align-items:baseline;border-top:1px solid var(--tinta);
+          padding-top:var(--e2);margin-bottom:var(--e4)}
+  .rotulo{font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+          text-transform:uppercase;color:var(--acento);font-weight:700;padding-top:.45rem}
+  h2{font-family:var(--display);font-weight:600;font-size:clamp(1.5rem,3.2vw,2.1rem);
+     line-height:1.1;letter-spacing:-.02em;margin:0;text-wrap:balance}
+  .cuerpo{display:grid;grid-template-columns:6.5rem minmax(0,1fr);gap:var(--e3)}
+  .carril{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
+          text-transform:uppercase;color:var(--apagado);line-height:1.55}
+  .col{min-width:0;display:flex;flex-direction:column;gap:var(--e3)}
+  .col>*{margin:0}
+  p{max-width:var(--medida)}
+  h3{font-family:var(--display);font-size:1.05rem;font-weight:600;margin:0;letter-spacing:-.01em}
+
+  /* ---- hallazgos ---- */
+  .hallazgo{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 var(--e3);
+            border-top:1px solid var(--linea);padding-top:var(--e2)}
+  .cifra{font-family:var(--display);font-weight:900;font-size:1.9rem;line-height:1;
+         letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+         min-width:5.5rem;padding-top:.15rem}
+  .cifra.rojo{color:var(--mal)} .cifra.ambar{color:var(--ojo)}
+  .cifra small{display:block;font-family:var(--mono);font-size:9.5px;font-weight:400;
+               letter-spacing:.1em;text-transform:uppercase;color:var(--apagado);
+               margin-top:.3rem;line-height:1.3}
+  .hallazgo .txt{display:flex;flex-direction:column;gap:.6rem}
+  .hallazgo p{margin:0;font-size:.97rem}
+
+  /* ---- evidencia literal ---- */
+  .prueba{font-family:var(--mono);font-size:12px;line-height:1.65;
+          background:var(--hundido);border-left:2px solid var(--linea-2);
+          padding:.7rem .95rem;overflow-x:auto;color:var(--tinta-2);
+          white-space:pre;border-radius:0 2px 2px 0}
+  .prueba .m{color:var(--mal)} .prueba .a{color:var(--ojo)} .prueba .b{color:var(--bien)}
+  .fuente{font-family:var(--mono);font-size:10px;letter-spacing:.07em;
+          text-transform:uppercase;color:var(--apagado)}
+
+  /* ---- tabla de fases ---- */
+  .scroll{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;min-width:600px;font-size:.92rem}
+  th,td{text-align:left;padding:.65rem .9rem .65rem 0;
+        border-bottom:1px solid var(--linea);vertical-align:top}
+  th{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;
+     color:var(--apagado);font-weight:400;border-bottom-color:var(--linea-2)}
+  td.k{font-family:var(--mono);font-size:.8rem;white-space:nowrap;color:var(--tinta-2)}
+
+  /* ---- regla ---- */
+  .regla{border-left:3px solid var(--acento);background:var(--panel);
+         padding:var(--e2) var(--e3);display:flex;flex-direction:column;gap:.5rem}
+  .regla h3{color:var(--acento)}
+  .regla p{font-size:.97rem;margin:0}
+
+  ul{margin:0;padding-left:1.1rem;max-width:var(--medida)}
+  li{margin-bottom:.5rem}
+  li::marker{color:var(--linea-2)}
+  code{font-family:var(--mono);font-size:.83em;background:var(--hundido);
+       padding:.1em .35em;border-radius:2px}
+  .pie{margin-top:var(--e6);border-top:1px solid var(--linea);padding-top:var(--e2);
+       font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--apagado)}
+  @media (max-width:720px){
+    .titulo,.cuerpo{grid-template-columns:1fr;gap:var(--e1)}
+    .carril{border-bottom:1px solid var(--linea);padding-bottom:.4rem}
+    .hallazgo{grid-template-columns:1fr;gap:.7rem}
+  }
+</style>
+
+<div class="env">
+
+  <div class="claqueta">
+    <div class="tira">
+      <span>VeniceMAGI</span>
+      <span><b>plan de interfaz</b></span>
+      <span>5 sep 2026</span>
+      <span>pilotada en vivo, no leída</span>
+    </div>
+    <h1>La ventana y el instrumento</h1>
+    <p class="entradilla">Abrí VeniceMAGI en tu pantalla, escribí un encargo, pulsé los botones,
+    cambié de conversación y aprobé una propuesta. Lo que sigue no sale de leer el código:
+    sale de usarla. Y el primer hallazgo es incómodo, porque
+    <strong>los dos fallos más graves no son de interfaz</strong>.</p>
+  </div>
+
+  <!-- ============================ DIAGNÓSTICO ============================ -->
+  <section>
+    <div class="titulo">
+      <div class="rotulo">Medido</div>
+      <h2>Lo que pasó cuando la usé</h2>
+    </div>
+    <div class="cuerpo">
+      <div class="carril">una sola<br>petición<br>de punta<br>a punta</div>
+      <div class="col">
+
+        <p>Le pedí una cosa pequeña y comprobable: que midiera el estilo de un vídeo
+        que existe en el repositorio y dijera qué instrumento no había podido usar.
+        Tardó unos tres minutos. Esto es lo que salió.</p>
+
+        <div class="hallazgo">
+          <div class="cifra rojo">0<small>ficheros .py<br>en el workspace</small></div>
+          <div class="txt">
+            <h3>El enjambre trabaja sobre una carpeta vacía</h3>
+            <p>Los nodos buscan el código del proyecto en el workspace de la aplicación.
+            El repositorio no está ahí. Todas las lecturas fallaron.</p>
+            <div class="prueba"><span class="a">TOOL_FAILURES</span>  herramienta 'read_file': <span class="m">8 fallos de 8 (100%)</span>
+<span class="a">TOOL_FAILURES</span>  herramienta 'run_command': <span class="m">7 fallos de 8 (88%)</span>
+
+MELCHIOR  read_file no existe: C:\Users\D\AppData\Local\VeniceMAGI\workspace\vmagi\modules\studio\perito.py
+MELCHIOR  read_file no existe: C:\Users\D\AppData\Local\VeniceMAGI\workspace\vmagi\modules\studio\medidor.py
+MELCHIOR  read_file no existe: C:\Users\D\AppData\Local\VeniceMAGI\workspace\vmagi\modules\studio\estilo.py</div>
+            <p class="fuente">Comprobado aparte en disco: el workspace tiene dos carpetas y
+            cero ficheros <code>.py</code> en todo el árbol.</p>
+            <p>Esto no es un problema de modelo ni de prompt. Es que le pides a alguien que
+            revise una casa y lo dejas en un solar. <strong>Ninguna mejora de interfaz cambia
+            este número.</strong></p>
+          </div>
+        </div>
+
+        <div class="hallazgo">
+          <div class="cifra rojo">4<small>caracteres<br>de respuesta<br>final</small></div>
+          <div class="txt">
+            <h3>Entregó basura y la presentó como resultado</h3>
+            <p>Tras deliberar, el resultado final que apareció en pantalla —dos veces— fue
+            la palabra <code>tud.</code> Y el sistema <em>ya lo sabía</em>: la capa de
+            proveedores lo había marcado como inservible minutos antes.</p>
+            <div class="prueba"><span class="a">[WARNING]</span> g4f_backend: Perplexity devolvió una respuesta <span class="m">inservible (4 caracteres ('tud.'))</span>; probando otro
+<span class="m">[ERROR]</span>   cloud: todas las familias agotadas: todos los proveedores fallaron
+<span class="m">[NAOKO]</span>   Error detectado: todas las familias agotadas
+
+    ┌─────────────────────────────────────────┐
+    │ CASPER  RESULTADO_FINAL      g4f-gemini │
+    │                                         │
+    │ tud.                                    │
+    └─────────────────────────────────────────┘</div>
+            <p>El aviso existía, el detector existía, Naoko lo vio. Y aun así llegó a la
+            pantalla con el mismo formato que una respuesta buena. <strong>Un sistema que
+            mide vídeo hasta la tercera cifra no mide sus propias respuestas.</strong></p>
+          </div>
+        </div>
+
+        <div class="hallazgo">
+          <div class="cifra ambar">20 s<small>sin ninguna<br>señal en<br>pantalla</small></div>
+          <div class="txt">
+            <h3>La ventana esconde el trabajo que el registro sí cuenta</h3>
+            <p>Durante los primeros veinte segundos la conversación estaba vacía. Mientras
+            tanto, el registro tenía esto:</p>
+            <div class="prueba">[sonda] 32 candidatos medidos
+[registry] g4f-gpt TIMEOUT (15s)
+[g4f-gemini] respondió Gemini/gemini-3.5-flash en 8172ms
+[MELCHIOR] iter 1: glob
+[MELCHIOR] iter 2: glob</div>
+            <p>El único indicio de vida en la ventana es una palabra de diez píxeles en la
+            esquina superior derecha. Cuando por fin apareció la traza de herramientas, era
+            gris oscuro sobre gris oscuro, sin argumentos, sin resultados y sin tiempos:
+            <code>MELCHIOR&nbsp;&nbsp;glob&nbsp;&nbsp;ok</code>, cuatro veces.</p>
+          </div>
+        </div>
+
+        <div class="hallazgo">
+          <div class="cifra ambar">3<small>botones para<br>una misma<br>aprobación</small></div>
+          <div class="txt">
+            <h3>La aprobación se contradice a sí misma</h3>
+            <p>Cuando la propuesta estuvo lista aparecieron tres controles distintos para lo
+            mismo, en tres sitios distintos: <em>Apruebo (Ejecutar)</em> en la barra inferior,
+            <em>Ejecutar en PC</em> sobre el bloque de código, y <em>Apruebo</em> / <em>Rechazo</em>
+            en la pestaña de diff. El de la barra no ejecuta: escribe «sí» en el chat.</p>
+            <div class="prueba"><span class="a">Aprobación requerida</span>   0 ficheros · TESTS EN ROJO · reversible
+
+  <span class="a">⚠</span> Los tests están EN ROJO. NO VERIFICADO
+  <span class="a">⚠</span> No toca ningún fichero ni ejecuta nada: <span class="m">no hay cambio que aprobar.</span></div>
+            <p>Pide una aprobación y en la línea siguiente dice que no hay nada que aprobar.
+            Pulsé dos de los tres y el sistema ejecutó la resolución final <strong>dos
+            veces</strong>. Una puerta que se abre sola enseña a no leerla.</p>
+          </div>
+        </div>
+
+        <div class="hallazgo">
+          <div class="cifra">2<small>saltos de<br>panel que<br>no pedí</small></div>
+          <div class="txt">
+            <h3>La navegación se mueve sola y no pertenece a nadie</h3>
+            <p>Estaba mirando <em>Nodos</em>; creé una conversación y me encontré en
+            <em>Ritsuko</em>. Aprobé una propuesta y me encontré en <em>Terminal</em>. La
+            pestaña del panel derecho es global: no viaja con la conversación, así que
+            cambiar de conversación no te devuelve donde estabas y abrir una te saca de donde
+            estás.</p>
+          </div>
+        </div>
+
+        <div class="hallazgo">
+          <div class="cifra">1<small>de 2 conversaciones<br>con nombre<br>legible</small></div>
+          <div class="txt">
+            <h3>Las conversaciones son de segunda clase</h3>
+            <p>La primera se auto-tituló bien. La que abrí a mano se llama
+            <code>task_obqh72vy</code>. Ninguna de las dos indica si está trabajando: dejé una
+            corriendo, me fui a la otra, y nada en la barra lateral decía que seguía viva.
+            La barra mide unos 150 píxeles y su texto ronda los 7.</p>
+          </div>
+        </div>
+
+        <div class="hallazgo">
+          <div class="cifra">2<small>controles<br>que mienten<br>o no responden</small></div>
+          <div class="txt">
+            <h3>Cosas que parecen botones y no lo son</h3>
+            <p>El selector <code>SYS_EXEC ▾</code> no abre nada al pulsarlo. Y el panel de
+            artefactos mostró <span style="color:var(--mal)">«sin conexión con el kernel»</span>
+            en rojo mientras el registro decía <code>Cliente GUI conectado desde 127.0.0.1</code>
+            y el enjambre estaba respondiendo. Una alarma falsa gasta la credibilidad de todas
+            las demás.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ EL ORDEN ============================ -->
+  <section>
+    <div class="titulo">
+      <div class="rotulo">La tesis</div>
+      <h2>El orden importa más que la lista</h2>
+    </div>
+    <div class="cuerpo">
+      <div class="carril">por qué<br>la interfaz<br>va la<br>segunda</div>
+      <div class="col">
+        <p>Me pediste rehacer la interfaz para que VeniceMAGI haga un trabajo excelente.
+        Rehacerla es necesario y voy a hacerlo. Pero si la rehago primero, lo que consigues
+        es una ventana preciosa que sigue buscando tu código en una carpeta vacía y sigue
+        entregándote <code>tud.</code> con mejor tipografía.</p>
+
+        <div class="regla">
+          <h3>Una interfaz no puede enseñar lo que el sistema no tiene</h3>
+          <p>Las cuatro pantallas más bonitas del mundo no cambian que <code>read_file</code>
+          falle ocho de ocho veces. Los dos primeros arreglos son de fontanería, cuestan poco
+          y son los que mueven la aguja de «hace un trabajo mediocre» a «hace un trabajo
+          excelente». Los pongo delante por eso, no por prudencia.</p>
+        </div>
+
+        <div class="scroll">
+        <table>
+          <thead><tr><th>Fase</th><th>Qué</th><th>Por qué va ahí</th><th>Se refuta si</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="k">0-A</td>
+              <td>El workspace apunta a tu proyecto y se elige desde la ventana</td>
+              <td>Es la causa del 100% de fallos de lectura. Sin esto, todo lo demás es decorado.</td>
+              <td class="k">tras el cambio, read_file sigue fallando sobre un fichero que existe</td>
+            </tr>
+            <tr>
+              <td class="k">0-B</td>
+              <td>Ninguna respuesta llega a pantalla sin pasar un mínimo</td>
+              <td>El sistema ya detecta la basura y luego la sirve igual. Cerrar ese hueco.</td>
+              <td class="k">una respuesta de 4 caracteres vuelve a aparecer como RESULTADO_FINAL</td>
+            </tr>
+            <tr>
+              <td class="k">1</td>
+              <td>La ventana, rehecha entera</td>
+              <td>Ya con material que enseñar y respuestas que merezcan enseñarse.</td>
+              <td class="k">sigue habiendo 20 s en blanco tras pulsar Ejecutar</td>
+            </tr>
+            <tr>
+              <td class="k">2</td>
+              <td>Todo control tiene nombre, rol y camino de teclado</td>
+              <td>Para que la pilotes sin adivinar y para que yo la pilote sin contar píxeles.</td>
+              <td class="k">un control del que no se puede decir su nombre en voz alta</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ LA VENTANA ============================ -->
+  <section>
+    <div class="titulo">
+      <div class="rotulo">Fase 1</div>
+      <h2>Cinco reglas para la ventana nueva</h2>
+    </div>
+    <div class="cuerpo">
+      <div class="carril">lo que<br>copio de<br>la interfaz<br>que uso yo</div>
+      <div class="col">
+        <p>Me pediste que se parezca a la mía. Lo que hace que la mía funcione no es el color:
+        es que <strong>nunca tienes que preguntarte qué está pasando</strong>. Estas cinco
+        reglas son eso, traducidas a VeniceMAGI.</p>
+
+        <div class="regla">
+          <h3>1 · El trabajo se ve mientras ocurre</h3>
+          <p>Cada llamada a herramienta es una fila legible en la conversación, no un susurro
+          gris: quién la hizo, qué herramienta, con qué argumento, qué devolvió y cuántos
+          milisegundos tardó. Plegada por defecto, desplegable de un clic. Todo eso ya está en
+          el registro; la ventana solo tiene que dejar de tirarlo.</p>
+        </div>
+
+        <div class="regla">
+          <h3>2 · Un solo sitio para decidir</h3>
+          <p>Una propuesta, un panel, dos botones, y el texto dice exactamente qué va a pasar
+          y sobre qué ficheros. Si no toca nada ni ejecuta nada, no se pide aprobación: se
+          entrega. Y una vez decidido, el panel se cierra — no se puede aprobar dos veces.</p>
+        </div>
+
+        <div class="regla">
+          <h3>3 · El panel derecho pertenece a la conversación</h3>
+          <p>Cada conversación recuerda en qué pestaña estabas. Nada cambia de vista por su
+          cuenta; si el sistema quiere llevarte a otro sitio, te lo ofrece con un enlace en la
+          conversación en vez de moverte la silla.</p>
+        </div>
+
+        <div class="regla">
+          <h3>4 · Las conversaciones tienen nombre y pulso</h3>
+          <p>Barra lateral ancha, texto legible, nombre derivado de lo que pediste desde el
+          primer segundo — nunca <code>task_obqh72vy</code>. Y un indicador de actividad por
+          conversación, para que puedas dejar una corriendo y mirar otra sin perderla de vista.</p>
+        </div>
+
+        <div class="regla">
+          <h3>5 · Nada se entrega sin pasar por el medidor</h3>
+          <p>Este proyecto lleva media docena de sesiones aprendiendo que lo que no se mide se
+          cuela. La regla vale también para las palabras: una respuesta con menos sustancia que
+          un mensaje de error se marca como fallida, con su motivo, y se reintenta. Verla en
+          pantalla como resultado es el fallo, no el remedio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ TECLADO ============================ -->
+  <section>
+    <div class="titulo">
+      <div class="rotulo">Fase 2</div>
+      <h2>Que se pueda pilotar a ciegas</h2>
+    </div>
+    <div class="cuerpo">
+      <div class="carril">y por qué<br>esto te<br>sirve a ti<br>también</div>
+      <div class="col">
+        <p>Dijiste que controlarla es engorroso. Lo es, y lo he sufrido: he tenido que
+        maximizar la ventana con un script porque un clic a dos píxeles de un control me la
+        restauró y me movió todas las coordenadas.</p>
+        <ul>
+          <li>Cada control con su nombre accesible y su rol, para poder decir «pulsa Aprobar»
+          en vez de «pulsa en 641, 719».</li>
+          <li>Recorrido completo con teclado: <code>Tab</code> llega a todo,
+          <code>Esc</code> cierra, <code>Ctrl+K</code> abre el buscador de acciones.</li>
+          <li>Atajos para lo que se repite: nueva conversación, cambiar de conversación,
+          aprobar, parar.</li>
+          <li>Foco visible siempre. Si no se ve dónde está el foco, el teclado no sirve.</li>
+        </ul>
+        <p>Esto no es accesibilidad de compromiso: es lo que convierte la ventana en algo que
+        se puede automatizar, probar y pilotar sin mirar. Es la misma idea que la regla 3 del
+        proyecto —toda capacidad tiene que poder invocarse— aplicada a la interfaz.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="pie">
+    Todo lo de este documento se observó ejecutando VeniceMAGI en la máquina de David
+    el 5 de septiembre de 2026, con capturas y registro. Las citas en monoespaciado son
+    literales. Lo que no pude comprobar no está aquí.
+  </div>
+
+</div>

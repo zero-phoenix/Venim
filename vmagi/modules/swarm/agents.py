@@ -3,6 +3,9 @@ from collections.abc import Callable
 
 from vmagi.core.blackboard import Blackboard  # type: ignore
 from vmagi.core.bus import BusEvent, MagiBus  # type: ignore
+from vmagi.core.providers.backends.g4f_backend import (  # type: ignore
+    por_que_es_inservible,
+)
 from vmagi.core.providers.base import es_degradada  # type: ignore
 from vmagi.core.providers.cloud import FreeCloudLLM  # type: ignore
 
@@ -1179,6 +1182,34 @@ OBLIGATORIO: Finaliza con el encabezado '### CONCLUSIÓN FINAL CONSOLIDADA' (en 
                 sys_prompt, user_prompt, task_id=task_id, engine=engine,
                 narrative_style=narrative_style)
 
+        # LA ÚLTIMA PUERTA, Y LA QUE FALTABA.
+        #
+        # Medido pilotando la ventana el 2026-09-05: lo que apareció en
+        # pantalla como RESULTADO_FINAL fue la palabra «tud.» —cuatro
+        # caracteres— y el sistema YA lo sabía: la capa de proveedores lo había
+        # marcado como inservible minutos antes. `por_que_es_inservible`
+        # existía y funcionaba; lo que no había era una comprobación en la
+        # SALIDA, así que el fragmento se publicaba con el mismo formato que
+        # una respuesta buena.
+        #
+        # No se inventa un juez nuevo: se reusa el que ya está, justo antes de
+        # mirar al usuario a la cara. Y no se calla el fallo ni se sustituye
+        # por un texto amable: se dice qué llegó. La historia completa y su
+        # refutación están en tests/test_respuesta_final_util.py.
+        motivo = por_que_es_inservible(content)
+        if motivo:
+            logger.warning(
+                "[CASPER] la respuesta final no sirve (%s); no se entrega "
+                "como resultado", motivo)
+            content = (
+                f"**No llegó una respuesta utilizable.**\n\n"
+                f"El último proveedor devolvió {motivo}. Eso no es un "
+                f"resultado, así que no te lo presento como tal.\n\n"
+                f"Lo que suele haber detrás: todas las familias de la ruta "
+                f"agotadas, o un corte de red a mitad de la respuesta. "
+                f"Vuelve a pedirlo o mira el registro."
+            )
+
         await self.bus.publish(BusEvent(
             topic="AGENT_POST",
             payload={
@@ -1191,9 +1222,13 @@ OBLIGATORIO: Finaliza con el encabezado '### CONCLUSIÓN FINAL CONSOLIDADA' (en 
                 "family_expected": self.family,
                 "degraded": (None if actual_family == self.family
                              else f"{self.family} no disponible; respondió {actual_family}"),
+                # Viaja el motivo, no solo el texto: la ventana tiene que poder
+                # pintar esto distinto de una respuesta buena, y sin este campo
+                # tendría que adivinarlo leyendo el contenido.
+                "inservible": motivo,
                 "content": content,
                 "changes": 0,
-                "stats": "FINALIZADO"
+                "stats": "SIN RESPUESTA" if motivo else "FINALIZADO"
             }
         ))
 

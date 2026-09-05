@@ -292,7 +292,7 @@ _HEDGE_MAX_BASE = 3
 #
 # 1. `claude` sale del enjambre pese a ser la prioridad del usuario. No por
 #    decisión: Perplexity devuelve cuatro caracteres ('tud.') para cualquier
-#    modelo, y `_por_que_es_inservible` lo rechaza. Vuelve en cuanto responda.
+#    modelo, y `por_que_es_inservible` lo rechaza. Vuelve en cuanto responda.
 #
 # 2. `gpt` entra y su candidato vivo es Yqcloud, que A VECES contesta en chino.
 #    Esta vez respondió en castellano. Es aceptable únicamente porque la guarda
@@ -541,7 +541,7 @@ def _disable_g4f_browser() -> None:
 MINIMO_UTIL = 12
 
 
-def _por_que_es_inservible(content: str, minimo: int = MINIMO_UTIL) -> str | None:
+def por_que_es_inservible(content: str, minimo: int = MINIMO_UTIL) -> str | None:
     """
     ¿Por qué esta respuesta no sirve? `None` si sirve.
 
@@ -857,7 +857,7 @@ class G4FProvider(BaseProvider):
                     # Tratarlo como error hace que la maquinaria de failover que
                     # ya existe pruebe al siguiente candidato, que es justo lo
                     # que hay que hacer.
-                    inservible = _por_que_es_inservible(
+                    inservible = por_que_es_inservible(
                         content, minimo=1 if req.probe else MINIMO_UTIL)
                     if inservible:
                         errors.append(f"{cand[0]}: {inservible}")
@@ -1035,7 +1035,7 @@ class LlmDeSonda:
         # del tráfico real aquí era medir la salud del proveedor con la regla
         # del tráfico y matar al paciente en el chequeo: la respuesta de un
         # canario es corta POR DISEÑO.
-        motivo = _por_que_es_inservible(texto, minimo=1)
+        motivo = por_que_es_inservible(texto, minimo=1)
         if motivo:
             raise ProviderError(f"respuesta inservible: {motivo}")
         return texto, f"{proveedor}/{modelo or 'default'}"

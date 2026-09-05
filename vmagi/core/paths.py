@@ -23,6 +23,7 @@ __all__ = [
     "project_root", "data_dir", "workspace_dir", "journal_dir",
     "db_path", "logs_dir", "cache_dir", "is_frozen", "describe",
     "python_executable", "pytest_argv", "escritorio",
+    "fija_workspace", "workspace_por_defecto", "workspace_es_la_caja_de_arena",
 ]
 
 _ENV_ROOT = "VENICEMAGI_ROOT"
@@ -141,13 +142,105 @@ def data_dir() -> Path:
     return p
 
 
+#: Dónde se guarda la carpeta de trabajo que el usuario ha elegido.
+_ELECCION = "workspace-elegido.json"
+
+
+def _workspace_guardado() -> Path | None:
+    """La carpeta que el usuario eligió en la ventana, si eligió alguna."""
+    import json
+    f = data_dir() / _ELECCION
+    if not f.is_file():
+        return None
+    try:
+        crudo = json.loads(f.read_text(encoding="utf-8"))
+        ruta = Path(str(crudo.get("ruta", ""))).expanduser()
+    except (OSError, ValueError, json.JSONDecodeError):
+        return None
+    return ruta if ruta.is_dir() else None
+
+
 @lru_cache(maxsize=1)
 def workspace_dir() -> Path:
-    """Donde MAGI construye proyectos (antes: .../scratch en una ruta absoluta)."""
+    """La carpeta sobre la que trabaja el enjambre.
+
+    EL FALLO QUE ESTA ELECCIÓN CIERRA, MEDIDO PILOTANDO LA VENTANA
+    =============================================================
+    El 2026-09-05 le pedí a VeniceMAGI que midiera un vídeo del repositorio.
+    Resultado: `read_file` falló 8 de 8 veces (100%) y `run_command` 7 de 8
+    (88%), todas contra rutas de la forma
+
+        C:\\Users\\D\\AppData\\Local\\VeniceMAGI\\workspace\\vmagi\\modules\\studio\\estilo.py
+
+    Comprobado en disco: ese árbol tenía CERO ficheros `.py`. El enjambre
+    razonaba bien —diagnosticó él solo que el fichero no existía— pero estaba
+    mirando a un solar. Ninguna mejora de modelo, de prompt ni de interfaz
+    cambia ese 100%: es que se le pedía revisar una casa desde otra calle.
+
+    POR QUÉ SE ELIGE Y NO SE ADIVINA
+    ================================
+    Sería fácil apuntar por defecto al repositorio y quedar bien en la demo.
+    No se hace: el enjambre ESCRIBE, y decidir por el usuario sobre qué
+    carpeta escribe es exactamente la clase de cosa que no se hace en
+    silencio. Así que la caja de arena sigue siendo el valor por defecto, y
+    la carpeta de verdad es una elección explícita —desde la ventana, con la
+    ruta a la vista— que queda guardada.
+
+    Orden de precedencia, de más fuerte a más débil:
+
+      1. `VENICEMAGI_WORKSPACE` en el entorno (para scripts y CI).
+      2. Lo que el usuario eligió en la ventana.
+      3. La caja de arena bajo el directorio de datos.
+    """
     override = os.environ.get(_ENV_WORKSPACE)
-    p = Path(override).expanduser().resolve() if override else data_dir() / "workspace"
+    if override:
+        p = Path(override).expanduser().resolve()
+    else:
+        elegido = _workspace_guardado()
+        p = elegido.resolve() if elegido else data_dir() / "workspace"
     p.mkdir(parents=True, exist_ok=True)
     return p
+
+
+def workspace_por_defecto() -> Path:
+    """La caja de arena, aunque haya otra carpeta elegida."""
+    return data_dir() / "workspace"
+
+
+def workspace_es_la_caja_de_arena() -> bool:
+    """¿Está el enjambre trabajando en la caja de arena vacía?
+
+    La ventana lo pregunta para poder DECIRLO. Un sistema que trabaja sobre
+    una carpeta vacía y no lo advierte produce análisis impecables sobre la
+    nada, que es justo lo que pasó.
+    """
+    return workspace_dir() == workspace_por_defecto().resolve() or \
+        workspace_dir() == workspace_por_defecto()
+
+
+def fija_workspace(ruta: str | Path | None) -> Path:
+    """Cambia la carpeta de trabajo. `None` vuelve a la caja de arena.
+
+    Devuelve la carpeta que queda activa. Lanza `ValueError` si la ruta no
+    existe o no es un directorio: apuntar el enjambre a algo que no está es
+    exactamente el fallo que esto viene a cerrar, y repetirlo con otra ruta
+    no sería mejor.
+    """
+    import json
+    f = data_dir() / _ELECCION
+    if ruta is None:
+        f.unlink(missing_ok=True)
+    else:
+        p = Path(ruta).expanduser()
+        if not p.is_dir():
+            raise ValueError(
+                f"«{p}» no es una carpeta que exista. El enjambre trabajaría "
+                f"a ciegas, que es el fallo que esto viene a cerrar.")
+        f.write_text(
+            json.dumps({"ruta": str(p.resolve())}, ensure_ascii=False, indent=1),
+            encoding="utf-8", newline="\n")
+    workspace_dir.cache_clear()
+    return workspace_dir()
 
 
 def journal_dir() -> Path:

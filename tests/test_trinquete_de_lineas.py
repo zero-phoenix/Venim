@@ -66,7 +66,16 @@ TECHOS: dict[str, int] = {
     # «aprobado» de «aprobado sin haber recibido nada».
     # (y +45 más por C3 —techo de iteración desde el presupuesto—, C10
     # —presupuesto de dependencias— y C15 —decir cómo se entendió el encargo—.)
-    "vmagi/modules/swarm/agents.py": 1230,
+    # +30 el 2026-09-05: la última puerta de la respuesta final. Pilotando la
+    # ventana salió a la cara que lo que se entregaba como RESULTADO_FINAL era
+    # la palabra «tud.» —cuatro caracteres— y que el sistema ya lo sabía. La
+    # comprobación en sí son tres líneas; lo que ocupa es el mensaje que se le
+    # da al usuario cuando no llega respuesta, y no se recorta: decirle «no
+    # llegó una respuesta utilizable, el proveedor devolvió 4 caracteres» es
+    # justo la diferencia entre este arreglo y no haberlo hecho. Va aquí y no
+    # en un módulo aparte porque es el último paso de `generate_final_
+    # resolution` y sacarlo obligaría a exportar el evento entero del bus.
+    "vmagi/modules/swarm/agents.py": 1260,
     # +15 en la ejecución del megaplan: B8, la sonda espera a que el enjambre
     # esté quieto en vez de medir la cuota que la tarea acaba de gastar.
     # +50 en la v5.9.0 (§G4): B8 comprobaba UNA vez y luego se iba a medir un
