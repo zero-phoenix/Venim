@@ -18,6 +18,7 @@ import pytest
 
 from vmagi.modules.studio.biblia import (
     BibliaDeEstilo,
+    Conflicto,
     Dominio,
     Tolerancia,
     combina,
@@ -57,6 +58,10 @@ def test_EL_CENTRAL_dos_biblias_que_se_contradicen_no_dan_un_numero_intermedio()
         "el eje contradictorio sigue en el contrato. Si vale 5, la biblia "
         "está describiendo una película que nadie rodó")
     assert [c.eje for c in f.conflictos] == ["duracion_media_plano"]
+    assert isinstance(f.conflictos[0], Conflicto)
+    assert len(f.conflictos[0].intervalos) == 2, (
+        "el conflicto guarda LOS DOS intervalos, no solo el hecho de que los "
+        "haya: quien tenga que decidir necesita ver qué pedía cada referencia")
     texto = f.conflictos[0].render()
     assert "8" in texto or "7" in texto, texto
     assert "no hay ningún valor" in texto

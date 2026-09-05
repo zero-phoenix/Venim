@@ -402,6 +402,35 @@ async def test_un_eje_que_NINGUN_candidato_puede_producir_deja_de_puntuar():
         "no dice qué hacer. Un aviso que no señala la salida es ruido")
 
 
+def test_la_regla_que_separa_no_pudo_de_no_quiso():
+    """`ejes_imposibles` es la pieza pura de todo lo anterior, y merece su
+    propio test porque la decisión entera cuelga de una interseccion.
+
+    Si en vez de intersecar uniera, un solo candidato mudo bastaría para que
+    la búsqueda dejara de puntuar el audio — y esquivar la medición volvería a
+    ser la estrategia ganadora.
+    """
+    from vmagi.modules.studio.biblia import Desvio, Veredicto
+
+    def v(*sin_medir: str) -> Veredicto:
+        ejes = ("saturacion", "luma", "fraccion_silencio")
+        return Veredicto(desvios=[
+            Desvio(eje=e, objetivo=1.0,
+                   obtenido=None if e in sin_medir else 1.0,
+                   margen=0.1, cumple=e not in sin_medir) for e in ejes])
+
+    todos = [v("fraccion_silencio"), v("fraccion_silencio"),
+             v("fraccion_silencio")]
+    assert S.ejes_imposibles(todos) == frozenset({"fraccion_silencio"})
+
+    algunos = [v("fraccion_silencio"), v(), v("fraccion_silencio")]
+    assert S.ejes_imposibles(algunos) == frozenset(), (
+        "un solo candidato que SÍ lo produjo demuestra que se puede: los "
+        "demás no pudieron, quisieron")
+
+    assert S.ejes_imposibles([]) == frozenset()
+
+
 async def test_un_eje_que_solo_ALGUNOS_esquivan_se_sigue_pagando_entero():
     """LA DEFENSA QUE NO SE PUEDE TOCAR AL ARREGLAR LO ANTERIOR.
 
