@@ -20,9 +20,9 @@ import time
 
 import pytest
 
-from vmagi.core.providers import sonda
-from vmagi.core.providers.registry import ProviderRegistry
-from vmagi.core.store.state import TaskStore
+from venim.core.providers import sonda
+from venim.core.providers.registry import ProviderRegistry
+from venim.core.store.state import TaskStore
 
 
 @pytest.fixture()
@@ -107,7 +107,7 @@ async def test_un_fallo_de_la_sonda_no_puede_tumbar_el_arranque(store_vacio):
 
 def _registro_con(familias: dict[str, int]) -> ProviderRegistry:
     """Registro con una familia por proveedor y la prioridad que se indique."""
-    from vmagi.core.providers.backends.echo import EchoProvider
+    from venim.core.providers.backends.echo import EchoProvider
 
     reg = ProviderRegistry()
     for i, (fam, prioridad) in enumerate(familias.items()):

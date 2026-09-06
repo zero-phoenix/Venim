@@ -14,7 +14,7 @@ Y LA SEGUNDA, QUE ES LA QUE ME CORRIGE A MÍ
 ===========================================
 «Las respuestas correctas no las escribe quien construye el banco.»
 
-En mi propio megaplan propuse compararme con VeniceMAGI en un banco escrito
+En mi propio megaplan propuse compararme con Venim en un banco escrito
 por mí — el mismo fallo del jurado circular que este repositorio ya cazó una
 vez. Aquí cada respuesta se DERIVA del repositorio al construir el banco. Si
 mañana `MUESTREO_FPS` pasa a 8.0, el banco espera 8.0 sin que nadie lo toque.
@@ -27,23 +27,23 @@ import pathlib
 
 import pytest
 
-from vmagi.core.eval import banco_del_proyecto as B
+from venim.core.eval import banco_del_proyecto as B
 
 
 @pytest.fixture
 def proyecto(tmp_path):
     """Un proyecto de mentira con las mismas formas que el de verdad."""
-    (tmp_path / "vmagi/modules/studio").mkdir(parents=True)
-    (tmp_path / "vmagi/core/providers/backends").mkdir(parents=True)
-    (tmp_path / "vmagi/core").mkdir(exist_ok=True)
-    (tmp_path / "vmagi/modules/studio/estilo.py").write_text(
+    (tmp_path / "venim/modules/studio").mkdir(parents=True)
+    (tmp_path / "venim/core/providers/backends").mkdir(parents=True)
+    (tmp_path / "venim/core").mkdir(exist_ok=True)
+    (tmp_path / "venim/modules/studio/estilo.py").write_text(
         "MUESTREO_FPS = 5.0\nUMBRAL_CORTE = 0.38\n", encoding="utf-8")
-    (tmp_path / "vmagi/core/providers/backends/g4f_backend.py").write_text(
+    (tmp_path / "venim/core/providers/backends/g4f_backend.py").write_text(
         "MINIMO_UTIL = 12\n\ndef por_que_es_inservible(x):\n    return None\n",
         encoding="utf-8")
-    (tmp_path / "vmagi/core/paths.py").write_text(
+    (tmp_path / "venim/core/paths.py").write_text(
         "def fija_workspace(r):\n    return r\n", encoding="utf-8")
-    (tmp_path / "vmagi/core/contrato.py").write_text(
+    (tmp_path / "venim/core/contrato.py").write_text(
         'X = (_p("a.b"), _p("c.d"), _i("e.f", "x", "y"))\n', encoding="utf-8")
     return tmp_path
 
@@ -62,7 +62,7 @@ def test_EL_CENTRAL_la_solucion_se_lee_del_proyecto_no_la_escribo_yo(proyecto):
     assert tarea.grade("vale 5.0")
     assert not tarea.grade("vale 8.0")
 
-    (proyecto / "vmagi/modules/studio/estilo.py").write_text(
+    (proyecto / "venim/modules/studio/estilo.py").write_text(
         "MUESTREO_FPS = 8.0\nUMBRAL_CORTE = 0.38\n", encoding="utf-8")
     tarea2 = next(t for t in B.construir(proyecto).tasks
                   if t.id == "lee_muestreo_fps")
@@ -79,7 +79,7 @@ def test_una_constante_que_no_existe_no_genera_pregunta(tmp_path):
     motivo equivocado: no por que el sistema no vea, sino por que le
     preguntamos algo que no tiene respuesta. Es la quinta regla otra vez.
     """
-    (tmp_path / "vmagi").mkdir()
+    (tmp_path / "venim").mkdir()
     ids = [t.id for t in B.construir(tmp_path).tasks]
     assert "lee_muestreo_fps" not in ids
     assert "cuenta_sucesos" not in ids
@@ -165,7 +165,7 @@ def test_EL_OTRO_CENTRAL_el_corredor_del_examen_puede_leer(proyecto):
     tapado los ojos nosotros al examinarlo. Distinguirlas es lo único que este
     banco hace, así que el corredor va con el banco.
     """
-    from vmagi.core.eval.banco_del_proyecto import HERRAMIENTAS_DEL_EXAMEN
+    from venim.core.eval.banco_del_proyecto import HERRAMIENTAS_DEL_EXAMEN
 
     assert "read_file" in HERRAMIENTAS_DEL_EXAMEN, (
         "sin leer ficheros, todas las tareas de este banco salen 0 por un "
@@ -180,7 +180,7 @@ def test_el_examen_no_puede_modificar_lo_que_examina(proyecto):
     auto-mejora corre el banco ANTES y DESPUÉS del cambio, o sea justo dos
     veces seguidas.
     """
-    from vmagi.core.eval.banco_del_proyecto import HERRAMIENTAS_DEL_EXAMEN
+    from venim.core.eval.banco_del_proyecto import HERRAMIENTAS_DEL_EXAMEN
 
     prohibidas = {"write_file", "edit_file", "delete_path", "run_command",
                   "python_exec", "undo"}
@@ -198,7 +198,7 @@ async def test_el_corredor_usa_las_herramientas_y_no_su_memoria(proyecto,
     rojo. Es exactamente el cambio que parece una optimización y rompe la
     medida.
     """
-    from vmagi.core.eval import banco_del_proyecto as B
+    from venim.core.eval import banco_del_proyecto as B
 
     visto = {}
 
@@ -209,7 +209,7 @@ async def test_el_corredor_usa_las_herramientas_y_no_su_memoria(proyecto,
             text = "5.0"
         return Turno()
 
-    import vmagi.core.agent_loop as AL
+    import venim.core.agent_loop as AL
     monkeypatch.setattr(AL, "run_agent", falso_run_agent)
 
     class FalsoLLM:
@@ -239,7 +239,7 @@ def test_EL_LAZO_un_cambio_que_ciega_al_sistema_se_rechaza():
     sobre los dos ejes sin necesitar ninguna regla nueva: su norma es «mejora
     neta de dos y NINGUNA regresión», y una lectura rota ya es una regresión.
     """
-    from vmagi.core.eval.bench import BenchResult, TaskOutcome, compare
+    from venim.core.eval.bench import BenchResult, TaskOutcome, compare
 
     def resultado(pares):
         return BenchResult([TaskOutcome(i, ok, 1.0) for i, ok in pares])
@@ -260,7 +260,7 @@ def test_EL_LAZO_un_cambio_que_ciega_al_sistema_se_rechaza():
 # ================================== una medida, dos lecturas
 
 def _resultado(etiqueta, pares):
-    from vmagi.core.eval.bench import BenchResult, TaskOutcome
+    from venim.core.eval.bench import BenchResult, TaskOutcome
     return BenchResult([TaskOutcome(i, ok, 1.0) for i, ok in pares],
                        label=etiqueta)
 
@@ -276,7 +276,7 @@ def test_la_ventana_ve_los_ejes_separados_y_la_decision_los_ve_juntos():
     regla es «mejora neta de dos y ninguna regresión». Fundiéndolos, una
     lectura rota cuenta como regresión sin escribir ninguna regla nueva.
     """
-    from vmagi.core.eval.banco_del_proyecto import DosEjes
+    from venim.core.eval.banco_del_proyecto import DosEjes
 
     medida = DosEjes(_resultado("capacidad general",
                                 [("suma", True), ("codigo", True)]),
@@ -310,7 +310,7 @@ def test_la_ventana_lee_los_campos_que_el_banco_escribe():
     que nada lo habría cazado. Aquí se fija la FORMA que la ventana lee, con
     los nombres escritos: si cambia, esto se pone rojo y dice dónde mirar.
     """
-    from vmagi.core.eval.banco_del_proyecto import DosEjes
+    from venim.core.eval.banco_del_proyecto import DosEjes
 
     d = DosEjes(_resultado("capacidad general", [("suma", True)]),
                 _resultado("ve el proyecto", [("lee", False)])).to_dict()
@@ -327,7 +327,7 @@ def test_sin_proyecto_delante_la_medida_sigue_siendo_una_medida():
     """Si la carpeta no es un proyecto conocido, queda el eje general y un
     aviso. Lo que no puede pasar es que el hueco cuente como suspenso: sería
     bajar la nota por un motivo que no es del sistema."""
-    from vmagi.core.eval.banco_del_proyecto import DosEjes
+    from venim.core.eval.banco_del_proyecto import DosEjes
 
     medida = DosEjes(_resultado("capacidad general", [("suma", True)]),
                      None, aviso="la carpeta no parece un proyecto")
@@ -380,7 +380,7 @@ def test_el_banco_del_proyecto_es_un_EvalBench_de_verdad(proyecto):
     """Se acopla al mecanismo que ya existe en vez de montar uno paralelo: la
     auto-mejora de Naoko corre `EvalBench`, y un banco que ella no sepa correr
     no serviría para cerrar el lazo."""
-    from vmagi.core.eval.bench import EvalBench, EvalTask
+    from venim.core.eval.bench import EvalBench, EvalTask
 
     banco = B.construir(proyecto)
     assert isinstance(banco, EvalBench)

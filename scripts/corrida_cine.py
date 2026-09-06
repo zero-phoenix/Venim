@@ -147,8 +147,8 @@ def fabrica_stills(carpeta: Path) -> list[Path]:
 # ------------------------------------------------------------------ la corrida
 
 async def main() -> int:
-    from vmagi.core.tools.registry import ToolRegistry
-    from vmagi.modules.studio.tools import register_studio_tools
+    from venim.core.tools.registry import ToolRegistry
+    from venim.modules.studio.tools import register_studio_tools
 
     SALIDA.mkdir(parents=True, exist_ok=True)
     reg = register_studio_tools(ToolRegistry())

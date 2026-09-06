@@ -1,4 +1,4 @@
-# Coloca la ventana de VeniceMAGI en el TERCIO DERECHO, este donde este.
+# Coloca la ventana de Venim en el TERCIO DERECHO, este donde este.
 #
 # Se separa de `abrir_en_un_tercio.ps1` porque son dos cosas distintas: aquella
 # arranca el .exe y espera; esta solo recoloca lo que ya hay. Mezcladas, para
@@ -14,9 +14,9 @@ public class W {
   public struct R { public int L, T, Rr, B; }
 }
 "@
-$p = Get-Process VeniceMAGI -ErrorAction SilentlyContinue |
+$p = Get-Process Venim -ErrorAction SilentlyContinue |
      Where-Object { $_.MainWindowHandle -ne 0 } | Select-Object -First 1
-if (-not $p) { Write-Host "no hay ventana de VeniceMAGI"; exit 1 }
+if (-not $p) { Write-Host "no hay ventana de Venim"; exit 1 }
 $h = $p.MainWindowHandle
 $r = New-Object W+R
 [void][W]::GetWindowRect($h, [ref]$r)

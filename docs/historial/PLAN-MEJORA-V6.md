@@ -95,7 +95,7 @@ auditada.**
 
 Concretamente:
 
-1. **Módulo `vmagi/core/sesion_web.py`** — única vía autorizada. Lanza Camoufox
+1. **Módulo `venim/core/sesion_web.py`** — única vía autorizada. Lanza Camoufox
    (Firefox endurecido contra fingerprinting, headless, perfil propio bajo el
    directorio de datos de MAGI). Nunca lee el perfil del usuario: eso sería
    exactamente el secuestro que se prohibió.
@@ -159,7 +159,7 @@ mano que se quedaría atrás— los revive sin tocar g4f ni fijar versiones.
 
 #### B · Sesión web headless (6 proveedores) — **puerta construida**
 
-> **Estado:** la puerta está hecha y probada (`vmagi/core/sesion_web.py`). Lo que
+> **Estado:** la puerta está hecha y probada (`venim/core/sesion_web.py`). Lo que
 > falta es el motor: instalar Camoufox y escribir la cosecha de cookies por
 > proveedor. La arquitectura, el permiso caducable, el almacén de credenciales
 > y la integración con `no_browser` están en su sitio y con tests.

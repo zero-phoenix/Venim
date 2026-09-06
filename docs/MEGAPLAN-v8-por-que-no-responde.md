@@ -6,7 +6,7 @@
 
 ## 0. La queja, y lo que resultó ser
 
-> «analiza el sistema vmagi ahora mismo y mira porque demora tanto en
+> «analiza el sistema venim ahora mismo y mira porque demora tanto en
 > funcionar, le escribi a naoko y no me responde, verifica si ritsuko tambien
 > funciona»
 
@@ -30,7 +30,7 @@ real. Solo que el fallo no estaba donde parecía.
 ### La medición que lo decidió
 
 ```
-VeniceMAGI.exe (PID 16288), en reposo, sin ninguna tarea corriendo
+Venim.exe (PID 16288), en reposo, sin ninguna tarea corriendo
     100,3 % de un núcleo    (media de 12 s, psutil)
 
 el mismo kernel arrancado solo, sin interfaz, con las 13 tareas rehidratadas
@@ -181,7 +181,7 @@ verdad no son la del caso feliz:
 
 ### La medición
 
-Estado real de `venicemagi_brain.db` al empezar:
+Estado real de `venim_brain.db` al empezar:
 
 ```
 total: 23    WAITING_USER_APPROVAL: 14    interrumpida: 7    completed: 2
@@ -223,7 +223,7 @@ trabajo de alguien no tiene arreglo. Se comprueba explícitamente que
 Ejecutada sobre la base real, con copia de seguridad previa:
 
 ```
-copia: venicemagi_brain.db.bak-1787225494
+copia: venim_brain.db.bak-1787225494
 reanudables antes:  13
 purgadas:           15
 reanudables después:  0

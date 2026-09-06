@@ -20,7 +20,7 @@ import sqlite3
 
 import pytest
 
-from vmagi.core.store.admision import (
+from venim.core.store.admision import (
     ADMITIDA,
     AHORA,
     DESCARTADA,
@@ -28,7 +28,7 @@ from vmagi.core.store.admision import (
     PROMOVIDA,
     LibroDeAdmision,
 )
-from vmagi.core.store.state import EN_CURSO, ESPERANDO_USUARIO, INTERRUMPIDA, TaskState, TaskStore
+from venim.core.store.state import EN_CURSO, ESPERANDO_USUARIO, INTERRUMPIDA, TaskState, TaskStore
 
 
 @pytest.fixture()
@@ -53,13 +53,13 @@ def test_migrar_es_idempotente(tmp_path):
     c = sqlite3.connect(p)
     n = c.execute("select count(*) from migracion_esquema").fetchone()[0]
     c.close()
-    from vmagi.core.store.migraciones import MIGRACIONES
+    from venim.core.store.migraciones import MIGRACIONES
     assert n == len(MIGRACIONES), "una migración se aplicó dos veces"
 
 
 def test_una_migracion_editada_se_detecta(store):
     """Publicada y luego editada: se avisa y NO se reaplica."""
-    from vmagi.core.store import migraciones
+    from venim.core.store import migraciones
     with store._conn() as c:
         c.execute("update migracion_esquema set checksum='cambiado' "
                   "where id='0004_libro_de_admision'")
@@ -234,8 +234,8 @@ class BusEspia:
 
 
 def _orquestador(store, bus):
-    from vmagi.core.blackboard import Blackboard
-    from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+    from venim.core.blackboard import Blackboard
+    from venim.modules.swarm.orchestrator import SwarmOrchestrator
     return SwarmOrchestrator(Blackboard(), bus, store=store)
 
 
@@ -291,7 +291,7 @@ def test_si_de_verdad_esta_trabajando_se_encola_y_se_avisa(store, monkeypatch):
 
     # Simula que t1 tiene bucle vivo, y devuélvela a en curso.
     orq.active_tasks["t1"]["status"] = EN_CURSO
-    from vmagi.core import cancel
+    from venim.core import cancel
     monkeypatch.setattr(cancel.supervisor(), "is_running",
                         lambda tid: tid == "t1")
     monkeypatch.setattr(orq, "_spawn_loop",

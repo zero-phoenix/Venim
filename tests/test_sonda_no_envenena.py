@@ -15,11 +15,11 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.obs.metrics import canary_probe
-from vmagi.core.providers.backends.echo import EchoProvider
-from vmagi.core.providers.backends.g4f_backend import por_que_es_inservible
-from vmagi.core.providers.base import CompletionRequest, Message
-from vmagi.core.providers.registry import ProviderError, ProviderRegistry
+from venim.core.obs.metrics import canary_probe
+from venim.core.providers.backends.echo import EchoProvider
+from venim.core.providers.backends.g4f_backend import por_que_es_inservible
+from venim.core.providers.base import CompletionRequest, Message
+from venim.core.providers.registry import ProviderError, ProviderRegistry
 
 
 def test_la_respuesta_corta_se_rechaza_para_trafico_y_se_acepta_para_sonda():

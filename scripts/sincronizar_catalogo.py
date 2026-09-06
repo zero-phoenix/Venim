@@ -1,5 +1,5 @@
 """
-Regenera `vmagi/data/catalogo_proveedores.json` DESDE las constantes de Python.
+Regenera `venim/data/catalogo_proveedores.json` DESDE las constantes de Python.
 
 POR QUÉ EXISTE
 ==============
@@ -31,11 +31,11 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RAIZ))
 
-DESTINO = RAIZ / "vmagi" / "data" / "catalogo_proveedores.json"
+DESTINO = RAIZ / "venim" / "data" / "catalogo_proveedores.json"
 
 
 def construir() -> dict:
-    from vmagi.core.providers.backends import g4f_backend as g
+    from venim.core.providers.backends import g4f_backend as g
 
     previo = json.loads(DESTINO.read_text(encoding="utf-8"))
     fam_previas = previo.get("familias", {})

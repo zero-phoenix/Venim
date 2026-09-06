@@ -11,8 +11,8 @@ import os
 
 import pytest
 
-from vmagi.core.tools import ToolContext, WriteJournal, build_registry
-from vmagi.modules.reverse.entropy import (
+from venim.core.tools import ToolContext, WriteJournal, build_registry
+from venim.modules.reverse.entropy import (
     BLOCK,
     HIGH_ENTROPY,
     EntropyReport,

@@ -11,7 +11,7 @@ import asyncio
 
 import pytest
 
-from vmagi.modules.studio.arte import (
+from venim.modules.studio.arte import (
     AUTORES,
     FAMILIA_CRITICO,
     Encargo,

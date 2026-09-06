@@ -26,8 +26,8 @@ import json
 import pytest
 import websockets
 
-from vmagi.core.bus import MagiBus
-from vmagi.core.rpc.ws_server import WSServer
+from venim.core.bus import MagiBus
+from venim.core.rpc.ws_server import WSServer
 
 # Un puerto distinto por test. Compartir uno con un fixture de módulo choca
 # con pytest-asyncio: el bucle de eventos es por función, así que un servidor

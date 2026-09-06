@@ -3,12 +3,12 @@
 # Se separa de la compilacion porque son dos preguntas distintas: "compila" y
 # "funciona". Confundirlas fue lo que dejo publicar un binario que moria en el
 # arranque sin que PyInstaller diera un solo error.
-$raiz = "C:\Users\D\magi-port\VeniceMAGI"
-Get-Process VeniceMAGI -ErrorAction SilentlyContinue | Stop-Process -Force
+$raiz = "C:\Users\D\magi-port\Venim"
+Get-Process Venim -ErrorAction SilentlyContinue | Stop-Process -Force
 Start-Sleep -Seconds 3
 $err = Join-Path $raiz "build\arranque.err"
 Remove-Item $err -ErrorAction SilentlyContinue
-$exe = Join-Path $raiz "dist\VeniceMAGI.exe"
+$exe = Join-Path $raiz "dist\Venim.exe"
 Write-Host ("exe: {0} MB, del {1}" -f `
   [math]::Round((Get-Item $exe).Length / 1MB, 1), (Get-Item $exe).LastWriteTime)
 $p = Start-Process $exe -PassThru -RedirectStandardError $err

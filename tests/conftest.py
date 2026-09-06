@@ -15,13 +15,13 @@ def isolated_data_dir(tmp_path, monkeypatch):
     """
     Aísla data_dir/workspace por test.
 
-    Sin esto los tests escribirían en %LOCALAPPDATA%\\VeniceMAGI del usuario,
+    Sin esto los tests escribirían en %LOCALAPPDATA%\\Venim del usuario,
     que es exactamente el tipo de efecto colateral que v5.0.28 tenía por todas
-    partes (venicemagi_brain.db en el CWD, scratch en una ruta absoluta).
+    partes (venim_brain.db en el CWD, scratch en una ruta absoluta).
     """
-    monkeypatch.setenv("VENICEMAGI_DATA_DIR", str(tmp_path / "data"))
-    monkeypatch.setenv("VENICEMAGI_WORKSPACE", str(tmp_path / "ws"))
-    from vmagi.core import paths
+    monkeypatch.setenv("VENIM_DATA_DIR", str(tmp_path / "data"))
+    monkeypatch.setenv("VENIM_WORKSPACE", str(tmp_path / "ws"))
+    from venim.core import paths
     for fn in (paths.project_root, paths.data_dir, paths.workspace_dir):
         fn.cache_clear()
     yield
@@ -226,7 +226,7 @@ def catalogo_congelado(request, monkeypatch):
         yield
         return
 
-    modulo = sys.modules.get("vmagi.core.providers.backends.g4f_backend")
+    modulo = sys.modules.get("venim.core.providers.backends.g4f_backend")
     if modulo is not None:
         lab = _catalogo_de_laboratorio(modulo.FAMILY_SPECS)
         monkeypatch.setattr(modulo, "FAMILY_SPECS", lab, raising=False)
@@ -257,28 +257,28 @@ def entorno_explicito(request, monkeypatch):
 
     # LA PUERTA DE EDGE ES LA MISMA FRONTERA, Y COSTÓ UN CI ENTERO.
     #
-    # `vmagi/venice/puerta.py` abre un navegador REAL. Es exactamente la
+    # `venim/venice/puerta.py` abre un navegador REAL. Es exactamente la
     # clase de función que este guardián existe para tapar, y se quedó
     # fuera de la lista al portarla — con el resultado previsible: el CI
     # del 2026-08-31 se colgó 124 s en un runner sin escritorio y murió
     # con un `Timeout` que no decía de dónde venía.
     #
-    # El interruptor `VENICEMAGI_SIN_PUERTA` es el freno de producción; este
+    # El interruptor `VENIM_SIN_PUERTA` es el freno de producción; este
     # es el de los tests, y son los dos necesarios. El de producción evita
     # que la puerta se abra; este además hace que un test que la invoque
     # sin querer FALLE EN LOCAL diciendo qué escribir, en vez de pasar aquí
     # y colgarse allí.
-    monkeypatch.setenv("VENICEMAGI_SIN_PUERTA", "1")
+    monkeypatch.setenv("VENIM_SIN_PUERTA", "1")
     # Solo `edge_disponible`, que MIRA LA MÁQUINA (¿hay Edge instalado?).
     # `perfil_dir` no se toca: crea un directorio bajo `data_dir`, que en
     # tests ya está aislado en tmp_path. El guardián va en la frontera, no
     # dentro — la misma distinción que costó un intento con `puede_abrir`.
-    puerta = sys.modules.get("vmagi.venice.puerta")
+    puerta = sys.modules.get("venim.venice.puerta")
     if puerta is not None:
         monkeypatch.setattr(puerta, "edge_disponible",
                             _se_niega("edge_disponible"), raising=False)
 
-    modulo = sys.modules.get("vmagi.core.sesion_web")
+    modulo = sys.modules.get("venim.core.sesion_web")
     if modulo is not None:
         for nombre in _AMBIENTALES:
             monkeypatch.setattr(modulo, nombre, _se_niega(nombre),
@@ -315,7 +315,7 @@ def ningun_bucle_sobrevive_a_su_test():
     supervisor se cancela y el registro se vacía.
     """
     yield
-    from vmagi.core import cancel
+    from venim.core import cancel
     sup = cancel.supervisor()
 
     for tareas in list(sup._loops.values()):

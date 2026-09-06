@@ -17,9 +17,9 @@ import time
 
 import pytest
 
-from vmagi.core.auditoria import Auditoria
-from vmagi.core.store import telemetria as tl
-from vmagi.core.store.state import TaskStore
+from venim.core.auditoria import Auditoria
+from venim.core.store import telemetria as tl
+from venim.core.store.state import TaskStore
 
 
 @pytest.fixture()
@@ -227,7 +227,7 @@ def test_naoko_audita_antes_de_tocar_tu_repositorio():
     """Guard: si alguien quita la llamada, esto se entera."""
     import inspect
 
-    from vmagi.modules.infrastructure import naoko
+    from venim.modules.infrastructure import naoko
     fuente = inspect.getsource(naoko.NaokoAgent._git_push)
     assert "auditoria" in fuente
     assert "git.commit" in fuente and "git.publicado" in fuente
@@ -266,7 +266,7 @@ def test_cada_variante_conserva_su_semilla_pese_a_ir_en_paralelo():
     con semillas distintas» eran la misma petición repetida N veces, que es
     justo lo contrario de lo que se buscaba.
     """
-    from vmagi.modules.swarm.parallel import generate_variants
+    from venim.modules.swarm.parallel import generate_variants
 
     a = AgenteFalso()
     asyncio.run(generate_variants(a, task_id="t1", command="haz algo",
@@ -280,7 +280,7 @@ def test_cada_variante_tiene_su_propia_rama():
     Sin esto, las N variantes publican con el mismo task_id y la interfaz las
     apila como si fueran una conversación, cuando son N intentos paralelos.
     """
-    from vmagi.modules.swarm.parallel import generate_variants
+    from venim.modules.swarm.parallel import generate_variants
 
     a = AgenteFalso()
     asyncio.run(generate_variants(a, task_id="t1", command="x", round_num=2,
@@ -292,7 +292,7 @@ def test_cada_variante_tiene_su_propia_rama():
 
 def test_el_agente_original_no_queda_manchado():
     """La copia es por variante; el agente compartido no cambia."""
-    from vmagi.modules.swarm.parallel import generate_variants
+    from venim.modules.swarm.parallel import generate_variants
 
     a = AgenteFalso()
     asyncio.run(generate_variants(a, task_id="t1", command="x", round_num=1,
@@ -302,8 +302,8 @@ def test_el_agente_original_no_queda_manchado():
 
 
 def test_la_rama_viaja_en_el_payload_de_los_eventos():
-    from vmagi.core.blackboard import Blackboard
-    from vmagi.modules.swarm.agents import SwarmAgentBase
+    from venim.core.blackboard import Blackboard
+    from venim.modules.swarm.agents import SwarmAgentBase
 
     class Bus:
         def subscribe(self, *a, **k): pass

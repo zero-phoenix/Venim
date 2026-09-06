@@ -16,8 +16,8 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.providers import sonda
-from vmagi.core.store.state import TaskStore
+from venim.core.providers import sonda
+from venim.core.store.state import TaskStore
 
 
 class _SwarmDePega:
@@ -28,7 +28,7 @@ class _SwarmDePega:
 
 def _naoko_con(store):
     """Naoko sin `__init__`: aquí solo se prueba una función de lectura."""
-    from vmagi.modules.infrastructure.naoko import NaokoAgent
+    from venim.modules.infrastructure.naoko import NaokoAgent
 
     n = NaokoAgent.__new__(NaokoAgent)
     n.swarm = _SwarmDePega(store)
@@ -98,7 +98,7 @@ def test_si_no_puede_leer_la_sonda_NO_revienta(store, monkeypatch):
 
 
 def test_sin_almacen_tampoco_revienta():
-    from vmagi.modules.infrastructure.naoko import NaokoAgent
+    from venim.modules.infrastructure.naoko import NaokoAgent
 
     n = NaokoAgent.__new__(NaokoAgent)
     n.swarm = None
@@ -113,7 +113,7 @@ def test_el_sustrato_entra_en_el_prompt_de_naoko():
     """
     import inspect
 
-    from vmagi.modules.infrastructure import naoko as mod
+    from venim.modules.infrastructure import naoko as mod
 
     fuente = inspect.getsource(mod)
     assert "sustrato = self._resumen_del_sustrato()" in fuente

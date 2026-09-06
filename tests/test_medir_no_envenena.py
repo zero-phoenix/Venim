@@ -14,8 +14,8 @@ contra esos mismos proveedores. Naoko medía su propia interferencia.
 """
 from __future__ import annotations
 
-from vmagi.core.bus import MagiBus
-from vmagi.modules.infrastructure.naoko import NaokoAgent
+from venim.core.bus import MagiBus
+from venim.modules.infrastructure.naoko import NaokoAgent
 
 
 class _SwarmFalso:
@@ -54,7 +54,7 @@ async def test_cero_canarios_correctos_no_es_deriva(monkeypatch):
     Deriva es que conteste BIEN y DISTINTO. Confundir las dos cosas es el
     error que este sistema ya pagó caro una vez.
     """
-    from vmagi.core.obs import metrics
+    from venim.core.obs import metrics
 
     class _Informe:
         drifted, matched, total = True, 0, 3
@@ -76,7 +76,7 @@ async def test_cero_canarios_correctos_no_es_deriva(monkeypatch):
         return _Registro()
 
     monkeypatch.setattr(metrics, "canary_probe", falso_canario)
-    import vmagi.core.providers.cloud as cloud
+    import venim.core.providers.cloud as cloud
     monkeypatch.setattr(cloud, "get_registry", falso_registro)
 
     bus = MagiBus()

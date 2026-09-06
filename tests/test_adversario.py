@@ -16,8 +16,8 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.modules.studio import adversario as A
-from vmagi.modules.studio import estilo as E
+from venim.modules.studio import adversario as A
+from venim.modules.studio import estilo as E
 
 sin_ffmpeg = pytest.mark.skipif(
     not (shutil.which("ffmpeg") and shutil.which("ffprobe")),
@@ -236,8 +236,8 @@ def test_la_auditoria_esta_en_el_registro_del_enjambre():
     """Regla 3. Y aquí pesa el doble: el objetivo declarado es que el sistema
     haga sin supervisión lo mismo que se hace supervisándolo, y elegir qué
     probar era justo lo que seguía haciendo una persona desde fuera."""
-    from vmagi.core.tools.registry import ToolRegistry
-    from vmagi.modules.studio.tools import register_studio_tools
+    from venim.core.tools.registry import ToolRegistry
+    from venim.modules.studio.tools import register_studio_tools
 
     reg = register_studio_tools(ToolRegistry())
     t = reg.get("auditar_medidor")

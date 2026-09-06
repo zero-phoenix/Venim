@@ -36,8 +36,8 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.tools.builtin import BALTHASAR_DENY, CASPER_TOOLS
-from vmagi.modules.swarm.agents import _leer_decision
+from venim.core.tools.builtin import BALTHASAR_DENY, CASPER_TOOLS
+from venim.modules.swarm.agents import _leer_decision
 
 TETRIS = '''Mi síntesis integra ambas posiciones.
 

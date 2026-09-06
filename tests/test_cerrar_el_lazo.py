@@ -17,9 +17,9 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.blackboard import Blackboard
-from vmagi.core.bus import MagiBus
-from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+from venim.core.blackboard import Blackboard
+from venim.core.bus import MagiBus
+from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
 PROPUESTA = "Aquí tienes el juego:\n\n```python\nprint('hola')\n```\n"
 
@@ -64,7 +64,7 @@ async def test_construye_cuando_el_encargo_pide_artefacto(monkeypatch):
         llamadas.append({"nombre": nombre, "contenido": contenido})
         return _Informe()
 
-    import vmagi.modules.studio.entrega as entrega_mod
+    import venim.modules.studio.entrega as entrega_mod
     monkeypatch.setattr(entrega_mod, "fabricar_y_entregar", fabrica_falsa)
 
     state = {"command": "crea un ping pong en un exe portable",
@@ -81,7 +81,7 @@ async def test_no_construye_una_pregunta(monkeypatch):
     """Preguntar cómo se hace algo no es pedirlo, y fabricar sería peor."""
     swarm = _swarm()
     llamado = []
-    import vmagi.modules.studio.entrega as entrega_mod
+    import venim.modules.studio.entrega as entrega_mod
     async def _no_deberia_llamarse(*a, **k):
         llamado.append(1)
 
@@ -97,7 +97,7 @@ async def test_no_construye_una_pregunta(monkeypatch):
 async def test_no_construye_sin_codigo(monkeypatch):
     swarm = _swarm()
     llamado = []
-    import vmagi.modules.studio.entrega as entrega_mod
+    import venim.modules.studio.entrega as entrega_mod
     async def _no_deberia_llamarse(*a, **k):
         llamado.append(1)
 
@@ -114,7 +114,7 @@ async def test_no_se_interpone_si_el_agente_ya_entrego(monkeypatch):
     """Si el agente lo construyó por su cuenta —lo deseable— aquí no se toca."""
     swarm = _swarm()
     llamado = []
-    import vmagi.modules.studio.entrega as entrega_mod
+    import venim.modules.studio.entrega as entrega_mod
     async def _no_deberia_llamarse(*a, **k):
         llamado.append(1)
 

@@ -9,10 +9,10 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.tools.builtin import build_registry
-from vmagi.core.tools.manifiesto import ALIAS, hardware_info
+from venim.core.tools.builtin import build_registry
+from venim.core.tools.manifiesto import ALIAS, hardware_info
 
-#: Exactamente los nombres que el README de VeniceMAGI enumera en
+#: Exactamente los nombres que el README de Venim enumera en
 #: «IDE real». Si el README cambia, este tuple cambia con el.
 PROMETIDAS = ("read_file", "list_dir", "patch_file", "delete_file",
               "hardware_info", "run_python", "shell")

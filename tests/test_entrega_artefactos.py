@@ -11,8 +11,8 @@ mainloop. Se verifica DE VERDAD con el guardián GUI (30 frames y rc=0) y se
 entrega como .py — exactamente el flujo que quemó ~50 llamadas HTTP sin
 entregar nada.
 
-El conftest global ya redirige VENICEMAGI_DATA_DIR y VENICEMAGI_WORKSPACE a un tmp y
-limpia los caches de `paths`; aquí solo se aísla el Escritorio (VENICEMAGI_DESKTOP),
+El conftest global ya redirige VENIM_DATA_DIR y VENIM_WORKSPACE a un tmp y
+limpia los caches de `paths`; aquí solo se aísla el Escritorio (VENIM_DESKTOP),
 que el conftest no toca.
 """
 from __future__ import annotations
@@ -23,10 +23,10 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.core.bus import MagiBus
-from vmagi.core.paths import workspace_dir
-from vmagi.modules.studio import entrega
-from vmagi.modules.studio.packager import PackagerResult
+from venim.core.bus import MagiBus
+from venim.core.paths import workspace_dir
+from venim.modules.studio import entrega
+from venim.modules.studio.packager import PackagerResult
 
 TETRIS_PY = """
 import pygame
@@ -61,7 +61,7 @@ SIN_CODIGO = "La propuesta final no trae bloques de código. Solo texto."
 @pytest.fixture
 def escritorio_tmp(tmp_path, monkeypatch):
     """Escritorio aislado: nada de este test toca el Escritorio real."""
-    monkeypatch.setenv("VENICEMAGI_DESKTOP", str(tmp_path / "Escritorio"))
+    monkeypatch.setenv("VENIM_DESKTOP", str(tmp_path / "Escritorio"))
     return tmp_path / "Escritorio"
 
 
@@ -207,8 +207,8 @@ def test_sin_bloques_de_codigo_no_hay_entrega(escritorio_tmp, bus_evento):
 
 def test_la_tool_se_registra_en_la_fabrica():
     """`entregar_artefacto` es alcanzable desde el enjambre (grafo de wiring)."""
-    from vmagi.core.tools.registry import ToolRegistry
-    from vmagi.modules.studio.tools import register_studio_tools
+    from venim.core.tools.registry import ToolRegistry
+    from venim.modules.studio.tools import register_studio_tools
 
     reg = ToolRegistry()
     register_studio_tools(reg)

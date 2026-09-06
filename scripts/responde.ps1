@@ -1,7 +1,9 @@
-$lock = "C:\Users\D\magi-port\VeniceMAGI\.git\index.lock"
-if (Test-Path $lock) {
-  Remove-Item $lock -Force
-  Write-Host "index.lock eliminado"
-} else { Write-Host "no habia index.lock" }
-Set-Location "C:\Users\D\magi-port\VeniceMAGI"
-git status --porcelain | Measure-Object | ForEach-Object { Write-Host "$($_.Count) ficheros con cambios" }
+$raiz = "C:\Users\D\magi-port\VeniceMAGI"
+$log = Join-Path $raiz "build\compilacion.log"
+New-Item -ItemType Directory -Force -Path (Split-Path $log) | Out-Null
+Remove-Item $log -ErrorAction SilentlyContinue
+Start-Process powershell.exe -WindowStyle Hidden -RedirectStandardOutput $log `
+  -RedirectStandardError (Join-Path $raiz "build\compilacion.err") `
+  -ArgumentList @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+                  (Join-Path $raiz "scripts\compilar_local.ps1"))
+Write-Host "compilacion de Venim lanzada; registro en build\compilacion.log"

@@ -5,8 +5,8 @@ import asyncio
 
 import pytest
 
-from vmagi.core.bus import BusEvent, MagiBus
-from vmagi.core.eval.bench import (
+from venim.core.bus import BusEvent, MagiBus
+from venim.core.eval.bench import (
     BenchResult,
     EvalBench,
     EvalTask,
@@ -14,15 +14,15 @@ from vmagi.core.eval.bench import (
     compare,
     default_bench,
 )
-from vmagi.core.obs.metrics import (
+from venim.core.obs.metrics import (
     Alert,
     Counter,
     MetricsCollector,
     Series,
     canary_probe,
 )
-from vmagi.core.providers.backends.echo import EchoProvider
-from vmagi.core.providers.registry import ProviderRegistry
+from venim.core.providers.backends.echo import EchoProvider
+from venim.core.providers.registry import ProviderRegistry
 
 # ------------------------------------------------- §3.4 series y contadores
 
@@ -173,7 +173,7 @@ async def test_canary_passes_a_correct_provider():
 @pytest.mark.asyncio
 async def test_registry_feeds_the_collector():
     """El registro debe alimentar las métricas, no solo su propio breaker."""
-    from vmagi.core.providers.base import CompletionRequest, Message
+    from venim.core.providers.base import CompletionRequest, Message
 
     m = MetricsCollector()
     reg = ProviderRegistry(metrics=m)
@@ -314,9 +314,9 @@ def test_phase3_is_wired():
     """La comprobación que me ha faltado tres veces."""
     from pathlib import Path
     root = Path(__file__).resolve().parents[1]
-    kernel = (root / "vmagi/core/kernel.py").read_text(encoding="utf-8")
-    naoko = (root / "vmagi/modules/infrastructure/naoko.py").read_text(encoding="utf-8")
-    registry = (root / "vmagi/core/providers/registry.py").read_text(encoding="utf-8")
+    kernel = (root / "venim/core/kernel.py").read_text(encoding="utf-8")
+    naoko = (root / "venim/modules/infrastructure/naoko.py").read_text(encoding="utf-8")
+    registry = (root / "venim/core/providers/registry.py").read_text(encoding="utf-8")
 
     assert "MetricsCollector()" in kernel, "§3.4 colector sin crear"
     assert "metrics.attach(" in kernel, "§3.4 colector sin enganchar al bus"

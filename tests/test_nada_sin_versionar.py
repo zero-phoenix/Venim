@@ -5,7 +5,7 @@ EL FALLO QUE OBLIGÓ A ESCRIBIR ESTO
 ===================================
 30 de agosto de 2026, release v5.11.0 de MAGI. La suite local: verde.
 El CI: `ImportError: cannot import name 'bitacora' from
-'vmagi.modules.swarm'`.
+'venim.modules.swarm'`.
 
 `bitacora.py` existía en el disco de la máquina de desarrollo — la sesión
 que la escribió jamás la committeó — y su test, también huérfano, pasaba
@@ -14,7 +14,7 @@ suite local SIEMPRE, esté en git o no: los dos viven en el mismo disco.
 
 El detector de huérfanos existente no podía cazarla porque comprueba que
 el código esté CONECTADO, no que esté VERSIONADO. Esta es la otra mitad:
-un `.py` bajo `vmagi/` que git no conoce es un módulo que solo existe en
+un `.py` bajo `venim/` que git no conoce es un módulo que solo existe en
 una máquina, y todo test que lo importe está probando un fantasma.
 
 QUÉ HACE
@@ -54,7 +54,7 @@ def test_todo_py_de_magi_y_tests_esta_versionado():
                        check=True).stdout.split())
 
     presentes = {str(p.relative_to(RAIZ)).replace("\\", "/")
-                 for p in RAIZ.glob("vmagi/**/*.py")}
+                 for p in RAIZ.glob("venim/**/*.py")}
     presentes |= {str(p.relative_to(RAIZ)).replace("\\", "/")
                   for p in RAIZ.glob("tests/*.py")}
 

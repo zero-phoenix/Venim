@@ -23,7 +23,7 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.modules.gui import mapa as M
+from venim.modules.gui import mapa as M
 
 #: Techos actuales, medidos el 31-ago-2026. Bajan cuando alguien conecte algo;
 #: subirlos exige justificarlo en el diff, que es todo el propósito.
@@ -71,8 +71,8 @@ def test_los_comandos_conocidos_se_reconocen_como_conectados(m):
 
 
 def test_las_claves_de_localstorage_no_son_topics(m):
-    """`vmagi.engine` es un getItem/setItem, no un topic del bus."""
-    assert "vmagi.engine" not in m.interfaz
+    """`venim.engine` es un getItem/setItem, no un topic del bus."""
+    assert "venim.engine" not in m.interfaz
 
 
 def test_las_refs_de_react_no_son_topics(m):
@@ -80,7 +80,7 @@ def test_las_refs_de_react_no_son_topics(m):
 
 
 @pytest.mark.parametrize("basura", [
-    "App.tsx", "vmagi.core.bus", "process.env", "ws.current",
+    "App.tsx", "venim.core.bus", "process.env", "ws.current",
     "algo.muy.largo.de.mas",
 ])
 def test_el_filtro_de_ruido_hace_su_trabajo(basura):
@@ -107,7 +107,7 @@ def test_el_documento_esta_al_dia(m):
     esperado = f"| Comandos conectados (UI → handler) | {len(m.comandos_conectados)} |"
     assert esperado in texto, (
         "el mapa del repo está desfasado: regenéralo con "
-        "`python -m vmagi.modules.gui.mapa > docs/MAPA-INTERFAZ.md`")
+        "`python -m venim.modules.gui.mapa > docs/MAPA-INTERFAZ.md`")
 
 
 def test_sin_repo_no_revienta(tmp_path):

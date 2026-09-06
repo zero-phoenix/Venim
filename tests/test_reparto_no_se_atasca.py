@@ -31,8 +31,8 @@ import time
 
 import pytest
 
-from vmagi.core.bus import BusEvent, MagiBus
-from vmagi.core.rpc.ws_server import WSServer
+from venim.core.bus import BusEvent, MagiBus
+from venim.core.rpc.ws_server import WSServer
 
 
 class ClienteColgado:

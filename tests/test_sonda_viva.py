@@ -1,7 +1,7 @@
 """La sonda no puede volver a morir en silencio (regresión del 2026-08-16).
 
 `Kernel._refrescar_sonda` importaba `get_registry` de
-`vmagi.core.providers.registry`, pero vive en `vmagi.core.providers.cloud`.
+`venim.core.providers.registry`, pero vive en `venim.core.providers.cloud`.
 El `except Exception` protector se tragaba el ImportError y la sonda NO se
 ejecutaba nunca: el reparto del enjambre obedecía al catálogo escrito a mano
 para siempre, y ningún test lo notó porque la sonda «no falla, no está».
@@ -16,7 +16,7 @@ import importlib
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]
-KERNEL = RAIZ / "vmagi" / "core" / "kernel.py"
+KERNEL = RAIZ / "venim" / "core" / "kernel.py"
 
 
 def _imports_del_fuente():
@@ -58,8 +58,8 @@ def test_la_sonda_esta_cableada_al_arranque():
 
 def test_get_registry_vive_donde_se_importa():
     """El bug concreto: importarlo del módulo equivocado no da error visible."""
-    import vmagi.core.providers.registry as reg
-    from vmagi.core.providers.cloud import get_registry  # noqa: F401
+    import venim.core.providers.registry as reg
+    from venim.core.providers.cloud import get_registry  # noqa: F401
 
     assert not hasattr(reg, "get_registry"), (
         "get_registry apareció en providers.registry: si se movió de sitio, "

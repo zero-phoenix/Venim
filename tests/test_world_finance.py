@@ -8,7 +8,7 @@ números absurdos presentados con cara de tasación.
 """
 import pytest
 
-from vmagi.modules.world.finance import (
+from venim.modules.world.finance import (
     DCFAssumptions,
     FinanceError,
     cash_conversion,
@@ -21,7 +21,7 @@ from vmagi.modules.world.finance import (
     quality_checklist,
     roic,
 )
-from vmagi.modules.world.thesis import ThesisError, ThesisLog
+from venim.modules.world.thesis import ThesisError, ThesisLog
 
 # ------------------------------------------------- ganancias del propietario
 

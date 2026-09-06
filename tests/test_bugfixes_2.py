@@ -11,8 +11,8 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.core.bus import BusEvent, MagiBus
-from vmagi.core.store.state import TaskState, TaskStore
+from venim.core.bus import BusEvent, MagiBus
+from venim.core.store.state import TaskState, TaskStore
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -39,7 +39,7 @@ def test_bus_subscribe_works_without_an_event_loop():
 @pytest.mark.filterwarnings("ignore::pytest.PytestUnraisableExceptionWarning")
 async def test_kernel_constructs_outside_the_loop():
     """main.py construye el Kernel fuera del bucle asyncio."""
-    from vmagi.core.kernel import Kernel
+    from venim.core.kernel import Kernel
     k = Kernel(host="127.0.0.1", port=20993)
     try:
         assert k.metrics is not None
@@ -180,8 +180,8 @@ def test_schema_migration_adds_missing_columns(tmp_path):
 
 @pytest.mark.asyncio
 async def test_orchestrator_restores_the_full_route(tmp_path):
-    from vmagi.core.blackboard import Blackboard
-    from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+    from venim.core.blackboard import Blackboard
+    from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
     store = TaskStore(tmp_path / "o.db")
     store.save(TaskState("t", "cmd", status="WAITING_USER_APPROVAL",
@@ -198,7 +198,7 @@ async def test_orchestrator_restores_the_full_route(tmp_path):
 
 def _emitted_topics() -> set[str]:
     src = "\n".join(f.read_text(encoding="utf-8")
-                    for f in (ROOT / "vmagi").rglob("*.py")
+                    for f in (ROOT / "venim").rglob("*.py")
                     if "_attic" not in f.parts)
     # Los topics se emiten de dos formas: BusEvent(topic=...) y el helper
     # emit("...") del bucle de agentes. Contar solo la primera daba un falso
@@ -209,7 +209,7 @@ def _emitted_topics() -> set[str]:
 
 
 def _handled_topics() -> set[str]:
-    ts = (ROOT / "vmagi-gui/src/useMagiSocket.ts").read_text(encoding="utf-8")
+    ts = (ROOT / "venim-gui/src/useMagiSocket.ts").read_text(encoding="utf-8")
     return set(re.findall(r"topic === '([a-zA-Z_.]+)'", ts))
 
 
@@ -234,8 +234,8 @@ def test_user_facing_events_reach_the_interface():
 
 def test_tool_use_payload_matches_the_store_contract():
     """agent_loop emite `calls`; el store espera `calls`."""
-    loop_src = (ROOT / "vmagi/core/agent_loop.py").read_text(encoding="utf-8")
-    store_src = (ROOT / "vmagi-gui/src/store.ts").read_text(encoding="utf-8")
+    loop_src = (ROOT / "venim/core/agent_loop.py").read_text(encoding="utf-8")
+    store_src = (ROOT / "venim-gui/src/store.ts").read_text(encoding="utf-8")
     assert '"calls": [{"tool": c.name' in loop_src
     assert "calls: any[]" in store_src
     assert '"results": [{"tool": r.tool' in loop_src
@@ -246,7 +246,7 @@ def test_tool_use_payload_matches_the_store_contract():
 
 @pytest.mark.asyncio
 async def test_alerting_does_not_leak_tasks():
-    from vmagi.core.obs.metrics import MetricsCollector
+    from venim.core.obs.metrics import MetricsCollector
 
     bus = MagiBus()
     m = MetricsCollector(bus=bus, latency_p95_warn_ms=100, min_samples=2)

@@ -5,7 +5,7 @@ import json
 
 import pytest
 
-from vmagi.modules.infrastructure.naoko_memory import (
+from venim.modules.infrastructure.naoko_memory import (
     EternalMemory,
     SystemIntrospector,
 )
@@ -54,7 +54,7 @@ def test_una_identidad_vieja_sin_editar_se_actualiza(tmp_path):
     corrección de que hablara de «el soporte de Melchior»—, la instalación
     que ya existía se quedó con la versión vieja.
     """
-    from vmagi.modules.infrastructure import naoko_memory as nm
+    from venim.modules.infrastructure import naoko_memory as nm
 
     root = tmp_path / "naoko"
     root.mkdir(parents=True)
@@ -66,7 +66,7 @@ def test_una_identidad_vieja_sin_editar_se_actualiza(tmp_path):
 
 
 def test_una_identidad_editada_por_el_usuario_NO_se_toca(tmp_path):
-    from vmagi.modules.infrastructure import naoko_memory as nm
+    from venim.modules.infrastructure import naoko_memory as nm
 
     root = tmp_path / "naoko"
     root.mkdir(parents=True)
@@ -81,7 +81,7 @@ def test_una_identidad_editada_por_el_usuario_NO_se_toca(tmp_path):
 def test_una_invariante_nueva_llega_a_una_memoria_existente(tmp_path):
     import json as _json
 
-    from vmagi.modules.infrastructure import naoko_memory as nm
+    from venim.modules.infrastructure import naoko_memory as nm
 
     root = tmp_path / "naoko"
     root.mkdir(parents=True)
@@ -94,7 +94,7 @@ def test_una_invariante_nueva_llega_a_una_memoria_existente(tmp_path):
 
 
 def test_una_leccion_nueva_llega_a_una_memoria_existente(tmp_path):
-    from vmagi.modules.infrastructure import naoko_memory as nm
+    from venim.modules.infrastructure import naoko_memory as nm
 
     root = tmp_path / "naoko"
     root.mkdir(parents=True)
@@ -112,7 +112,7 @@ def test_la_identidad_nombra_a_los_tres_nodos_del_enjambre():
     servidores saturados y del soporte de Melchior, como si fuera un producto
     de otra empresa. Melchior es un nodo de este mismo sistema.
     """
-    from vmagi.modules.infrastructure import naoko_memory as nm
+    from venim.modules.infrastructure import naoko_memory as nm
     for nodo in ("MELCHIOR", "BALTHASAR", "CASPER"):
         assert nodo in nm.IDENTITY_SEED
     assert "terceros" in nm.IDENTITY_SEED
@@ -156,7 +156,7 @@ def test_el_brief_lleva_identidad_invariantes_y_lecciones(mem):
 # ------------------------------------------------------------- invariantes
 
 def test_la_sonda_de_navegador_detecta_el_cortafuegos_puesto():
-    from vmagi.core import no_browser
+    from venim.core import no_browser
     no_browser.install()
     intro = SystemIntrospector()
     ok, detalle = intro._sonda_no_browser()

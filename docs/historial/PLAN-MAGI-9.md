@@ -15,7 +15,7 @@ Antes de añadir nada, hay que decir qué hay realmente. Esto no es crítica: la
 El README y el documento de arquitectura declaran que cada nodo usa un proveedor distinto (regla de diversidad, §I.3.2). El código dice otra cosa:
 
 ```python
-# vmagi/core/providers/cloud.py:122-123
+# venim/core/providers/cloud.py:122-123
 if model in ["claude-3.5-sonnet", "qwen-2.5", "deepseek"]:
     model = "gpt-4o"
 ```
@@ -28,15 +28,15 @@ Además la GUI muestra `provider: "G4F_Auto_Router(gpt-4o) (deepseek)"` — el n
 
 ## 0.2 El segundo hallazgo: gran parte del sistema es andamiaje no conectado
 
-Inventario real de `vmagi/`:
+Inventario real de `venim/`:
 
 | Categoría | Cuenta |
 |---|---|
-| Ficheros `.py` en `vmagi/` | 132 (106 en `modules/`) |
+| Ficheros `.py` en `venim/` | 132 (106 en `modules/`) |
 | Módulos importados desde algún sitio alcanzable | **~25** |
 | Ficheros de configuración con 0 bytes | **8** (`providers.yaml`, `safety.yaml`, `machine.yaml`, `web_allowlist.yaml`, `policy/global.yaml`, `formats/registry.json`, `types/generated.ts`, `requirements.lock`) |
 
-Y de los que sí se importan, muchos se **instancian y nunca se llaman**. En `vmagi/main.py:73-105` se construyen `MagiHive`, `SemanticRAG`, `HierarchicalMemory`, `SymbolicVerifier`, `PromptCompiler`, `EvolverAgent`, `CognitiveCore`, `QuantumOracle`, `HyperdimensionalMemory`, `SkinMembrane` y `MarketDigitalTwin`. Conteo de sitios de llamada de cada uno:
+Y de los que sí se importan, muchos se **instancian y nunca se llaman**. En `venim/main.py:73-105` se construyen `MagiHive`, `SemanticRAG`, `HierarchicalMemory`, `SymbolicVerifier`, `PromptCompiler`, `EvolverAgent`, `CognitiveCore`, `QuantumOracle`, `HyperdimensionalMemory`, `SkinMembrane` y `MarketDigitalTwin`. Conteo de sitios de llamada de cada uno:
 
 ```
 self.semantic_rag.*        → 0        self.cognitive_core.*   → 0
@@ -57,13 +57,13 @@ MAGI 7.0 Predictive Twin: [CFD HFT, Montecarlo y Risk-Off Geopolítico]
 Y cuando se miran por dentro:
 
 ```python
-# vmagi/core/quantum_oracle.py — "resuelve problemas NP-duros"
+# venim/core/quantum_oracle.py — "resuelve problemas NP-duros"
 collapse_state = random.choice(["Alpha-Route", "Beta-Route", "Gamma-Route"])
 return collapse_state
 ```
 
 ```python
-# vmagi/modules/quant/simulator.py — el módulo financiero
+# venim/modules/quant/simulator.py — el módulo financiero
 risk_off_index = np.random.randint(60, 101)
 ...
 return {"confidence": f"{np.random.randint(80, 100)}%", "take_profit": "+5.2%"}
@@ -78,13 +78,13 @@ El módulo de mercado devuelve **números aleatorios** presentados como análisi
 No es hipotético. Está en el historial:
 
 ```
-1eb7e87  Auto-reparación Naoko: v1.0.0 - ... {'message': '[CRITICAL] vmagi.core.providers.cloud:
+1eb7e87  Auto-reparación Naoko: v1.0.0 - ... {'message': '[CRITICAL] venim.core.providers.cloud:
 ```
 
 Ese commit está **entre v5.0.24 y v5.0.25**. Naoko intentó bumpear la versión, el regex de `naoko.py:196` no encontró el patrón, cayó al default `new_tag = "v1.0.0"` (línea 191), y etiquetó una regresión de versión. Además dejó esto pegado al final del README, donde sigue hoy:
 
 ```markdown
-> **Actualización Autónoma (v1.0.0):** Auto-reparación aplicada por Naoko: {'message': '[CRITICAL] vmagi.core.providers.cloud:
+> **Actualización Autónoma (v1.0.0):** Auto-reparación aplicada por Naoko: {'message': '[CRITICAL] venim.core.providers.cloud:
 ```
 
 La línea está cortada a media frase porque se trunca `error_details[:50]`. Y `naoko.py:225` hace `readme_content += ...` en cada reparación: el README crece indefinidamente.
@@ -101,7 +101,7 @@ Es la pieza más peligrosa del sistema y también la de mayor potencial: la idea
 | 2 | Caché sin límite | `cloud.py:45,161` — `self._cache[key] = ...`, nunca se purga | Fuga de memoria proporcional al uso |
 | 3 | Código muerto de salud | `_is_alive`, `_mark_failure`, `provider_swarm`, `user_agents`, `proxies` — definidos, nunca invocados | El "cortacircuitos" y la "rotación de navegadores" del README no existen |
 | 4 | Heurística de censura frágil | `cloud.py:136-137` — dispara con `"no puedo"`, `"lo siento"` | Un texto técnico en español que contenga "no puedo garantizar X" activa el kill-switch global (`orchestrator.py:145`) |
-| 5 | Rutas absolutas | `D:/PROYECTOS/VeniceMAGI` en 8 sitios (`kernel.py` ×5, `orchestrator.py:52`, `ws_server.py:112`, `naoko.py:176,186`) | El `.exe` publicado en Releases no funciona en ninguna otra máquina |
+| 5 | Rutas absolutas | `D:/PROYECTOS/Venim` en 8 sitios (`kernel.py` ×5, `orchestrator.py:52`, `ws_server.py:112`, `naoko.py:176,186`) | El `.exe` publicado en Releases no funciona en ninguna otra máquina |
 | 6 | Estado del enjambre solo en RAM | `orchestrator.py:17` — `self.active_tasks = {}` | Cerrar la ventana pierde todo; la BD existe y no se usa para esto |
 | 7 | Debate estrictamente serial | `orchestrator.py:142,150,158` — tres `await` en cadena | Latencia = suma de las tres, siempre |
 | 8 | Rondas fijas | `orchestrator.py:174` — `current_round >= 3` | "¿Qué hora es?" pasa por tres rondas de debate popperiano |
@@ -175,13 +175,13 @@ Efecto secundario grande: con streaming, el debate serial deja de *sentirse* ser
 
 ## 1.3 Anclaje de rutas
 
-Un solo módulo `vmagi/core/paths.py`:
+Un solo módulo `venim/core/paths.py`:
 
 ```python
 def project_root() -> Path:      # sys._MEIPASS si PyInstaller, si no, raíz del repo
-def data_dir() -> Path:          # %LOCALAPPDATA%\VeniceMAGI  |  ~/.local/share/vmagi
+def data_dir() -> Path:          # %LOCALAPPDATA%\Venim  |  ~/.local/share/venim
 def workspace_dir() -> Path:     # donde MAGI construye cosas
-def db_path() -> Path:           # data_dir() / "venicemagi_brain.db"
+def db_path() -> Path:           # data_dir() / "venim_brain.db"
 ```
 
 Y sustituir las 8 apariciones de `D:/PROYECTOS/...`. Sin esto, el `.exe` de Releases solo funciona en tu máquina y en tu carpeta actual. Es un arreglo de una tarde que hace el producto distribuible.
@@ -214,9 +214,9 @@ Mínimo inicial: contrato de proveedores (con mock), matching de topics del bus,
 
 ## 1.6 Higiene del repositorio
 
-- `venicemagi_brain.db` (100 KB con tus datos) está **commiteado**. Sacar a `.gitignore`.
+- `venim_brain.db` (100 KB con tus datos) está **commiteado**. Sacar a `.gitignore`.
 - Reparar el README: quitar la línea rota de Naoko.
-- Los ~95 módulos no alcanzables: mover a `vmagi/_attic/` con un `README` que diga qué son. No borrar (son el mapa de tus intenciones), pero sacarlos del path de importación para que el árbol refleje lo que existe.
+- Los ~95 módulos no alcanzables: mover a `venim/_attic/` con un `README` que diga qué son. No borrar (son el mapa de tus intenciones), pero sacarlos del path de importación para que el árbol refleje lo que existe.
 
 ---
 
@@ -422,7 +422,7 @@ Tu máquina, tu autorización, sin capas de permiso. La única ingeniería que a
 
 ## 4.2 La capa que lo hace utilizable
 
-**Journal de escrituras.** Antes de tocar un fichero existente, copia a `data_dir()/journal/<ts>/`. Comando `vmagi undo` (y botón en la GUI) que revierte la última operación o toda una tarea. Coste: milisegundos. Beneficio: puedes decir "arregla todo el proyecto" sin pensarlo dos veces.
+**Journal de escrituras.** Antes de tocar un fichero existente, copia a `data_dir()/journal/<ts>/`. Comando `venim undo` (y botón en la GUI) que revierte la última operación o toda una tarea. Coste: milisegundos. Beneficio: puedes decir "arregla todo el proyecto" sin pensarlo dos veces.
 
 **Espacio de trabajo con git.** Todo proyecto que MAGI construye se inicializa como repo y se commitea automáticamente en cada hito. Volver atrás es `git checkout`, no arqueología.
 
@@ -687,7 +687,7 @@ El banner de v5.0.28 va en la dirección correcta. Falta lo que hace falta para 
 Cada fase deja el sistema mejor que la anterior. Nada de big bang.
 
 ### Fase 1 — Cimientos (semanas 1-2)
-Capa de proveedores real con diversidad de familias · timeouts · caché LRU · streaming extremo a extremo · `paths.py` y borrado de las 8 rutas absolutas · estado persistente · tests versionados en CI · `venicemagi_brain.db` fuera del repo · README reparado.
+Capa de proveedores real con diversidad de familias · timeouts · caché LRU · streaming extremo a extremo · `paths.py` y borrado de las 8 rutas absolutas · estado persistente · tests versionados en CI · `venim_brain.db` fuera del repo · README reparado.
 
 **Se nota en:** primer token en 2 s en vez de 60 · el `.exe` funciona en cualquier máquina · cerrar la app no pierde trabajo · Balthasar deja de sonar a Melchior.
 

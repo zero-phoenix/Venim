@@ -1,1 +1,0 @@
-# vmagi.core.obs package

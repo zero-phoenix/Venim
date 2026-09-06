@@ -16,14 +16,14 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.core.approval import (
+from venim.core.approval import (
     MAX_BYTES_PER_FILE,
     ApprovalRequest,
     FileChange,
     build_approval_request,
     changes_from_journal,
 )
-from vmagi.core.tools.journal import WriteJournal
+from venim.core.tools.journal import WriteJournal
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -240,7 +240,7 @@ def test_el_payload_coincide_con_el_tipo_del_frontend():
     pintado en la interfaz, que es exactamente cómo se llegó a un panel de
     aprobación que no enseñaba el cambio.
     """
-    ts = (ROOT / "vmagi-gui/src/lib/approval.ts").read_text(encoding="utf-8")
+    ts = (ROOT / "venim-gui/src/lib/approval.ts").read_text(encoding="utf-8")
 
     def campos(interfaz: str) -> set[str]:
         cuerpo = re.search(rf"interface {interfaz} \{{(.*?)\n\}}", ts, re.S)
@@ -257,19 +257,19 @@ def test_el_payload_coincide_con_el_tipo_del_frontend():
 
 def test_el_orquestador_publica_el_evento():
     """
-    Cableado: sin la llamada, `vmagi/core/approval.py` sería andamiaje muy bien
+    Cableado: sin la llamada, `venim/core/approval.py` sería andamiaje muy bien
     probado — el fallo que ya cometí tres veces en esta reconstrucción.
     """
-    src = (ROOT / "vmagi/modules/swarm/orchestrator.py").read_text(encoding="utf-8")
+    src = (ROOT / "venim/modules/swarm/orchestrator.py").read_text(encoding="utf-8")
     assert "_publish_approval" in src
     assert "swarm.approval_required" in src
 
 
 def test_el_frontend_escucha_el_evento():
-    socket = (ROOT / "vmagi-gui/src/useMagiSocket.ts").read_text(encoding="utf-8")
+    socket = (ROOT / "venim-gui/src/useMagiSocket.ts").read_text(encoding="utf-8")
     assert "swarm.approval_required" in socket, \
         "el backend publica el evento y la interfaz no lo escucha"
-    app = (ROOT / "vmagi-gui/src/App.tsx").read_text(encoding="utf-8")
+    app = (ROOT / "venim-gui/src/App.tsx").read_text(encoding="utf-8")
     # Sin quitar comentarios, este test lo disparaba el propio comentario que
     # explica el fallo corregido. Un test que se autodenuncia obliga a borrar
     # la explicación para ponerlo en verde, que es exactamente al revés.
@@ -289,7 +289,7 @@ def test_la_interfaz_tiene_tests_y_estan_en_ci():
     de aprobación llevaba quién sabe cuánto sin enseñar nada y nada lo cazó,
     porque nada lo miraba.
     """
-    gui = ROOT / "vmagi-gui"
+    gui = ROOT / "venim-gui"
     tests = list((gui / "src").rglob("*.test.ts")) + \
         list((gui / "src").rglob("*.test.tsx"))
     assert tests, "la interfaz no tiene ni un test"
@@ -311,12 +311,12 @@ def test_app_tsx_no_vuelve_a_crecer_sin_limite():
     Si esto salta, el arreglo es EXTRAER un panel a `components/`, no subir
     el número.
     """
-    app = ROOT / "vmagi-gui/src/App.tsx"
+    app = ROOT / "venim-gui/src/App.tsx"
     lineas = len(app.read_text(encoding="utf-8").splitlines())
     assert lineas < 900, (
         f"App.tsx tiene {lineas} líneas. Extrae un panel a components/ "
         f"en lugar de subir este límite")
-    assert (ROOT / "vmagi-gui/src/components/AgentMessageCard.tsx").exists()
+    assert (ROOT / "venim-gui/src/components/AgentMessageCard.tsx").exists()
 
 
 def test_el_diff_no_vuelve_al_algoritmo_roto():
@@ -325,10 +325,10 @@ def test_el_diff_no_vuelve_al_algoritmo_roto():
     movidas y no distingue las repetidas. Que no vuelva.
     """
     visor = _sin_comentarios(
-        (ROOT / "vmagi-gui/src/DiffViewer.tsx").read_text(encoding="utf-8"))
+        (ROOT / "venim-gui/src/DiffViewer.tsx").read_text(encoding="utf-8"))
     assert "oldLines.includes" not in visor
     assert "diffLines" in visor, "el visor no usa el diff por LCS"
-    diff = (ROOT / "vmagi-gui/src/lib/diff.ts").read_text(encoding="utf-8")
+    diff = (ROOT / "venim-gui/src/lib/diff.ts").read_text(encoding="utf-8")
     assert "borrada" in diff, "el diff no contempla borrados"
 
 

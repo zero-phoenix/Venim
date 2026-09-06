@@ -12,8 +12,8 @@ import asyncio
 
 import pytest
 
-from vmagi.core.bus import BusEvent, MagiBus
-from vmagi.modules.infrastructure.ritsuko import (
+from venim.core.bus import BusEvent, MagiBus
+from venim.modules.infrastructure.ritsuko import (
     FAMILIAS_AUDITADAS,
     FAMILIAS_RITSUKO,
     MODELOS_RITSUKO,
@@ -38,7 +38,7 @@ def test_ritsuko_no_comparte_familia_con_nadie_del_sistema():
     caido. Este test es el que impide que alguien "arregle" a Ritsuko
     poniendole el modelo que mejor va hoy.
     """
-    from vmagi.core.providers.backends.g4f_backend import (
+    from venim.core.providers.backends.g4f_backend import (
         DEFAULT_SWARM_FAMILIES,
         FAMILY_SPECS,
     )

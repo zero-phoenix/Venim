@@ -5,7 +5,7 @@
 # que antes; ahora vive en un lugar y tiene una sola fuente de verdad.
 
 [project]
-name = "venicemagi"
+name = "venim"
 version = "2.2.0"
 description = "Variante MAGI cloud-first gratuita: enjambre dialéctico sobre proveedores guest sin key ni login, con IDE real sobre tu máquina."
 requires-python = ">=3.10"
@@ -72,8 +72,8 @@ filterwarnings = [
 [tool.ruff]
 line-length = 100
 extend-exclude = [
-    "vmagi/_attic",      # andamiaje retirado: se conserva como mapa, no se mantiene
-    "vmagi-gui",         # frontend TypeScript/Tauri, no es código Python
+    "venim/_attic",      # andamiaje retirado: se conserva como mapa, no se mantiene
+    "venim-gui",         # frontend TypeScript/Tauri, no es código Python
     "build",
     "dist",
 ]
@@ -103,7 +103,7 @@ ignore = ["E501"]
 # main.py configura la consola ANTES de importar webview y la GUI: si no, el
 # primer print en cp1252 tira toda la consola en Windows. Los imports por
 # debajo de esa llamada son deliberados.
-"vmagi/main.py" = ["E402"]
+"venim/main.py" = ["E402"]
 
 # NOTA: la config de pyright sigue en pyrightconfig.json. pyright no está en
 # requirements (es opcional, para desarrollo) y no podemos verificar localmente

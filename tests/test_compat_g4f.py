@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.providers import compat_g4f
+from venim.core.providers import compat_g4f
 
 g4f = pytest.importorskip("g4f", reason="el parche solo aplica si g4f está")
 

@@ -19,8 +19,8 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.modules.studio import corpus as C
-from vmagi.modules.studio import estilo as E
+from venim.modules.studio import corpus as C
+from venim.modules.studio import estilo as E
 
 sin_ffmpeg = pytest.mark.skipif(
     not (shutil.which("ffmpeg") and shutil.which("ffprobe")),
@@ -308,8 +308,8 @@ async def test_el_tope_se_respeta_y_se_avisa(del_genero, tmp_path):
 # ================================================= alcanzable
 
 def test_el_minero_esta_en_el_registro_del_enjambre():
-    from vmagi.core.tools.registry import ToolRegistry
-    from vmagi.modules.studio.tools import register_studio_tools
+    from venim.core.tools.registry import ToolRegistry
+    from venim.modules.studio.tools import register_studio_tools
 
     reg = register_studio_tools(ToolRegistry())
     t = reg.get("minar_corpus")

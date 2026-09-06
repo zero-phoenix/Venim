@@ -1,7 +1,7 @@
 # Prueba C — «un ping pong a color de 16 bits en un .exe único portable»
 
 **Fecha:** 2026-08-20 · Kernel real, proveedores reales, motor `deep`, 2 rondas,
-**con Naoko y Ritsuko vivas** · Evidencia: `docs/comparativa/prueba-C-vmagi.json`
+**con Naoko y Ritsuko vivas** · Evidencia: `docs/comparativa/prueba-C-venim.json`
 
 Esta prueba mira tres cosas a la vez: qué entrega el enjambre, cómo se comporta
 Naoko mientras, y si Ritsuko sabe leer lo que acaba de pasar.
@@ -79,7 +79,7 @@ Lo que funcionó, y es lo que había que probar:
 - Recibió la petición por su canal propio, no por el de Naoko.
 - Reunió evidencia del bus sin preguntarle nada a nadie.
 - **Escribió el informe en disco**, descargable:
-  `…\VeniceMAGI\informes-ritsuko\informe-20260820-020317.md`
+  `…\Venim\informes-ritsuko\informe-20260820-020317.md`
 
 Lo que falló:
 

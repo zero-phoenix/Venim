@@ -7,19 +7,19 @@ import os
 
 import pytest
 
-from vmagi.core.blackboard import Blackboard
-from vmagi.core.bus import BusEvent, MagiBus
-from vmagi.core.providers.backends.echo import EchoProvider
-from vmagi.core.providers.cloud import FreeCloudLLM, set_registry
-from vmagi.core.providers.registry import ProviderRegistry
-from vmagi.core.store.state import TaskStore
-from vmagi.core.verification import (
+from venim.core.blackboard import Blackboard
+from venim.core.bus import BusEvent, MagiBus
+from venim.core.providers.backends.echo import EchoProvider
+from venim.core.providers.cloud import FreeCloudLLM, set_registry
+from venim.core.providers.registry import ProviderRegistry
+from venim.core.store.state import TaskStore
+from venim.core.verification import (
     ProposalVerifier,
     VerificationReport,
     extract_blocks,
 )
-from vmagi.modules.memory.episodic import EpisodicMemory
-from vmagi.modules.swarm.parallel import (
+from venim.modules.memory.episodic import EpisodicMemory
+from venim.modules.swarm.parallel import (
     CRITIQUE_AXES,
     Proposal,
     critique_multi_axis,
@@ -122,7 +122,7 @@ async def agents():
         reg.register(EchoProvider(f"g4f-{fam}", fam, canned=f"texto de {fam}"))
     await reg.probe_all()
     set_registry(reg)
-    from vmagi.modules.swarm.agents import BalthasarAgent, MelchiorAgent
+    from venim.modules.swarm.agents import BalthasarAgent, MelchiorAgent
     bus = MagiBus()
     m = MelchiorAgent(Blackboard(), bus)
     b = BalthasarAgent(Blackboard(), bus)
@@ -271,7 +271,7 @@ def test_summary_skips_headers_and_fences():
 
 @pytest.mark.asyncio
 async def test_orchestrator_exposes_memory_per_task(tmp_path):
-    from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+    from venim.modules.swarm.orchestrator import SwarmOrchestrator
     reg = ProviderRegistry()
     reg.register(EchoProvider("g4f-deepseek", "deepseek", canned="ok"))
     await reg.probe_all()
@@ -293,7 +293,7 @@ def test_phase2_pieces_are_actually_wired():
     """
     from pathlib import Path
     src = (Path(__file__).resolve().parents[1]
-           / "vmagi/modules/swarm/orchestrator.py").read_text(encoding="utf-8")
+           / "venim/modules/swarm/orchestrator.py").read_text(encoding="utf-8")
     assert "generate_variants(" in src, "§2.4 variantes sin conectar"
     assert "critique_multi_axis(" in src, "§2.4 crítica multi-eje sin conectar"
     assert "ProposalVerifier(" in src, "§2.5 verificación sin conectar"

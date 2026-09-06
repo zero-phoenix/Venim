@@ -27,8 +27,8 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from vmagi.core.providers import sonda
-from vmagi.core.store.state import TaskStore
+from venim.core.providers import sonda
+from venim.core.store.state import TaskStore
 
 
 @pytest.fixture()

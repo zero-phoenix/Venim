@@ -11,13 +11,13 @@ import asyncio
 
 import pytest
 
-from vmagi.core.blackboard import Blackboard
-from vmagi.core.bus import BusEvent, MagiBus
-from vmagi.core.providers.backends.echo import EchoProvider
-from vmagi.core.providers.cloud import FreeCloudLLM, set_registry
-from vmagi.core.providers.registry import ProviderRegistry
-from vmagi.core.store.state import TaskState, TaskStore
-from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+from venim.core.blackboard import Blackboard
+from venim.core.bus import BusEvent, MagiBus
+from venim.core.providers.backends.echo import EchoProvider
+from venim.core.providers.cloud import FreeCloudLLM, set_registry
+from venim.core.providers.registry import ProviderRegistry
+from venim.core.store.state import TaskState, TaskStore
+from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
 
 @pytest.fixture
@@ -167,7 +167,7 @@ async def test_agent_emits_deltas_before_the_full_answer(tmp_path):
         bus.subscribe("agent.delta", on_delta)
         bus.subscribe("agent.delta_end", on_end)
 
-        from vmagi.modules.swarm.agents import MelchiorAgent
+        from venim.modules.swarm.agents import MelchiorAgent
         agent = MelchiorAgent(Blackboard(), bus)
         agent.llm = FreeCloudLLM(reg)
         await agent.generate_proposal("t-stream", "algo", 1)
@@ -205,7 +205,7 @@ async def test_streaming_falls_back_when_provider_breaks():
 
         bus.subscribe("AGENT_POST", on_post)
 
-        from vmagi.modules.swarm.agents import MelchiorAgent
+        from venim.modules.swarm.agents import MelchiorAgent
         agent = MelchiorAgent(Blackboard(), bus)
         agent.llm = FreeCloudLLM(reg)
         result = await agent.generate_proposal("t-fb", "algo", 1)
@@ -237,7 +237,7 @@ async def test_deltas_reassemble_into_the_final_text():
         bus.subscribe("agent.delta", on_delta)
         bus.subscribe("AGENT_POST", on_post)
 
-        from vmagi.modules.swarm.agents import CasperAgent
+        from venim.modules.swarm.agents import CasperAgent
         agent = CasperAgent(Blackboard(), bus)
         agent.llm = FreeCloudLLM(reg)
         await agent.arbitrate("t-r", {"content": "p"}, {"content": "c"}, 1)

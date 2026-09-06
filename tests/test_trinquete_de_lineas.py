@@ -1,5 +1,5 @@
 """
-Trinquete de tamaño para `vmagi/`: no baja solo, pero no sube.
+Trinquete de tamaño para `venim/`: no baja solo, pero no sube.
 
 POR QUÉ AHORA
 =============
@@ -66,7 +66,7 @@ TECHOS: dict[str, int] = {
     # ciego al enjambre y llamarlo mejora. El código nuevo son dos líneas; el
     # resto es el porqué, y ahí es exactamente donde tiene que estar: en el
     # sitio donde alguien decidirá algún día «con un banco basta».
-    "vmagi/modules/infrastructure/naoko.py": 1640,
+    "venim/modules/infrastructure/naoko.py": 1640,
     # +45 en la ejecución del megaplan: la guarda C1 —que el árbitro no firme
     # lo que no ha leído— y el mensaje de entrega sin arbitraje (C2), que trae
     # la tesis y la crítica en vez de tirarlas. Son las líneas que separan
@@ -82,7 +82,7 @@ TECHOS: dict[str, int] = {
     # justo la diferencia entre este arreglo y no haberlo hecho. Va aquí y no
     # en un módulo aparte porque es el último paso de `generate_final_
     # resolution` y sacarlo obligaría a exportar el evento entero del bus.
-    "vmagi/modules/swarm/agents.py": 1260,
+    "venim/modules/swarm/agents.py": 1260,
     # +15 en la ejecución del megaplan: B8, la sonda espera a que el enjambre
     # esté quieto en vez de medir la cuota que la tarea acaba de gastar.
     # +50 en la v5.9.0 (§G4): B8 comprobaba UNA vez y luego se iba a medir un
@@ -97,12 +97,12 @@ TECHOS: dict[str, int] = {
     # La media escondería justo lo que hay que ver —100% de aritmética con 0%
     # de ver el proyecto—, y el trabajo de correrlos se fue a
     # `banco_del_proyecto.mide_los_dos_ejes` para no tenerlo aquí y en Naoko.
-    "vmagi/core/kernel.py": 1075,
+    "venim/core/kernel.py": 1075,
     # +48 en la v5.5.2: el filtro de idioma que se le inyecta a Yqcloud por
     # API (responde en chino cuando le apetece) y el catálogo de la familia
     # `gpt` con WeWordle de vuelta, cada entrada con el motivo escrito.
-    "vmagi/core/providers/backends/g4f_backend.py": 1050,
-    "vmagi/core/sesion_web.py": 910,
+    "venim/core/providers/backends/g4f_backend.py": 1050,
+    "venim/core/sesion_web.py": 910,
     # +68 en la v5.5.2: presupuesto por tarea (contador, cierre por techo y
     # rehidratación), fan-out por motor y el candado que serializa el
     # despacho. Tres frenos que solo tienen sentido donde se decide gastar.
@@ -141,7 +141,7 @@ TECHOS: dict[str, int] = {
     # ese porqué es la diferencia entre arreglarlo y volver a cometerlo. Van
     # aquí y no en un módulo aparte porque los dos viven dentro del mismo
     # `handle_command`, que es donde el estado de la tarea se decide.
-    "vmagi/modules/swarm/orchestrator.py": 1590,
+    "venim/modules/swarm/orchestrator.py": 1590,
 }
 
 #: Para todo lo demás. 800 líneas es mucho para un módulo de Python, y ninguno
@@ -151,7 +151,7 @@ TECHO_GENERAL = 800
 
 
 def _modulos() -> list[pathlib.Path]:
-    return sorted(p for p in (RAIZ / "vmagi").rglob("*.py")
+    return sorted(p for p in (RAIZ / "venim").rglob("*.py")
                   if "_attic" not in p.parts and "__pycache__" not in p.parts)
 
 

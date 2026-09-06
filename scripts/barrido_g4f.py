@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 # navegador real (nodriver/webdriver) en cuanto se los toca, y §I.3 prohíbe
 # iniciar sesión: un barrido que arranca Chrome deja de medir el sistema y
 # pasa a medir la máquina. El cortafuegos los corta en seco.
-from vmagi.core.no_browser import install as instalar_cortafuegos
+from venim.core.no_browser import install as instalar_cortafuegos
 
 instalar_cortafuegos()
 

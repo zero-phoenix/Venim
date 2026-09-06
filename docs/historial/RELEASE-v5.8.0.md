@@ -14,7 +14,7 @@ dos resultaron ser síntomas de un problema que estaba en otro sitio.
 ## A — La interfaz se comía un núcleo entero estando parada
 
 ```
-VeniceMAGI.exe en reposo, sin tareas          100,3 %  de un núcleo
+Venim.exe en reposo, sin tareas          100,3 %  de un núcleo
 el mismo kernel arrancado solo, sin interfaz     0,0 %
 matar solo el renderizador, kernel vivo          1,0 %   (puerto 20128 sigue OK)
 ```

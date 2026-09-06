@@ -5,7 +5,7 @@ EL FALLO QUE ESTO IMPIDE, MEDIDO
 ================================
 2026-08-20, sobre la aplicación en marcha y en reposo:
 
-    VeniceMAGI.exe  ->  97 % de un núcleo, permanentemente
+    Venim.exe  ->  97 % de un núcleo, permanentemente
     el mismo kernel arrancado solo, sin interfaz  ->  0 %
 
 El bucle no estaba en el enjambre ni en los proveedores: estaba en React.
@@ -29,7 +29,7 @@ import re
 
 import pytest
 
-GUI = pathlib.Path(__file__).resolve().parents[1] / "vmagi-gui" / "src"
+GUI = pathlib.Path(__file__).resolve().parents[1] / "venim-gui" / "src"
 
 #: Lo que `useMagiSocket` devuelve. Si mañana devuelve algo más, este test lo
 #: pide explícitamente aquí — que es justo la revisión que se quiere provocar.

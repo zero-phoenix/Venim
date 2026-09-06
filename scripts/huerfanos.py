@@ -25,7 +25,7 @@ Dos técnicas distintas para dos preguntas distintas, y la mezcla es a
 propósito:
 
   DEFINICIONES → AST. Preciso. Solo cuenta lo que de verdad es una clase o
-  función pública en el nivel superior de un módulo de `vmagi/`.
+  función pública en el nivel superior de un módulo de `venim/`.
 
   USOS → búsqueda de texto en TODO el repositorio, incluidos .md, .yml, .json
   y el frontend. Generoso a propósito. Media docena de piezas se registran por
@@ -54,7 +54,7 @@ import sys
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]
-PAQUETE = RAIZ / "vmagi"
+PAQUETE = RAIZ / "venim"
 
 #: no se audita. `_attic` es andamiaje retirado que se conserva a propósito
 #: como mapa de lo que se probó; señalarlo sería ruido garantizado.
@@ -145,7 +145,7 @@ def _ficheros(raiz: Path, extensiones: set[str] | None = None) -> list[Path]:
 
 def definiciones_publicas() -> dict[str, list[tuple[Path, int]]]:
     """
-    Clases y funciones públicas del nivel superior de cada módulo de `vmagi/`.
+    Clases y funciones públicas del nivel superior de cada módulo de `venim/`.
 
     Solo el nivel superior: un método está dentro de su clase, y si la clase se
     usa, el método tiene dueño. Auditar métodos uno a uno produciría cientos de
@@ -217,7 +217,7 @@ def huerfanos() -> list[dict]:
 def _informe(items: list[dict]) -> str:
     if not items:
         return ("Sin código público huérfano.\n"
-                "Todo lo que vmagi/ ofrece tiene quien lo llame.")
+                "Todo lo que venim/ ofrece tiene quien lo llame.")
     lineas = [
         f"{len(items)} definiciones públicas sin sitio de llamada:",
         "",
@@ -230,7 +230,7 @@ def _informe(items: list[dict]) -> str:
         "",
         "«Conecta o borra» (lección nº2). Cada una es una de tres cosas:",
         "  · una capacidad construida a la que le falta el cable — CONÉCTALA;",
-        "  · andamiaje que ya no hace falta — BÓRRALO o muévelo a vmagi/_attic/;",
+        "  · andamiaje que ya no hace falta — BÓRRALO o muévelo a venim/_attic/;",
         "  · un punto de entrada legítimo — añádelo a ENTRADAS en este script,",
         "    con el motivo escrito.",
     ]

@@ -41,11 +41,11 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.modules.studio import bucle as B
-from vmagi.modules.studio import busqueda as S
-from vmagi.modules.studio.biblia import BibliaDeEstilo, Tolerancia, compara
-from vmagi.modules.studio.estilo import MedidaEstilo
-from vmagi.modules.studio.reglas import aplica_reglas, siembra_desde_biblia
+from venim.modules.studio import bucle as B
+from venim.modules.studio import busqueda as S
+from venim.modules.studio.biblia import BibliaDeEstilo, Tolerancia, compara
+from venim.modules.studio.estilo import MedidaEstilo
+from venim.modules.studio.reglas import aplica_reglas, siembra_desde_biblia
 
 #: La imagen de partida del mundo simulado: interior en penumbra, madera y
 #: verde de jardín. Los números salen del orden de magnitud que da el medidor
@@ -410,7 +410,7 @@ def test_la_regla_que_separa_no_pudo_de_no_quiso():
     la búsqueda dejara de puntuar el audio — y esquivar la medición volvería a
     ser la estrategia ganadora.
     """
-    from vmagi.modules.studio.biblia import Desvio, Veredicto
+    from venim.modules.studio.biblia import Desvio, Veredicto
 
     def v(*sin_medir: str) -> Veredicto:
         ejes = ("saturacion", "luma", "fraccion_silencio")
@@ -529,12 +529,12 @@ async def test_el_proxy_mide_lo_mismo_que_el_montaje_final(tmp_path):
     eligiendo por un número distinto del que luego se entrega— y `ANCHO_PROXY`
     sobra. Por eso se mide en vez de razonarse.
     """
-    from vmagi.modules.studio.estilo import (
+    from venim.modules.studio.estilo import (
         medir,
         numpy_disponible,
         pillow_disponible,
     )
-    from vmagi.modules.studio.video import Slide, VideoSpec, render_slideshow
+    from venim.modules.studio.video import Slide, VideoSpec, render_slideshow
 
     if not (numpy_disponible() and pillow_disponible()):
         pytest.skip("hace falta numpy y Pillow para mirar los fotogramas")
@@ -613,7 +613,7 @@ async def test_el_cotejo_delata_una_nota_que_no_describe_lo_que_se_entrega():
 
     Aquí se simula lo mismo: el proxy puntúa perfecto y el conformado no.
     """
-    from vmagi.modules.studio.herramientas_estilo import _coteja
+    from venim.modules.studio.herramientas_estilo import _coteja
 
     b = BibliaDeEstilo(tolerancias=[
         Tolerancia(eje="duracion_media_plano", objetivo=9.0, margen=1.08),
@@ -625,7 +625,7 @@ async def test_el_cotejo_delata_una_nota_que_no_describe_lo_que_se_entrega():
         # Lo que de verdad hay en el fichero que se entrega.
         return MedidaEstilo(duracion_media_plano=11.95, saturacion=0.27)
 
-    from vmagi.modules.studio import estilo as E
+    from venim.modules.studio import estilo as E
     guardado = E.medir
     try:
         E.medir = medidor_del_conformado
@@ -639,7 +639,7 @@ async def test_el_cotejo_delata_una_nota_que_no_describe_lo_que_se_entrega():
 
 
 async def test_cuando_cuadra_el_cotejo_lo_dice_en_una_linea_y_no_alarma():
-    from vmagi.modules.studio.herramientas_estilo import _coteja
+    from venim.modules.studio.herramientas_estilo import _coteja
 
     b = BibliaDeEstilo(tolerancias=[
         Tolerancia(eje="saturacion", objetivo=0.27, margen=0.03)])
@@ -648,7 +648,7 @@ async def test_cuando_cuadra_el_cotejo_lo_dice_en_una_linea_y_no_alarma():
     async def medidor(ruta, *, procedencia="generado"):
         return MedidaEstilo(saturacion=0.27)
 
-    from vmagi.modules.studio import estilo as E
+    from venim.modules.studio import estilo as E
     guardado = E.medir
     try:
         E.medir = medidor
@@ -663,8 +663,8 @@ async def test_cuando_cuadra_el_cotejo_lo_dice_en_una_linea_y_no_alarma():
 # ==================================================== alcanzable desde el enjambre
 
 def test_la_busqueda_esta_en_el_registro_del_enjambre():
-    from vmagi.core.tools.registry import ToolRegistry
-    from vmagi.modules.studio.tools import register_studio_tools
+    from venim.core.tools.registry import ToolRegistry
+    from venim.modules.studio.tools import register_studio_tools
 
     reg = register_studio_tools(ToolRegistry())
     t = reg.get("buscar_parametros")

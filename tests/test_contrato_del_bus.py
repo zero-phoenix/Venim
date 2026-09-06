@@ -3,7 +3,7 @@ El contrato del bus: nada se publica sin que alguien lo escuche.
 
 LA AFIRMACIÓN QUE ESTOS TESTS PUEDEN REFUTAR
 ============================================
-«Todo lo que VeniceMAGI cuenta de sí mismo llega a alguien.»
+«Todo lo que Venim cuenta de sí mismo llega a alguien.»
 
 Refutada el 2026-09-05 contando sobre el código: el núcleo publicaba 43 clases
 de suceso y la ventana atendía 25. Dieciocho avisos —descontando dos órdenes—
@@ -32,7 +32,7 @@ import re
 
 import pytest
 
-from vmagi.core.contrato import (
+from venim.core.contrato import (
     INTERNO,
     PANTALLA,
     SUCESOS,
@@ -42,8 +42,8 @@ from vmagi.core.contrato import (
 )
 
 RAIZ = pathlib.Path(__file__).resolve().parents[1]
-NUCLEO = RAIZ / "vmagi"
-VENTANA = RAIZ / "vmagi-gui" / "src"
+NUCLEO = RAIZ / "venim"
+VENTANA = RAIZ / "venim-gui" / "src"
 
 #: Cómo se publica un suceso. SON DOS FORMAS, y la segunda es la que se me
 #: escapó al contar.
@@ -98,7 +98,7 @@ def test_todo_lo_que_se_publica_esta_declarado():
     """
     sin_declarar = _publicados() - set(SUCESOS)
     assert not sin_declarar, (
-        f"estos tópicos se publican y no están en vmagi/core/contrato.py: "
+        f"estos tópicos se publican y no están en venim/core/contrato.py: "
         f"{sorted(sin_declarar)}.\n"
         f"Decláralos con lo que significan y con su destino. Si no se pintan, "
         f"PANTALLA no vale: usa INTERNO y escribe por qué — «no se ve» tiene "

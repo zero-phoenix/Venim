@@ -7,9 +7,9 @@ Se añadió el handler `sys.config` con su panel, sus tests de la lógica y su
 componente de interfaz... y nadie lo invocó nunca de extremo a extremo. Dentro
 hacía:
 
-    from vmagi.core.tools import ALL_DOMAINS
+    from venim.core.tools import ALL_DOMAINS
 
-y `ALL_DOMAINS` no estaba reexportado en `vmagi/core/tools/__init__.py`. El
+y `ALL_DOMAINS` no estaba reexportado en `venim/core/tools/__init__.py`. El
 handler lanzaba ImportError en CADA llamada.
 
 Y de ahí, un fallo tonto tumbó la aplicación entera:
@@ -33,7 +33,7 @@ import logging
 
 import pytest
 
-from vmagi.core.bus import BusEvent, MagiBus
+from venim.core.bus import BusEvent, MagiBus
 
 # ============================================ todos los handlers arrancan
 
@@ -44,8 +44,8 @@ def _kernel_handlers() -> dict:
     Se construye el kernel con dependencias mínimas; lo que importa aquí no es
     que hagan su trabajo, sino que se puedan invocar sin reventar al importar.
     """
-    from vmagi.core.blackboard import Blackboard
-    from vmagi.core.kernel import Kernel
+    from venim.core.blackboard import Blackboard
+    from venim.core.kernel import Kernel
 
     bus = MagiBus()
     _BUSES_ABIERTOS.append(bus)
@@ -176,7 +176,7 @@ async def test_sys_config_devuelve_lo_que_la_interfaz_pinta():
 
 def test_all_domains_se_puede_importar_del_paquete():
     """El import exacto que hacía el kernel y que lanzaba ImportError."""
-    from vmagi.core.tools import ALL_DOMAINS, registry_for_role  # noqa: F401
+    from venim.core.tools import ALL_DOMAINS, registry_for_role  # noqa: F401
     assert ALL_DOMAINS and "core" in ALL_DOMAINS
 
 
@@ -185,7 +185,7 @@ def test_lo_que_el_paquete_promete_existe():
     `__all__` no puede prometer nombres que no están. Es la comprobación
     genérica del fallo concreto: alguien importa del paquete y no está.
     """
-    import vmagi.core.tools as t
+    import venim.core.tools as t
     faltan = [n for n in t.__all__ if not hasattr(t, n)]
     assert not faltan, f"__all__ promete nombres inexistentes: {faltan}"
 
@@ -243,7 +243,7 @@ class _BusEspia(MagiBus):
         self.topicos.append(event.topic)
         if self._eco:
             # Publicar genera un log, igual que hace el bus real al descartar.
-            logging.getLogger("vmagi.core.bus").warning("cola llena")
+            logging.getLogger("venim.core.bus").warning("cola llena")
 
 
 async def _emitir(logger_name: str, nivel: int, mensaje: str, veces: int = 1,
@@ -255,7 +255,7 @@ async def _emitir(logger_name: str, nivel: int, mensaje: str, veces: int = 1,
     necesita un bucle corriendo. Sin él no publica nada y el test mediría el
     vacío en vez de la conducta.
     """
-    from vmagi.core.obs.bus_log_handler import BusLogHandler
+    from venim.core.obs.bus_log_handler import BusLogHandler
 
     bus = _BusEspia(eco=eco)
     h = BusLogHandler(bus)
@@ -299,7 +299,7 @@ async def test_un_panel_roto_no_es_una_emergencia_del_sistema():
     gastar inferencia del enjambre en diagnosticarla. Antes, cada uno de esos
     errores despertaba a Naoko.
     """
-    bus, _ = await _emitir("vmagi.core.rpc.ws_server", logging.ERROR,
+    bus, _ = await _emitir("venim.core.rpc.ws_server", logging.ERROR,
                            "el handler 'sys.config' falló")
     assert "error.critical" not in bus.topicos, \
         "un handler RPC roto no debe despertar el diagnóstico del enjambre"
@@ -312,6 +312,6 @@ async def test_un_fallo_de_verdad_SI_despierta_a_naoko():
     Contraprueba: filtrar de más sería peor que no filtrar. Un error del
     núcleo tiene que seguir llegando al diagnóstico.
     """
-    bus, _ = await _emitir("vmagi.modules.swarm.orchestrator", logging.ERROR,
+    bus, _ = await _emitir("venim.modules.swarm.orchestrator", logging.ERROR,
                            "error catastrófico durante la orquestación")
     assert "error.critical" in bus.topicos

@@ -15,8 +15,8 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.providers.base import es_degradada
-from vmagi.modules.swarm.agents import _leer_decision
+from venim.core.providers.base import es_degradada
+from venim.modules.swarm.agents import _leer_decision
 
 
 @pytest.mark.parametrize("texto,proveedor", [
@@ -58,9 +58,9 @@ def test_declarar_una_compilacion_que_no_consta_sale_avisado():
     Es el caso real de la prueba del ping pong: cero bloques de código, cero
     artefactos, y el informe hablando de un `.exe` en pasado.
     """
-    from vmagi.core.blackboard import Blackboard
-    from vmagi.core.bus import MagiBus
-    from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+    from venim.core.blackboard import Blackboard
+    from venim.core.bus import MagiBus
+    from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
     swarm = SwarmOrchestrator(Blackboard(), MagiBus())
     aviso = swarm._contraste_con_el_registro(

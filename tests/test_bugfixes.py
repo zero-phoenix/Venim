@@ -10,15 +10,15 @@ import tempfile
 
 import pytest
 
-from vmagi.core.agent_loop import _trim
-from vmagi.core.blackboard import Blackboard
-from vmagi.core.bus import BusEvent, MagiBus
-from vmagi.core.providers.backends.echo import EchoProvider
-from vmagi.core.providers.base import Message
-from vmagi.core.providers.cloud import FreeCloudLLM, set_registry
-from vmagi.core.providers.registry import ProviderRegistry
-from vmagi.core.tools import ToolContext, WriteJournal, build_registry
-from vmagi.modules.swarm.agents import MelchiorAgent
+from venim.core.agent_loop import _trim
+from venim.core.blackboard import Blackboard
+from venim.core.bus import BusEvent, MagiBus
+from venim.core.providers.backends.echo import EchoProvider
+from venim.core.providers.base import Message
+from venim.core.providers.cloud import FreeCloudLLM, set_registry
+from venim.core.providers.registry import ProviderRegistry
+from venim.core.tools import ToolContext, WriteJournal, build_registry
+from venim.modules.swarm.agents import MelchiorAgent
 
 # ------- BUG 1: la interfaz declaraba la familia PEDIDA, no la que respondió
 
@@ -90,7 +90,7 @@ async def test_no_degradation_flag_when_family_is_healthy():
 
 
 def test_family_extraction_from_provider_id():
-    from vmagi.modules.swarm.agents import SwarmAgentBase
+    from venim.modules.swarm.agents import SwarmAgentBase
     f = SwarmAgentBase._family_of
     assert f("g4f-deepseek:PhindAi/deepseek-v3") == "deepseek"
     assert f("g4f-claude") == "claude"
@@ -163,7 +163,7 @@ def test_naoko_uses_verified_repair():
     """
     import inspect
 
-    from vmagi.modules.infrastructure.naoko import NaokoAgent
+    from venim.modules.infrastructure.naoko import NaokoAgent
     src = inspect.getsource(NaokoAgent._handle_error_event)
     assert "VerifiedRepair" in src
     assert "_apply_patch" not in src
@@ -172,8 +172,8 @@ def test_naoko_uses_verified_repair():
 @pytest.mark.asyncio
 async def test_blind_patch_path_is_gone():
     """La vía peligrosa debe fallar explícitamente si alguien la reintroduce."""
-    from vmagi.core.store.database import MagiDatabase
-    from vmagi.modules.infrastructure.naoko import NaokoAgent
+    from venim.core.store.database import MagiDatabase
+    from venim.modules.infrastructure.naoko import NaokoAgent
 
     naoko = NaokoAgent(MagiBus(), MagiDatabase())
     with pytest.raises(NotImplementedError):

@@ -16,12 +16,12 @@ import asyncio
 
 import pytest
 
-from vmagi.core.blackboard import Blackboard
-from vmagi.core.bus import BusEvent, MagiBus
-from vmagi.core.providers.backends.echo import EchoProvider
-from vmagi.core.providers.cloud import FreeCloudLLM, set_registry
-from vmagi.core.providers.registry import ProviderRegistry
-from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+from venim.core.blackboard import Blackboard
+from venim.core.bus import BusEvent, MagiBus
+from venim.core.providers.backends.echo import EchoProvider
+from venim.core.providers.cloud import FreeCloudLLM, set_registry
+from venim.core.providers.registry import ProviderRegistry
+from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
 
 class FamilyEcho(EchoProvider):
@@ -37,7 +37,7 @@ async def swarm_registry():
     # Se registran las familias del reparto REAL más un par de sobrantes. La
     # lista estaba fija en ("deepseek", "claude", "qwen", ...) y al cambiar el
     # reparto los tres nodos se quedaban sin su proveedor en el banco.
-    from vmagi.core.providers.backends.g4f_backend import DEFAULT_SWARM_FAMILIES
+    from venim.core.providers.backends.g4f_backend import DEFAULT_SWARM_FAMILIES
     familias = list(dict.fromkeys(
         list(DEFAULT_SWARM_FAMILIES.values()) + ["llama", "hf", "auto"]))
     for fam in familias:
@@ -92,7 +92,7 @@ async def test_three_agents_hit_three_distinct_families(swarm_registry, bus_capt
     # test tenía "deepseek"/"claude"/"qwen" escritos a mano y se puso rojo al
     # cambiar el reparto: la misma copia desincronizada que tenían los agentes,
     # reproducida en el test que debía protegerlos.
-    from vmagi.core.providers.backends.g4f_backend import DEFAULT_SWARM_FAMILIES
+    from venim.core.providers.backends.g4f_backend import DEFAULT_SWARM_FAMILIES
     for rol, esperada in DEFAULT_SWARM_FAMILIES.items():
         assert families[rol] == esperada, (
             f"{rol} debería usar {esperada} y usó {families[rol]}")
@@ -140,7 +140,7 @@ async def test_narrative_style_reaches_the_prompt(swarm_registry):
     set_registry(reg)
     try:
         llm = FreeCloudLLM(reg)
-        from vmagi.modules.swarm.agents import MelchiorAgent
+        from venim.modules.swarm.agents import MelchiorAgent
         agent = MelchiorAgent(Blackboard(), MagiBus())
         agent.llm = llm
         await agent.generate_proposal("t", "haz algo", 1,
@@ -167,7 +167,7 @@ async def test_execution_context_reaches_the_prompt(swarm_registry):
     await reg.probe_all()
     set_registry(reg)
     try:
-        from vmagi.modules.swarm.agents import BalthasarAgent
+        from venim.modules.swarm.agents import BalthasarAgent
         agent = BalthasarAgent(Blackboard(), MagiBus())
         agent.llm = FreeCloudLLM(reg)
         await agent.generate_critique("t", {"content": "propuesta"}, 1)
@@ -227,7 +227,7 @@ def test_agents_never_pin_a_gpt_model():
     from pathlib import Path
 
     tree = ast.parse((Path(__file__).resolve().parents[1]
-                      / "vmagi/modules/swarm/agents.py").read_text(encoding="utf-8"))
+                      / "venim/modules/swarm/agents.py").read_text(encoding="utf-8"))
     for node in ast.walk(tree):
         if isinstance(node, (ast.Module, ast.ClassDef, ast.FunctionDef,
                              ast.AsyncFunctionDef)):
@@ -242,7 +242,7 @@ def test_agents_never_pin_a_gpt_model():
 
 
 def test_each_agent_declares_a_distinct_family():
-    from vmagi.modules.swarm.agents import BalthasarAgent, CasperAgent, MelchiorAgent
+    from venim.modules.swarm.agents import BalthasarAgent, CasperAgent, MelchiorAgent
     fams = [MelchiorAgent.family, BalthasarAgent.family, CasperAgent.family]
     assert len(set(fams)) == 3, f"familias repetidas: {fams}"
     assert "auto" not in fams, "ningún nodo debe quedar en el auto-router"
@@ -250,6 +250,6 @@ def test_each_agent_declares_a_distinct_family():
 
 def test_each_agent_has_a_distinct_seed():
     """Si solo hay una familia sana, la divergencia se fuerza por semilla."""
-    from vmagi.modules.swarm.agents import BalthasarAgent, CasperAgent, MelchiorAgent
+    from venim.modules.swarm.agents import BalthasarAgent, CasperAgent, MelchiorAgent
     seeds = [MelchiorAgent.seed, BalthasarAgent.seed, CasperAgent.seed]
     assert len(set(seeds)) == 3 and None not in seeds

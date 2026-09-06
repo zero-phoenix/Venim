@@ -28,7 +28,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.providers import compat_curl
+from venim.core.providers import compat_curl
 
 # ------------------------------------------------------- el filtro, aislado
 
@@ -194,7 +194,7 @@ def test_el_backend_de_g4f_aplica_el_adaptador(curl):
     curl_cffi en el arranque del IDE y `test_arranque_ligero` lo cazó al
     instante. El coste de una librería lo paga quien la usa.
     """
-    from vmagi.core.providers.backends import g4f_backend
+    from venim.core.providers.backends import g4f_backend
 
     g4f_backend._disable_g4f_browser()
     assert compat_curl.esta_aplicado() is True
@@ -209,7 +209,7 @@ def test_el_adaptador_no_se_carga_al_arrancar():
     """
     import pathlib
     fuente = (pathlib.Path(__file__).resolve().parents[1]
-              / "vmagi/core/providers/backends/g4f_backend.py"
+              / "venim/core/providers/backends/g4f_backend.py"
               ).read_text(encoding="utf-8")
     cabecera = fuente.split("class G4FProvider", 1)[0]
     nivel_modulo = [ln for ln in cabecera.splitlines()

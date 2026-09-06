@@ -24,7 +24,7 @@ No relaja ni una comprobación del CI. Todo lo que `release.yml` exige antes de
 publicar se exige aquí, incluidas las tres que un .exe puede fallar SIN dar
 error al arrancar —y que por eso son las peligrosas—:
 
-  1. que `vmagi/data/catalogo_proveedores.json` exista;
+  1. que `venim/data/catalogo_proveedores.json` exista;
   2. que el Python embebido entrara DE VERDAD en el binario (se lee el
      inventario de PyInstaller, no el disco: que el fichero esté en el repo no
      prueba que viajara dentro);
@@ -63,10 +63,10 @@ from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]
-SPEC = RAIZ / "VeniceMAGI.spec"
-EXE = RAIZ / "dist" / "VeniceMAGI.exe"
-ZIP = RAIZ / "dist" / "VeniceMAGI.zip"
-TOC = RAIZ / "build" / "VeniceMAGI" / "Analysis-00.toc"
+SPEC = RAIZ / "Venim.spec"
+EXE = RAIZ / "dist" / "Venim.exe"
+ZIP = RAIZ / "dist" / "Venim.zip"
+TOC = RAIZ / "build" / "Venim" / "Analysis-00.toc"
 NOTAS = RAIZ / "RELEASE_NOTES.md"
 
 #: Suelo de tamaño del .exe, en MB. MEDIDO, no calculado: 94,1 sin el Python
@@ -175,8 +175,8 @@ def comprobar_integridad() -> list[str]:
     """Las tres cosas que un .exe puede perder sin dar error al arrancar."""
     fallos: list[str] = []
 
-    if not (RAIZ / "vmagi/data/catalogo_proveedores.json").is_file():
-        fallos.append("falta vmagi/data/catalogo_proveedores.json")
+    if not (RAIZ / "venim/data/catalogo_proveedores.json").is_file():
+        fallos.append("falta venim/data/catalogo_proveedores.json")
 
     if not (RAIZ / "assets/python-embed/extracted/python.exe").is_file():
         fallos.append("falta el Python embebido: el .exe no podria ejecutar nada")
@@ -248,7 +248,7 @@ def main() -> int:
 
     # ---- 3. frontend, con `npm ci` (del lock, como el CI)
     npm = shutil.which("npm") or shutil.which("npm.cmd") or "npm"
-    gui = RAIZ / "vmagi-gui"
+    gui = RAIZ / "venim-gui"
     # `--include=dev` explícito, además de limpiar el entorno: dos capas para
     # lo mismo, porque `npm ci` sin las dependencias de desarrollo produce un
     # árbol que parece completo y no compila.
@@ -285,7 +285,7 @@ def main() -> int:
         return 0
 
     orden = ["gh", "release", "create", args.tag, str(ZIP),
-             "--title", f"VeniceMAGI {args.tag}"]
+             "--title", f"Venim {args.tag}"]
     if NOTAS.is_file():
         orden += ["--notes-file", str(NOTAS)]
     else:

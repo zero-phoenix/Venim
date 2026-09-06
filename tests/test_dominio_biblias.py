@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.modules.studio.biblia import (
+from venim.modules.studio.biblia import (
     BibliaDeEstilo,
     Conflicto,
     Dominio,
@@ -24,7 +24,7 @@ from vmagi.modules.studio.biblia import (
     combina,
     compara,
 )
-from vmagi.modules.studio.estilo import MedidaEstilo
+from venim.modules.studio.estilo import MedidaEstilo
 
 
 def _biblia(nombre: str, **ejes) -> BibliaDeEstilo:
@@ -252,7 +252,7 @@ def test_el_margen_nunca_baja_de_lo_que_el_instrumento_distingue():
     distinguir del bueno— suspendía, y ninguna cantidad de búsqueda lo
     arreglaba, porque entre 1 y 2 no hay nada que encontrar.
     """
-    from vmagi.modules.studio.estilo import RESOLUCION
+    from venim.modules.studio.estilo import RESOLUCION
 
     m = MedidaEstilo(ruta="ref.mp4", duracion=27.0, planos=3,
                      duracion_media_plano=9.0, aspecto=1.829, camara_px=1.0,
@@ -276,7 +276,7 @@ def test_el_margen_nunca_baja_de_lo_que_el_instrumento_distingue():
 def test_toda_resolucion_declarada_apunta_a_un_eje_que_existe():
     """Una resolución para un eje que la biblia nunca pone no protege nada y
     da la sensación de que sí. Mismo fallo que un techo de líneas huérfano."""
-    from vmagi.modules.studio.estilo import RESOLUCION
+    from venim.modules.studio.estilo import RESOLUCION
 
     m = MedidaEstilo(
         ruta="x.mp4", duracion=120.0, planos=20, aspecto=1.85,
@@ -292,8 +292,8 @@ def test_toda_resolucion_declarada_apunta_a_un_eje_que_existe():
 # ==================================================== alcanzable desde el enjambre
 
 def test_combinar_biblias_esta_en_el_registro_del_enjambre():
-    from vmagi.core.tools.registry import ToolRegistry
-    from vmagi.modules.studio.tools import register_studio_tools
+    from venim.core.tools.registry import ToolRegistry
+    from venim.modules.studio.tools import register_studio_tools
 
     reg = register_studio_tools(ToolRegistry())
     t = reg.get("combinar_biblias")

@@ -34,8 +34,8 @@ import uuid
 
 import pytest
 
-from vmagi.core.store import telemetria as tl
-from vmagi.core.store.state import TaskStore
+from venim.core.store import telemetria as tl
+from venim.core.store.state import TaskStore
 
 
 @pytest.fixture()

@@ -39,7 +39,7 @@ así que se comprueba aquí.
 
 CÓMO EVITA LOS FALSOS POSITIVOS
 ===============================
-Se salta una clase entera si hereda de algo que no está definido en `vmagi/`
+Se salta una clase entera si hereda de algo que no está definido en `venim/`
 —`BaseModel`, `Protocol`, `Enum`, cualquier cosa de la librería estándar—,
 porque entonces el método podría venir de arriba y no hay forma barata de
 saberlo. Prefiere callar a acusar en falso: una alarma con ruido deja de
@@ -51,7 +51,7 @@ import ast
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]
-PAQUETE = RAIZ / "vmagi"
+PAQUETE = RAIZ / "venim"
 IGNORADOS = {"_attic", "__pycache__"}
 
 #: métodos que Python o un framework inyectan y que no aparecen como `def`.
@@ -117,7 +117,7 @@ def _cuerpo_sin_clases_anidadas(clase: ast.ClassDef):
 
 
 def _recoge_clases() -> dict[str, list[_Clase]]:
-    """Todas las clases de `vmagi/`, con lo que definen y lo que usan de `self`."""
+    """Todas las clases de `venim/`, con lo que definen y lo que usan de `self`."""
     clases: dict[str, list[_Clase]] = {}
     for fichero in _ficheros():
         try:
@@ -160,7 +160,7 @@ def _recoge_clases() -> dict[str, list[_Clase]]:
 def _heredados(c: _Clase, clases: dict[str, list[_Clase]],
                vistos: set[str] | None = None) -> set[str] | None:
     """
-    Todo lo que la clase hereda. None si alguna base es de fuera de `vmagi/`.
+    Todo lo que la clase hereda. None si alguna base es de fuera de `venim/`.
 
     None significa «no puedo saberlo», y ante eso la clase no se audita. Es la
     diferencia entre un aviso que se lee y uno que se ignora.
@@ -211,7 +211,7 @@ def test_la_guarda_de_idioma_llama_a_un_metodo_que_existe():
     El test de arriba lo cubre, pero este falla con un mensaje que dice qué
     pasó y dónde, en vez de una entrada más en una lista.
     """
-    from vmagi.modules.swarm.agents import BalthasarAgent, MelchiorAgent
+    from venim.modules.swarm.agents import BalthasarAgent, MelchiorAgent
 
     for clase in (MelchiorAgent, BalthasarAgent):
         assert hasattr(clase, "_otras_familias_del_registry"), (

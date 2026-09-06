@@ -117,7 +117,7 @@ def test_no_hay_submodulos_fantasma():
 
     EL FALLO
     ========
-    `tools/vmagi-mem/codebase-memory-mcp` estaba en el índice con modo 160000
+    `tools/venim-mem/codebase-memory-mcp` estaba en el índice con modo 160000
     —un enlace a otro repositorio— y no había `.gitmodules` en el proyecto.
     Suele pasar sin querer: se hace `git add` de un directorio que trae su
     propio `.git` dentro y git lo registra como submódulo en vez de copiar los
@@ -126,7 +126,7 @@ def test_no_hay_submodulos_fantasma():
     El resultado, en CADA checkout del CI, en todos los jobs:
 
         fatal: No url found for submodule path
-               'tools/vmagi-mem/codebase-memory-mcp' in .gitmodules
+               'tools/venim-mem/codebase-memory-mcp' in .gitmodules
         ##[warning]The process '/usr/bin/git' failed with exit code 128
 
     No tumbaba nada, y esa es justo la razón para cazarlo: un aviso permanente

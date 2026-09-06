@@ -195,7 +195,7 @@ def construir_pasos(todo: bool, rapido: bool) -> list[Paso]:
         # Igual que en ci.yml: solo E9/F63/F7/F82 son bloqueantes. El lint
         # completo es informativo allí, así que aquí tampoco puede tumbar nada.
         Paso("ruff (sintaxis y nombres indefinidos)",
-             [*py, "ruff", "check", "vmagi/", "tests/",
+             [*py, "ruff", "check", "venim/", "tests/",
               "--select", "E9,F63,F7,F82"]),
         # -n auto: la suite en paralelo (~2,5 min frente a ~5-7 en serie).
         # --dist loadfile agrupa cada fichero en un worker: los tests que
@@ -206,14 +206,14 @@ def construir_pasos(todo: bool, rapido: bool) -> list[Paso]:
               *marca]),
         Paso("imports del nucleo",
              [sys.executable, "-c",
-              "import vmagi.core.paths, vmagi.core.context, vmagi.core.router;"
-              "import vmagi.core.prompts, vmagi.core.agent_loop;"
-              "import vmagi.core.providers.registry, vmagi.core.providers.cloud;"
-              "import vmagi.core.tools;"
+              "import venim.core.paths, venim.core.context, venim.core.router;"
+              "import venim.core.prompts, venim.core.agent_loop;"
+              "import venim.core.providers.registry, venim.core.providers.cloud;"
+              "import venim.core.tools;"
               "print('todos los modulos del nucleo importan')"]),
     ]
     if not rapido:
-        gui = RAIZ / "vmagi-gui"
+        gui = RAIZ / "venim-gui"
         pasos += [
             Paso("interfaz: tests", [*_npm(), "test"], cwd=gui, opcional=True),
             Paso("interfaz: build", [*_npm(), "run", "build"], cwd=gui,

@@ -1,4 +1,4 @@
-# VeniceMAGI — inferencia de nube gratuita, sin claves de API,
+# Venim — inferencia de nube gratuita, sin claves de API,
 # sin modelos locales (documento de arquitectura §I.3).
 g4f
 
@@ -43,7 +43,7 @@ pillow
 pypdf
 python-docx
 
-# Sesión web headless (vmagi/core/sesion_web.py). Firefox endurecido contra
+# Sesión web headless (venim/core/sesion_web.py). Firefox endurecido contra
 # fingerprinting, SIEMPRE sin ventana, para los proveedores que exigen una
 # sesión de navegador.
 #

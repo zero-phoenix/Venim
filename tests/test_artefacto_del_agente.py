@@ -18,9 +18,9 @@ herramientas del agente.
 """
 from __future__ import annotations
 
-from vmagi.core.blackboard import Blackboard
-from vmagi.core.bus import MagiBus
-from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+from venim.core.blackboard import Blackboard
+from venim.core.bus import MagiBus
+from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
 
 def _swarm() -> SwarmOrchestrator:
@@ -69,7 +69,7 @@ async def test_con_artefacto_del_agente_la_fabrica_no_se_interpone(tmp_path, mon
     exe.write_bytes(b"MZ" + b"\0" * 100)
     llamado = []
 
-    import vmagi.modules.studio.entrega as entrega_mod
+    import venim.modules.studio.entrega as entrega_mod
 
     async def _no_deberia(*a, **k):
         llamado.append(1)

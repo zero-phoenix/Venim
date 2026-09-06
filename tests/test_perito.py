@@ -23,8 +23,8 @@ import subprocess
 
 import pytest
 
-from vmagi.modules.studio import perito as P
-from vmagi.modules.studio.estilo import MedidaEstilo
+from venim.modules.studio import perito as P
+from venim.modules.studio.estilo import MedidaEstilo
 
 # ========================================================== las de control
 
@@ -289,8 +289,8 @@ async def test_un_instante_imposible_devuelve_None_en_vez_de_reventar(tmp_path):
 def test_el_perito_esta_en_el_registro_del_enjambre():
     """Regla 3. Unos ojos que solo puedo usar yo desde fuera no son los ojos
     del sistema: son los míos otra vez."""
-    from vmagi.core.tools.registry import ToolRegistry
-    from vmagi.modules.studio.tools import register_studio_tools
+    from venim.core.tools.registry import ToolRegistry
+    from venim.modules.studio.tools import register_studio_tools
 
     reg = register_studio_tools(ToolRegistry())
     t = reg.get("interrogar_fotograma")

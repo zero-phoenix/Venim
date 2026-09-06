@@ -1,6 +1,6 @@
 [
  {
-  "texto": "Se compilar un unico VeniceMAGI.exe onefile y publicarlo en Release",
+  "texto": "Se compilar un unico Venim.exe onefile y publicarlo en Release",
   "prueba": "build_release",
   "estado": "sostenida",
   "ultima": "2026-08-31 10:33",
@@ -103,7 +103,7 @@
   "prueba": "medidor_de_estilo",
   "estado": "sostenida",
   "ultima": "2026-09-02 00:00",
-  "evidencia": "vmagi/modules/studio/estilo.py, 37 tests en tests/test_estilo_medidor.py contra material fabricado con FFmpeg cuya verdad se conoce por construccion. La prueba que lo tumbaria es no separar dos videos que AMBOS tienen movimiento: uno con la camara clavada y un objeto cruzando el cuadro, otro que es panoramica pura. Contando pixeles que cambian -lo que hace observe_video- los dos dan lo mismo. Medido: camara fija 0.00 px, panoramica muy por encima del umbral. Tambien cuenta 4 planos en un video fabricado con 4, y lee 1.778 de aspecto en un 16:9 metido dentro de un contenedor 4:3 con barras, donde ffprobe dice 1.333.",
+  "evidencia": "venim/modules/studio/estilo.py, 37 tests en tests/test_estilo_medidor.py contra material fabricado con FFmpeg cuya verdad se conoce por construccion. La prueba que lo tumbaria es no separar dos videos que AMBOS tienen movimiento: uno con la camara clavada y un objeto cruzando el cuadro, otro que es panoramica pura. Contando pixeles que cambian -lo que hace observe_video- los dos dan lo mismo. Medido: camara fija 0.00 px, panoramica muy por encima del umbral. Tambien cuenta 4 planos en un video fabricado con 4, y lee 1.778 de aspecto en un 16:9 metido dentro de un contenedor 4:3 con barras, donde ffprobe dice 1.333.",
   "veces_ok": 1,
   "veces_mal": 0
  },
@@ -112,7 +112,7 @@
   "prueba": "estilo_alcanzable_desde_el_enjambre",
   "estado": "sostenida",
   "ultima": "2026-09-02 00:00",
-  "evidencia": "Tres herramientas registradas en register_studio_tools: medir_estilo, biblia_de_estilo y juzgar_estilo. Anadidas a WIRING en tests/test_wiring.py, que exige que se invoquen desde vmagi/modules/studio/tools.py. El bucle completo -referencia, biblia, juicio de una panoramica con lista de correccion- pasa de punta a punta sin ningun modelo por medio. Es la regla 3: una capacidad que solo puede llamar quien supervisa desde fuera no acerca al sistema a ser autonomo ni un paso.",
+  "evidencia": "Tres herramientas registradas en register_studio_tools: medir_estilo, biblia_de_estilo y juzgar_estilo. Anadidas a WIRING en tests/test_wiring.py, que exige que se invoquen desde venim/modules/studio/tools.py. El bucle completo -referencia, biblia, juicio de una panoramica con lista de correccion- pasa de punta a punta sin ningun modelo por medio. Es la regla 3: una capacidad que solo puede llamar quien supervisa desde fuera no acerca al sistema a ser autonomo ni un paso.",
   "veces_ok": 1,
   "veces_mal": 0
  },
@@ -130,7 +130,7 @@
   "prueba": "bucle_con_medicion_real",
   "estado": "sostenida",
   "ultima": "2026-09-02 00:00",
-  "evidencia": "vmagi/modules/studio/bucle.py cablea loop.py, spec.py y rights.py -tres modulos que el trinquete de huerfanos senalaba desde su creacion, y cuyo propio docstring confesaba que la funcion de medida 'es un mock'- al medidor de estilo. 11 tests: converge sobre un fichero que cumple, corta por meseta antes de gastar las cuatro pasadas cuando no mejora, y pasa la lista concreta de ejes incumplidos a la siguiente pasada en vez de un 'hazlo mejor'. Los derechos se comprueban ANTES de generar: comprobar despues es comprobar cuando la racion diaria ya esta gastada.",
+  "evidencia": "venim/modules/studio/bucle.py cablea loop.py, spec.py y rights.py -tres modulos que el trinquete de huerfanos senalaba desde su creacion, y cuyo propio docstring confesaba que la funcion de medida 'es un mock'- al medidor de estilo. 11 tests: converge sobre un fichero que cumple, corta por meseta antes de gastar las cuatro pasadas cuando no mejora, y pasa la lista concreta de ejes incumplidos a la siguiente pasada en vez de un 'hazlo mejor'. Los derechos se comprueban ANTES de generar: comprobar despues es comprobar cuando la racion diaria ya esta gastada.",
   "veces_ok": 1,
   "veces_mal": 0
  },
@@ -247,7 +247,7 @@
   "prueba": "jurado_de_imagen",
   "estado": "refutada",
   "ultima": "2026-09-04 00:00",
-  "evidencia": "Lo presente como la ventaja de VeniceMAGI sobre un reward model entrenado: tres nodos que debaten mas un medidor, y ademas explican su nota. Pero los tres nodos son de TEXTO y no ven el video: solo pueden leer lo que el medidor les cuenta. No son una senal independiente, son la misma senal leida dos veces con pasos de mas. Un jurado donde tres de los cuatro miembros solo saben lo que les dijo el cuarto no es un jurado. Lo que SI pueden juzgar -y es real- es lo que el medidor no mira: si el guion tiene sentido y si el plan de planos sirve al encargo. | 2026-09-04: sigue REFUTADA y ya no es solo un diagnostico. El arreglo no fue anadir un cuarto razonador -seria el mismo error otra vez- sino un TESTIGO: perito.py, un modelo de vision local que mira los pixeles y contesta preguntas cerradas. Su valor no es ser bueno (pesa 250 MB) sino que su error es INDEPENDIENTE del error del medidor. Los tres nodos siguen juzgando lo que si pueden leer: guion y plan de planos.",
+  "evidencia": "Lo presente como la ventaja de Venim sobre un reward model entrenado: tres nodos que debaten mas un medidor, y ademas explican su nota. Pero los tres nodos son de TEXTO y no ven el video: solo pueden leer lo que el medidor les cuenta. No son una senal independiente, son la misma senal leida dos veces con pasos de mas. Un jurado donde tres de los cuatro miembros solo saben lo que les dijo el cuarto no es un jurado. Lo que SI pueden juzgar -y es real- es lo que el medidor no mira: si el guion tiene sentido y si el plan de planos sirve al encargo. | 2026-09-04: sigue REFUTADA y ya no es solo un diagnostico. El arreglo no fue anadir un cuarto razonador -seria el mismo error otra vez- sino un TESTIGO: perito.py, un modelo de vision local que mira los pixeles y contesta preguntas cerradas. Su valor no es ser bueno (pesa 250 MB) sino que su error es INDEPENDIENTE del error del medidor. Los tres nodos siguen juzgando lo que si pueden leer: guion y plan de planos.",
   "veces_ok": 0,
   "veces_mal": 1
  },
@@ -315,7 +315,7 @@
   "veces_mal": 0
  },
  {
-  "texto": "vmagi.modules.studio.biblia se puede importar el primero",
+  "texto": "venim.modules.studio.biblia se puede importar el primero",
   "prueba": "sin_ciclo_biblia_estilo",
   "estado": "refutada",
   "ultima": "2026-09-05 00:00",

@@ -9,8 +9,8 @@ import json
 
 import pytest
 
-from vmagi.modules.memory import indice as I
-from vmagi.modules.swarm import automodelo as A
+from venim.modules.memory import indice as I
+from venim.modules.swarm import automodelo as A
 
 # ======================================================================
 # ÍNDICE

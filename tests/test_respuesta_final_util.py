@@ -3,7 +3,7 @@ La última puerta: nada llega a pantalla como resultado sin ser un resultado.
 
 LA AFIRMACIÓN QUE ESTE TEST PUEDE REFUTAR
 =========================================
-«Lo que VeniceMAGI presenta como RESULTADO_FINAL es una respuesta.»
+«Lo que Venim presenta como RESULTADO_FINAL es una respuesta.»
 
 Refutada el 2026-09-05 pilotando la ventana: tras deliberar, lo que apareció
 en pantalla —dos veces, con el mismo formato que una respuesta buena— fue la
@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.providers.backends.g4f_backend import (
+from venim.core.providers.backends.g4f_backend import (
     MINIMO_UTIL,
     por_que_es_inservible,
 )
@@ -56,8 +56,8 @@ async def test_EL_CENTRAL_una_respuesta_inservible_no_se_publica_como_resultado(
     comprueba que lo que sale al bus NO es eso. Si vuelve a salir, el fallo
     del 2026-09-05 ha vuelto.
     """
-    from vmagi.core.bus import BusEvent, MagiBus
-    from vmagi.modules.swarm.agents import CasperAgent
+    from venim.core.bus import BusEvent, MagiBus
+    from venim.modules.swarm.agents import CasperAgent
 
     publicado: list[dict] = []
 
@@ -105,8 +105,8 @@ async def test_EL_CENTRAL_una_respuesta_inservible_no_se_publica_como_resultado(
 async def test_una_respuesta_buena_sigue_saliendo_intacta():
     """La puerta no puede cobrarse respuestas legítimas. Si el camino bueno se
     estropea, el arreglo cuesta más de lo que valía."""
-    from vmagi.core.bus import BusEvent, MagiBus
-    from vmagi.modules.swarm.agents import CasperAgent
+    from venim.core.bus import BusEvent, MagiBus
+    from venim.modules.swarm.agents import CasperAgent
 
     publicado: list[dict] = []
 

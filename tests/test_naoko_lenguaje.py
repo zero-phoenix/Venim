@@ -25,7 +25,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.modules.infrastructure.naoko_lenguaje import (
+from venim.modules.infrastructure.naoko_lenguaje import (
     en_cristiano,
     nombre_de_tarea,
     que_te_toca,

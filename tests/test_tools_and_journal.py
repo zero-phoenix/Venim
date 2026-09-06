@@ -7,7 +7,7 @@ permiso. Estos tests verifican que el deshacer funciona de verdad.
 """
 import pytest
 
-from vmagi.core.tools import (
+from venim.core.tools import (
     ToolContext,
     WriteJournal,
     build_registry,
@@ -16,7 +16,7 @@ from vmagi.core.tools import (
     registry_for_role,
     strip_tool_calls,
 )
-from vmagi.core.tools.registry import ToolResult
+from venim.core.tools.registry import ToolResult
 
 
 @pytest.fixture
@@ -163,8 +163,8 @@ async def test_dry_run_mutates_nothing(ctx):
 @pytest.mark.asyncio
 async def test_run_command_captures_output(ctx):
     r = await build_registry().execute(
-        "run_command", {"command": "echo hola-vmagi"}, ctx)
-    assert r.ok and "hola-vmagi" in r.content
+        "run_command", {"command": "echo hola-venim"}, ctx)
+    assert r.ok and "hola-venim" in r.content
 
 
 @pytest.mark.asyncio

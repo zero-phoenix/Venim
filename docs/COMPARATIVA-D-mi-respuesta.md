@@ -130,7 +130,7 @@ mejor de los dos—, el camino con mejor relación aprendizaje/frustración es
 escribir el **intérprete de MIPS con arnés diferencial** y parar ahí: es donde
 está el 90 % del aprendizaje y el 10 % del sufrimiento.
 
-Y una nota que viene al caso: MAGI ya tiene ese arnés. `vmagi/modules/reverse/`
+Y una nota que viene al caso: MAGI ya tiene ese arnés. `venim/modules/reverse/`
 trae emulación MIPS con Unicorn, `differential_test()` y un analizador de
 portabilidad entre consolas (`analyze_port`). El paso 2 de este plan se puede
 empezar hoy con las herramientas del propio repositorio.

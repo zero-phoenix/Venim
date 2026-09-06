@@ -1,7 +1,7 @@
 # Mapa de la interfaz de MAGI
 
-Generado por `vmagi.modules.gui.mapa`. No arranca la aplicación:
-mapea el cableado por topics entre `vmagi-gui/src` y `vmagi/`.
+Generado por `venim.modules.gui.mapa`. No arranca la aplicación:
+mapea el cableado por topics entre `venim-gui/src` y `venim/`.
 
 | | |
 |---|---:|

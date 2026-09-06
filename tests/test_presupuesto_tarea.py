@@ -21,15 +21,15 @@ import asyncio
 
 import pytest
 
-from vmagi.core import presupuesto as pto
-from vmagi.core.blackboard import Blackboard
-from vmagi.core.bus import BusEvent, MagiBus
-from vmagi.core.cancel import supervisor
-from vmagi.core.providers.backends.echo import EchoProvider
-from vmagi.core.providers.backends.g4f_backend import DEFAULT_SWARM_FAMILIES
-from vmagi.core.providers.cloud import set_registry
-from vmagi.core.providers.registry import ProviderRegistry
-from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+from venim.core import presupuesto as pto
+from venim.core.blackboard import Blackboard
+from venim.core.bus import BusEvent, MagiBus
+from venim.core.cancel import supervisor
+from venim.core.providers.backends.echo import EchoProvider
+from venim.core.providers.backends.g4f_backend import DEFAULT_SWARM_FAMILIES
+from venim.core.providers.cloud import set_registry
+from venim.core.providers.registry import ProviderRegistry
+from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
 
 class FamilyEcho(EchoProvider):

@@ -7,7 +7,7 @@ rompe de una forma muy concreta y muy facil: el **trafico partido**. Media
 aplicacion sale por la VPN y la otra media por la linea de casa, las dos
 rutas se correlacionan, y la VPN deja de servir para lo unico que sirve.
 
-VeniceMAGI tenia tres puertas distintas —`/proxy` para la ventana de Edge,
+Venim tenia tres puertas distintas —`/proxy` para la ventana de Edge,
 `NOTRACK_PROXY` para el HTTP, `/vpn` para Ritsuko— y ninguna sabia de las
 otras. Estos tests fijan que ahora sea una sola, que la gobierne Ritsuko, y
 que el modo estricto signifique lo que dice.
@@ -16,11 +16,11 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.modules.infrastructure.ritsuko import (
+from venim.modules.infrastructure.ritsuko import (
     FAMILIAS_AUDITADAS,
     FAMILIAS_RITSUKO,
 )
-from vmagi.modules.infrastructure.ritsuko_red import (
+from venim.modules.infrastructure.ritsuko_red import (
     SALIDAS_CONOCIDAS,
     SalidaDeRed,
     SalidaNoDisponible,
@@ -69,7 +69,7 @@ def test_sin_salida_los_subprocesos_no_reciben_variables_vacias(monkeypatch):
 
 def test_la_puerta_de_edge_hereda_la_salida_del_sistema(monkeypatch):
     """La ventana del Guest no puede tener ruta propia si hay una global."""
-    from vmagi.venice.puerta import Puerta
+    from venim.venice.puerta import Puerta
 
     monkeypatch.setenv("RITSUKO_VPN", "http://127.0.0.1:8080")
     salida_de_ritsuko(recargar=True)
@@ -78,7 +78,7 @@ def test_la_puerta_de_edge_hereda_la_salida_del_sistema(monkeypatch):
 
 
 def test_el_http_del_sistema_hereda_la_salida(monkeypatch):
-    from vmagi.venice.privacidad import NotrackProvider
+    from venim.venice.privacidad import NotrackProvider
 
     monkeypatch.setenv("RITSUKO_VPN", "socks5://127.0.0.1:9050")
     salida_de_ritsuko(recargar=True)
@@ -171,8 +171,8 @@ def test_el_alcance_se_declara_en_el_estado():
 
 def test_ritsuko_senala_las_fugas_por_su_nombre(monkeypatch):
     """Un informe de privacidad que solo sabe decir «ok» no lo ha mirado."""
-    from vmagi.core.bus import MagiBus
-    from vmagi.modules.infrastructure.ritsuko import RitsukoAgent
+    from venim.core.bus import MagiBus
+    from venim.modules.infrastructure.ritsuko import RitsukoAgent
 
     salida_de_ritsuko(recargar=True)
     r = RitsukoAgent(MagiBus())
@@ -182,8 +182,8 @@ def test_ritsuko_senala_las_fugas_por_su_nombre(monkeypatch):
 
 
 def test_con_vpn_estricta_no_queda_fuga(monkeypatch):
-    from vmagi.core.bus import MagiBus
-    from vmagi.modules.infrastructure.ritsuko import RitsukoAgent
+    from venim.core.bus import MagiBus
+    from venim.modules.infrastructure.ritsuko import RitsukoAgent
 
     monkeypatch.setenv("RITSUKO_VPN", "socks5://127.0.0.1:9050")
     monkeypatch.setenv("RITSUKO_VPN_ESTRICTA", "1")
@@ -198,7 +198,7 @@ def test_con_vpn_estricta_no_queda_fuga(monkeypatch):
 def test_ritsuko_solo_mira_no_toca():
     """Las funciones nuevas son de LECTURA. Un auditor con permiso para
     arreglar acaba revisandose a si mismo."""
-    from vmagi.modules.infrastructure.ritsuko import RitsukoAgent
+    from venim.modules.infrastructure.ritsuko import RitsukoAgent
 
     for nombre in ("anonimato", "inventario_proveedores", "racion_del_dia"):
         assert hasattr(RitsukoAgent, nombre)

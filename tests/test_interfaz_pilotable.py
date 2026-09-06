@@ -3,7 +3,7 @@ Que la ventana se pueda pilotar sin ratón, y sin adivinar píxeles.
 
 LA AFIRMACIÓN QUE ESTOS TESTS PUEDEN REFUTAR
 ============================================
-«Todo lo que se puede pulsar en VeniceMAGI se puede alcanzar con el teclado y
+«Todo lo que se puede pulsar en Venim se puede alcanzar con el teclado y
 se puede nombrar en voz alta.»
 
 Refutada el 2026-09-05 contando sobre el código. Las doce pestañas del panel
@@ -33,7 +33,7 @@ import re
 import pytest
 
 RAIZ = pathlib.Path(__file__).resolve().parents[1]
-VENTANA = RAIZ / "vmagi-gui" / "src"
+VENTANA = RAIZ / "venim-gui" / "src"
 
 #: Un elemento no interactivo al que se le cuelga un `onClick`. React lo
 #: acepta y el navegador lo pinta; el teclado no lo ve.

@@ -16,8 +16,8 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.modules.studio import bucle as B
-from vmagi.modules.studio import estilo as E
+from venim.modules.studio import bucle as B
+from venim.modules.studio import estilo as E
 
 sin_ffmpeg = pytest.mark.skipif(
     not (shutil.which("ffmpeg") and shutil.which("ffprobe")),

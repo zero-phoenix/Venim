@@ -28,7 +28,7 @@ import sys
 
 import pytest
 
-from vmagi.modules.skills.loader import AASLoader
+from venim.modules.skills.loader import AASLoader
 
 _PESADOS = {"sklearn", "scipy", "joblib"}
 

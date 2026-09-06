@@ -12,7 +12,7 @@ import subprocess
 
 import pytest
 
-from vmagi.core import no_browser
+from venim.core import no_browser
 
 
 @pytest.fixture(autouse=True)
@@ -111,7 +111,7 @@ def test_cloudflare_se_detecta_aunque_declare_que_no_usa_navegador():
     dejó pasar el fallo; hay que detectarlo por lo que hace.
     """
     P = pytest.importorskip("g4f.Provider")
-    from vmagi.core.providers.backends.g4f_backend import _uses_browser
+    from venim.core.providers.backends.g4f_backend import _uses_browser
 
     cf = getattr(P, "Cloudflare", None)
     if cf is None:
@@ -124,7 +124,7 @@ def test_cloudflare_se_detecta_aunque_declare_que_no_usa_navegador():
 
 def test_deepinfra_tambien_se_detecta():
     P = pytest.importorskip("g4f.Provider")
-    from vmagi.core.providers.backends.g4f_backend import _uses_browser
+    from venim.core.providers.backends.g4f_backend import _uses_browser
 
     di = getattr(P, "DeepInfra", None)
     if di is None:
@@ -146,7 +146,7 @@ def test_los_candidatos_con_navegador_van_al_final_de_la_cola():
     # que nada avisara: una familia sin candidatos de navegador cumple
     # `marcas == sorted(marcas)` trivialmente.
     from tests.conftest import _FAMILIA_CON_NAVEGADOR
-    from vmagi.core.providers.backends.g4f_backend import (
+    from venim.core.providers.backends.g4f_backend import (
         G4FProvider,
         _resolve,
         _uses_browser,

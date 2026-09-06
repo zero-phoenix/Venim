@@ -22,7 +22,7 @@ from pathlib import Path
 import pytest
 from source_helpers import code_of
 
-from vmagi.core.store.state import TaskStore
+from venim.core.store.state import TaskStore
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -65,7 +65,7 @@ def test_el_enjambre_llama_a_record_usage():
     EL FALLO. Sin esta llamada todo lo demás es decorado: el esquema existe,
     los métodos existen, y la tabla no recibe una fila en su vida.
     """
-    src = (ROOT / "vmagi/modules/swarm/agents.py").read_text(encoding="utf-8")
+    src = (ROOT / "venim/modules/swarm/agents.py").read_text(encoding="utf-8")
     assert "record_usage(" in src, \
         "el enjambre no registra el gasto: token_ledger seguirá vacía"
     assert "task.usage" in src, \
@@ -78,7 +78,7 @@ def test_los_tokens_del_turno_no_se_quedan_en_el_log():
     dentro de `turn.summary()`, que es una cadena para el log. Un dato que
     solo existe formateado no es un dato.
     """
-    src = (ROOT / "vmagi/modules/swarm/agents.py").read_text(encoding="utf-8")
+    src = (ROOT / "venim/modules/swarm/agents.py").read_text(encoding="utf-8")
     assert "turn.tokens_in" in src and "turn.tokens_out" in src
 
 
@@ -89,7 +89,7 @@ def test_contabilizar_no_puede_tumbar_el_turno():
     """
     import inspect
 
-    from vmagi.modules.swarm.agents import SwarmAgentBase
+    from venim.modules.swarm.agents import SwarmAgentBase
     src = inspect.getsource(SwarmAgentBase._record_usage)
     assert src.count("except Exception") >= 2, \
         "registrar y publicar el gasto deben ir protegidos por separado"
@@ -98,8 +98,8 @@ def test_contabilizar_no_puede_tumbar_el_turno():
 @pytest.mark.asyncio
 async def test_el_gasto_llega_al_bus():
     """De extremo a extremo sin red: se publica lo que la interfaz necesita."""
-    from vmagi.core.bus import BusEvent, MagiBus
-    from vmagi.modules.swarm.agents import SwarmAgentBase
+    from venim.core.bus import BusEvent, MagiBus
+    from venim.modules.swarm.agents import SwarmAgentBase
 
     class TurnoFalso:
         provider_id, tokens_in, tokens_out = "g4f-deepseek", 120, 340
@@ -127,13 +127,13 @@ async def test_el_gasto_llega_al_bus():
 # ------------------------------------------------------ el lado de la interfaz
 
 def test_la_interfaz_escucha_el_gasto():
-    socket = (ROOT / "vmagi-gui/src/useMagiSocket.ts").read_text(encoding="utf-8")
+    socket = (ROOT / "venim-gui/src/useMagiSocket.ts").read_text(encoding="utf-8")
     assert "task.usage" in socket, \
         "el backend publica el gasto y la interfaz no lo escucha"
 
 
 def test_el_panel_de_coste_esta_conectado():
-    app = (ROOT / "vmagi-gui/src/App.tsx").read_text(encoding="utf-8")
+    app = (ROOT / "venim-gui/src/App.tsx").read_text(encoding="utf-8")
     codigo = re.sub(r"/\*.*?\*/|//[^\n]*", "", app, flags=re.S)
     assert "CostPanel" in codigo
     assert '"Coste"' in codigo, "la pestaña no aparece en la barra"
@@ -144,8 +144,8 @@ def test_el_payload_trae_lo_que_el_panel_agrega():
     Contrato: si el backend deja de mandar un campo, el panel no da error —
     muestra NaN o cero, que es peor.
     """
-    agents = (ROOT / "vmagi/modules/swarm/agents.py").read_text(encoding="utf-8")
-    cost = (ROOT / "vmagi-gui/src/lib/cost.ts").read_text(encoding="utf-8")
+    agents = (ROOT / "venim/modules/swarm/agents.py").read_text(encoding="utf-8")
+    cost = (ROOT / "venim-gui/src/lib/cost.ts").read_text(encoding="utf-8")
     campos = re.search(r"interface UsageEntry \{(.*?)\n\}", cost, re.S).group(1)
     for campo in re.findall(r"^\s*(\w+):", campos, re.M):
         if campo == "id":          # lo pone el store al recibir
@@ -163,7 +163,7 @@ def test_el_terminal_no_crece_sin_limite():
     con un useEffect que se dispara en cada línea nueva. La salida de un solo
     `grep` son cientos de líneas seguidas.
     """
-    store = code_of(ROOT / "vmagi-gui/src/store.ts")
+    store = code_of(ROOT / "venim-gui/src/store.ts")
     assert "appendBounded" in store, "el terminal vuelve a crecer sin límite"
     assert "state.terminalOutput + text" not in store
 
@@ -173,7 +173,7 @@ def test_la_aprobacion_no_se_detecta_escaneando_el_terminal():
     Se buscaba la frase dentro de todo el historial en cada repintado. Ahora
     la bandera se pone cuando llega el texto, una sola vez.
     """
-    codigo = code_of(ROOT / "vmagi-gui/src/App.tsx")
+    codigo = code_of(ROOT / "venim-gui/src/App.tsx")
     assert 'terminalOutput.includes(' not in codigo, \
         "vuelve a escanearse el terminal entero en cada repintado"
     assert "awaitingApproval" in codigo
@@ -184,6 +184,6 @@ def test_la_lista_de_mensajes_esta_acotada():
     Lo caro no era el `.map` (3 ms por 50 repintados de 800 mensajes) sino
     montar un ReactMarkdown por mensaje. Se arregla no montándolos.
     """
-    codigo = code_of(ROOT / "vmagi-gui/src/App.tsx")
+    codigo = code_of(ROOT / "venim-gui/src/App.tsx")
     assert "tail(messages)" in codigo
     assert "{messages.map(" not in codigo, "se vuelven a pintar todos"

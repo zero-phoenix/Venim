@@ -12,10 +12,10 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.blackboard import Blackboard
-from vmagi.core.bus import MagiBus
-from vmagi.modules.swarm.intencion import pide_artefacto
-from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+from venim.core.blackboard import Blackboard
+from venim.core.bus import MagiBus
+from venim.modules.swarm.intencion import pide_artefacto
+from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
 
 @pytest.mark.parametrize("texto", [

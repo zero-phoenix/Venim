@@ -33,7 +33,7 @@ import pathlib
 
 import pytest
 
-from vmagi.modules.infrastructure.ritsuko import RitsukoAgent
+from venim.modules.infrastructure.ritsuko import RitsukoAgent
 
 
 def _auditora(eventos: list[dict]) -> RitsukoAgent:
@@ -90,7 +90,7 @@ def test_la_regla_esta_escrita_en_el_prompt():
     hay que decirle explícitamente qué significa «sin actividad». Sin la regla,
     nada le impide volver a firmar EMPEORA sobre un sistema intacto.
     """
-    fuente = (pathlib.Path(__file__).resolve().parents[1] / "vmagi" / "modules"
+    fuente = (pathlib.Path(__file__).resolve().parents[1] / "venim" / "modules"
               / "infrastructure" / "ritsuko.py").read_text(encoding="utf-8")
     assert "SIN ACTIVIDAD NO HAY AVERIA" in fuente
     assert "sin_actividad" in fuente

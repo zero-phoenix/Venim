@@ -6,20 +6,20 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.core import paths
-from vmagi.core.agent_loop import _trim, run_agent
-from vmagi.core.context import ExecutionContext, GitInfo, HostInfo
-from vmagi.core.prompts import NARRATIVE_STYLES, build_system_prompt, style_fragment
-from vmagi.core.providers.backends.echo import EchoProvider
-from vmagi.core.providers.base import Message
-from vmagi.core.providers.registry import ProviderRegistry
-from vmagi.core.router import Route, classify, classify_heuristic
-from vmagi.core.tools import ToolContext, WriteJournal, build_registry
+from venim.core import paths
+from venim.core.agent_loop import _trim, run_agent
+from venim.core.context import ExecutionContext, GitInfo, HostInfo
+from venim.core.prompts import NARRATIVE_STYLES, build_system_prompt, style_fragment
+from venim.core.providers.backends.echo import EchoProvider
+from venim.core.providers.base import Message
+from venim.core.providers.registry import ProviderRegistry
+from venim.core.router import Route, classify, classify_heuristic
+from venim.core.tools import ToolContext, WriteJournal, build_registry
 
 # ----------------------------------------------------------------- rutas §1.3
 
 def test_paths_are_not_hardcoded_to_one_machine():
-    """v5.0.28 tenía 'D:/PROYECTOS/VeniceMAGI' en 8 sitios: el .exe de
+    """v5.0.28 tenía 'D:/PROYECTOS/Venim' en 8 sitios: el .exe de
     Releases no arrancaba en ninguna otra máquina."""
     assert paths.data_dir().exists()
     assert paths.workspace_dir().exists()
@@ -27,15 +27,15 @@ def test_paths_are_not_hardcoded_to_one_machine():
 
 
 def test_db_lives_outside_the_repo():
-    """venicemagi_brain.db acabó commiteado con datos reales dentro."""
+    """venim_brain.db acabó commiteado con datos reales dentro."""
     assert paths.db_path().parent == paths.data_dir()
-    assert paths.db_path().name == "venicemagi_brain.db"
+    assert paths.db_path().name == "venim_brain.db"
 
 
 def test_no_absolute_windows_paths_left_in_source():
     root = Path(__file__).resolve().parents[1]
     offenders = []
-    for py in (root / "vmagi").rglob("*.py"):
+    for py in (root / "venim").rglob("*.py"):
         if py.name in {"paths.py", "naoko_repair.py"}:
             continue          # solo los mencionan en documentación del bug
         text = py.read_text(encoding="utf-8", errors="replace")

@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core import consola
-from vmagi.modules.swarm import intencion
+from venim.core import consola
+from venim.modules.swarm import intencion
 
 # ============================================ absorción de peticiones nuevas
 
@@ -128,13 +128,13 @@ def test_los_nodos_ya_no_llevan_familias_muertas_cableadas():
     candidato vivo, se actualizó DEFAULT_SWARM_FAMILIES y a los agentes NO les
     llegó: cada ronda gastaba seis intentos condenados antes de acertar.
     """
-    from vmagi.core.blackboard import Blackboard
-    from vmagi.core.bus import MagiBus
-    from vmagi.core.providers.backends.g4f_backend import (
+    from venim.core.blackboard import Blackboard
+    from venim.core.bus import MagiBus
+    from venim.core.providers.backends.g4f_backend import (
         DEFAULT_SWARM_FAMILIES,
         VERIFIED_FAMILIES,
     )
-    from vmagi.modules.swarm.agents import (
+    from venim.modules.swarm.agents import (
         BalthasarAgent,
         CasperAgent,
         MelchiorAgent,
@@ -153,7 +153,7 @@ def test_los_nodos_ya_no_llevan_familias_muertas_cableadas():
     # `sitios_guest` desaparece: este test pasaba o fallaba según qué fichero
     # hubiera tocado un test anterior en la misma sesión. Un test cuyo
     # veredicto depende del orden de ejecución no mide lo que dice medir.
-    from vmagi.venice.sitios import SITIOS
+    from venim.venice.sitios import SITIOS
 
     guest_verificadas = {s.familia for s in SITIOS.values() if s.verificada}
 
@@ -172,7 +172,7 @@ def test_los_nodos_ya_no_llevan_familias_muertas_cableadas():
 
 
 def test_los_tres_nodos_siguen_en_familias_distintas():
-    from vmagi.core.providers.backends.g4f_backend import DEFAULT_SWARM_FAMILIES
+    from venim.core.providers.backends.g4f_backend import DEFAULT_SWARM_FAMILIES
     fams = list(DEFAULT_SWARM_FAMILIES.values())
     assert len(set(fams)) == len(fams), (
         "el crítico tiene que tener sesgos distintos al proponente (§1.1)")
@@ -196,7 +196,7 @@ def test_los_candidatos_rotos_no_se_intentan():
     # nombrando datos en vez de comprobar una propiedad.
     #
     # La propiedad es: ninguna familia, ninguna, ofrece un candidato roto.
-    from vmagi.core.providers.backends.g4f_backend import FAMILY_SPECS, ROTOS, G4FProvider
+    from venim.core.providers.backends.g4f_backend import FAMILY_SPECS, ROTOS, G4FProvider
 
     for familia in FAMILY_SPECS:
         p = G4FProvider(family=familia)
@@ -219,7 +219,7 @@ def test_una_familia_agotada_lo_dice_en_vez_de_fingir(monkeypatch):
     revivan todos los proveedores del mundo.
     """
     pytest.importorskip("g4f.Provider")
-    from vmagi.core.providers.backends import g4f_backend as g
+    from venim.core.providers.backends import g4f_backend as g
 
     monkeypatch.setitem(g.FAMILY_SPECS, "_agotada_de_prueba",
                         [("Claude", None), ("LMArena", "claude-sonnet-4")])
@@ -233,7 +233,7 @@ def test_una_familia_agotada_lo_dice_en_vez_de_fingir(monkeypatch):
 
 def test_las_familias_verificadas_si_tienen_candidatos():
     pytest.importorskip("g4f.Provider")
-    from vmagi.core.providers.backends.g4f_backend import (
+    from venim.core.providers.backends.g4f_backend import (
         VERIFIED_FAMILIES,
         G4FProvider,
     )

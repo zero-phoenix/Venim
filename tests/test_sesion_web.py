@@ -28,7 +28,7 @@ import time
 
 import pytest
 
-from vmagi.core import no_browser, sesion_web
+from venim.core import no_browser, sesion_web
 
 
 @pytest.fixture(autouse=True)
@@ -45,11 +45,11 @@ def datos_propios():
     Directorio de datos aislado del test en curso.
 
     Se apoya en la fixture `isolated_data_dir` de conftest (autouse), que ya
-    redirige VENICEMAGI_DATA_DIR y limpia la caché de `paths`. Sustituir `data_dir`
+    redirige VENIM_DATA_DIR y limpia la caché de `paths`. Sustituir `data_dir`
     con un lambda propio rompía ese teardown —espera una función cacheada— y
     dejaba seis tests en error por la fixture, no por el código.
     """
-    from vmagi.core.paths import data_dir
+    from venim.core.paths import data_dir
     return data_dir()
 
 

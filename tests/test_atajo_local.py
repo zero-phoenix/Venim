@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.modules.swarm import atajo
+from venim.modules.swarm import atajo
 
 # ============================== lo que SÍ debe atajar
 
@@ -119,7 +119,7 @@ def test_el_orquestador_lo_consulta_antes_de_gastar_red():
     tenía tests verdes y CERO llamantes en producción."""
     import inspect
 
-    from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+    from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
     fuente = inspect.getsource(SwarmOrchestrator)
     assert "_intentar_atajo" in fuente

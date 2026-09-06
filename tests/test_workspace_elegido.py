@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core import paths
+from venim.core import paths
 
 
 @pytest.fixture(autouse=True)
@@ -24,11 +24,11 @@ def datos_aislados(tmp_path, monkeypatch):
     """Cada test con su propio directorio de datos.
 
     Sin esto, el primer test que llame a `fija_workspace` escribiría en el
-    VeniceMAGI real del usuario. Un test que toca los datos de quien lo corre
+    Venim real del usuario. Un test que toca los datos de quien lo corre
     no es un test, es un efecto secundario.
     """
-    monkeypatch.setenv("VENICEMAGI_DATA_DIR", str(tmp_path / "datos"))
-    monkeypatch.delenv("VENICEMAGI_WORKSPACE", raising=False)
+    monkeypatch.setenv("VENIM_DATA_DIR", str(tmp_path / "datos"))
+    monkeypatch.delenv("VENIM_WORKSPACE", raising=False)
     paths.data_dir.cache_clear()
     paths.workspace_dir.cache_clear()
     yield
@@ -93,14 +93,14 @@ def test_un_fichero_no_vale_como_carpeta(tmp_path):
 
 
 def test_el_entorno_manda_sobre_la_eleccion(tmp_path, monkeypatch):
-    """`VENICEMAGI_WORKSPACE` gana, porque lo usan los scripts y el CI y
+    """`VENIM_WORKSPACE` gana, porque lo usan los scripts y el CI y
     tienen que poder fijar la carpeta sin tocar los datos del usuario."""
     elegido, forzado = tmp_path / "elegido", tmp_path / "forzado"
     elegido.mkdir()
     forzado.mkdir()
     paths.fija_workspace(elegido)
 
-    monkeypatch.setenv("VENICEMAGI_WORKSPACE", str(forzado))
+    monkeypatch.setenv("VENIM_WORKSPACE", str(forzado))
     paths.workspace_dir.cache_clear()
     assert paths.workspace_dir() == forzado.resolve()
 
@@ -127,7 +127,7 @@ async def test_el_retrato_avisa_cuando_la_carpeta_esta_vacia(tmp_path):
     prioridades, y ni una palabra sobre la única ruta que decidía si el sistema
     servía para algo.
     """
-    from vmagi.core.rpc.ws_server import WSServer
+    from venim.core.rpc.ws_server import WSServer
 
     s = object.__new__(WSServer)                # sin abrir sockets ni base
     retrato = s._retrato_workspace()
@@ -141,7 +141,7 @@ async def test_el_retrato_avisa_cuando_la_carpeta_esta_vacia(tmp_path):
 async def test_el_retrato_calla_cuando_hay_material(tmp_path):
     """Y no avisa cuando no hay de qué: un aviso que sale siempre es ruido, y
     el ruido enseña a saltarse los avisos."""
-    from vmagi.core.rpc.ws_server import WSServer
+    from venim.core.rpc.ws_server import WSServer
 
     proyecto = tmp_path / "con-codigo"
     (proyecto / "sub").mkdir(parents=True)

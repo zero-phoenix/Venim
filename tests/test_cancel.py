@@ -22,7 +22,7 @@ import sys
 import pytest
 from source_helpers import code_of
 
-from vmagi.core.cancel import CancelReport, TaskSupervisor, reset_supervisor, supervisor
+from venim.core.cancel import CancelReport, TaskSupervisor, reset_supervisor, supervisor
 
 
 @pytest.fixture(autouse=True)
@@ -155,7 +155,7 @@ async def test_da_el_margen_completo_antes_de_matar():
     """
     import time as _t
 
-    import vmagi.core.cancel as cancel_mod
+    import venim.core.cancel as cancel_mod
 
     sup = TaskSupervisor()
     proc = await _proceso_eterno()
@@ -293,7 +293,7 @@ def test_ningun_bucle_del_enjambre_tira_su_handle():
     from pathlib import Path
 
     ruta = (Path(__file__).resolve().parents[1]
-            / "vmagi/modules/swarm/orchestrator.py")
+            / "venim/modules/swarm/orchestrator.py")
     arbol = ast.parse(ruta.read_text(encoding="utf-8"))
 
     tirados = []
@@ -314,7 +314,7 @@ def test_ningun_bucle_del_enjambre_tira_su_handle():
 def test_run_command_inscribe_su_subproceso():
     from pathlib import Path
     src = code_of(Path(__file__).resolve().parents[1]
-                  / "vmagi/core/tools/builtin.py")
+                  / "venim/core/tools/builtin.py")
     assert "register_process" in src, \
         "los procesos del agente quedan fuera del alcance de la parada"
     assert "forget_process" in src, \
@@ -326,7 +326,7 @@ def test_el_estop_del_kernel_cancela_de_verdad():
 
     from source_helpers import strip_py_comments
 
-    from vmagi.core.kernel import Kernel
+    from venim.core.kernel import Kernel
     src = strip_py_comments(inspect.getsource(Kernel._handle_estop).lstrip())
     assert "cancel_all" in src, "el botón de parada sigue sin parar nada"
     assert "EMERGENCY_STOP_TRIGGERED" not in src
@@ -336,7 +336,7 @@ def test_el_mensaje_de_contingencia_ya_no_promete_un_kill_switch():
     """Decía "aplicando kill-switch local automatizado" sin aplicar ninguno."""
     from pathlib import Path
     src = code_of(Path(__file__).resolve().parents[1]
-                  / "vmagi/modules/swarm/orchestrator.py")
+                  / "venim/modules/swarm/orchestrator.py")
     assert "kill-switch local automatizado" not in src
     assert "Procesos terminados:" in src
 
@@ -348,10 +348,10 @@ def test_la_interfaz_puede_parar_una_sola_tarea():
     """
     from pathlib import Path
     raiz = Path(__file__).resolve().parents[1]
-    socket = code_of(raiz / "vmagi-gui/src/useMagiSocket.ts")
+    socket = code_of(raiz / "venim-gui/src/useMagiSocket.ts")
     assert "task.cancel" in socket, "la interfaz no sabe pedir la cancelación"
     assert "task.cancelled" in socket, "no escucha el informe de lo que se paró"
-    app = code_of(raiz / "vmagi-gui/src/App.tsx")
+    app = code_of(raiz / "venim-gui/src/App.tsx")
     assert "cancelTask" in app and "PARAR ESTA" in app
 
 
@@ -363,7 +363,7 @@ def test_la_auto_ejecucion_queda_bajo_el_supervisor():
     """
     from pathlib import Path
     src = code_of(Path(__file__).resolve().parents[1]
-                  / "vmagi/modules/swarm/orchestrator.py")
+                  / "venim/modules/swarm/orchestrator.py")
     i = src.find("auto_script")
     assert i > 0
     assert "register_process" in src[i:i + 3000], \
@@ -522,8 +522,8 @@ def test_parar_todo_no_se_manda_como_si_fuera_una_peticion_del_usuario():
     """
     from pathlib import Path
     raiz = Path(__file__).resolve().parents[1]
-    socket = code_of(raiz / "vmagi-gui/src/useMagiSocket.ts")
-    app = code_of(raiz / "vmagi-gui/src/App.tsx")
+    socket = code_of(raiz / "venim-gui/src/useMagiSocket.ts")
+    app = code_of(raiz / "venim-gui/src/App.tsx")
 
     assert "sendCommand(\"KILL_ALL_PROCESSES\")" not in app, \
         "el botón de parada vuelve a mandarse como comando de usuario"
@@ -541,9 +541,9 @@ def test_todos_los_subprocesos_quedan_bajo_el_supervisor():
     """
     from pathlib import Path
     raiz = Path(__file__).resolve().parents[1]
-    for fichero in ("vmagi/core/verification.py",
-                    "vmagi/modules/studio/video.py",
-                    "vmagi/modules/studio/artifacts.py"):
+    for fichero in ("venim/core/verification.py",
+                    "venim/modules/studio/video.py",
+                    "venim/modules/studio/artifacts.py"):
         src = code_of(raiz / fichero)
         assert "create_subprocess" in src, f"{fichero}: cambió de forma"
         assert "tracked(" in src or "register_process" in src, \
@@ -558,7 +558,7 @@ def test_la_parada_del_enjambre_persiste_el_estado():
     """
     from pathlib import Path
     src = code_of(Path(__file__).resolve().parents[1]
-                  / "vmagi/modules/swarm/orchestrator.py")
+                  / "venim/modules/swarm/orchestrator.py")
     i = src.find("EMERGENCY STOP TRIGGERED")
     assert i > 0
     assert "_persist" in src[i:i + 900], \
@@ -578,7 +578,7 @@ async def test_un_bucle_que_no_suelta_no_cuenta_como_cancelado():
     aquí se informa de lo que se paró REALMENTE — eso solo valía para los
     procesos.
     """
-    import vmagi.core.cancel as mod
+    import venim.core.cancel as mod
 
     sup = TaskSupervisor()
     empezado = asyncio.Event()

@@ -37,7 +37,7 @@ import asyncio
 
 import pytest
 
-from vmagi.core.bus import BusEvent, MagiBus
+from venim.core.bus import BusEvent, MagiBus
 
 
 async def _bus_con_suscriptor(topic: str = "x"):

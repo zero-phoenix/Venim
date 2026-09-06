@@ -15,8 +15,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from vmagi.core.bus import MagiBus
-from vmagi.modules.swarm.agents import MelchiorAgent
+from venim.core.bus import MagiBus
+from venim.modules.swarm.agents import MelchiorAgent
 
 
 def _generador(respuestas_por_familia: dict):

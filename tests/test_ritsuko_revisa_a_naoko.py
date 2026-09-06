@@ -33,8 +33,8 @@ import time
 
 import pytest
 
-from vmagi.core.bus import BusEvent, MagiBus
-from vmagi.modules.infrastructure.ritsuko import RitsukoAgent
+from venim.core.bus import BusEvent, MagiBus
+from venim.modules.infrastructure.ritsuko import RitsukoAgent
 
 
 def _auditora(eventos=None) -> RitsukoAgent:
@@ -142,6 +142,6 @@ async def test_esta_suscrita_a_las_derivas():
     arreglar nada.
     """
     import pathlib
-    fuente = (pathlib.Path(__file__).resolve().parents[1] / "vmagi" / "modules"
+    fuente = (pathlib.Path(__file__).resolve().parents[1] / "venim" / "modules"
               / "infrastructure" / "ritsuko.py").read_text(encoding="utf-8")
     assert 'subscribe("provider.model_drift", self._revisar_deriva)' in fuente

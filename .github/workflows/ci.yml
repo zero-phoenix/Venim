@@ -49,7 +49,7 @@ name: CI
 
 on:
   push:
-    branches: [main, "vmagi-*"]
+    branches: [main, "venim-*"]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -89,7 +89,7 @@ jobs:
     # Se instala de requirements.txt y NO se enumeran paquetes aquí. La lista
     # a mano se quedó atrás dos veces: primero sin `websockets` (lo importa
     # test_rpc_transport arriba) y después sin `numpy`/`scikit-learn` (los
-    # importa vmagi/modules/skills/loader.py, que carga el kernel). En ambos
+    # importa venim/modules/skills/loader.py, que carga el kernel). En ambos
     # casos la suite entera se caía en el runner y el release se quedaba sin
     # .exe. test_wiring.py::test_los_workflows_instalan_desde_requirements
     # impide volver a enumerar.
@@ -121,10 +121,10 @@ jobs:
     - name: Run tests
       run: python -m pytest tests/ -v --tb=short -m "not slow"
 
-    # Cobertura de vmagi/core/ (informativa). continue-on-error: la cobertura
+    # Cobertura de venim/core/ (informativa). continue-on-error: la cobertura
     # está hoy en ~79%; cuando suba, se puede convertir en umbral bloqueante.
     # Solo en Linux para no duplicar el reporte en la matriz de OS.
-    - name: Coverage report (vmagi/core)
+    - name: Coverage report (venim/core)
       if: runner.os == 'Linux'
       continue-on-error: true
       # `-m "not slow"` NO es un atajo para ir más rápido: es que este paso
@@ -135,18 +135,18 @@ jobs:
       # media hora de runner por un número que ni siquiera puede tumbar la
       # compilación.
       #
-      # Y esos tests no aportan cobertura de `vmagi/core`: lo que ejercitan es
+      # Y esos tests no aportan cobertura de `venim/core`: lo que ejercitan es
       # PyInstaller. Se miden las 1000 pruebas rápidas, que es de donde sale
       # el número que interesa.
-      run: python -m pytest tests/ -q -m "not slow" --cov=vmagi/core --cov-report=term --cov-config=/dev/null
+      run: python -m pytest tests/ -q -m "not slow" --cov=venim/core --cov-report=term --cov-config=/dev/null
 
     - name: Check imports resolve
       run: |
         python -c "
-        import vmagi.core.paths, vmagi.core.context, vmagi.core.router
-        import vmagi.core.prompts, vmagi.core.agent_loop
-        import vmagi.core.providers.registry, vmagi.core.providers.cloud
-        import vmagi.core.tools
+        import venim.core.paths, venim.core.context, venim.core.router
+        import venim.core.prompts, venim.core.agent_loop
+        import venim.core.providers.registry, venim.core.providers.cloud
+        import venim.core.tools
         print('todos los módulos del núcleo importan')
         "
 
@@ -168,12 +168,12 @@ jobs:
       run: pip install -r requirements-dev.txt
 
     - name: Syntax and undefined names (bloqueante)
-      run: ruff check vmagi/ tests/ --select E9,F63,F7,F82
+      run: ruff check venim/ tests/ --select E9,F63,F7,F82
 
     - name: Lint completo (bloqueante — deuda a cero el 2026-08-16)
       # E501 está excluido en pyproject.toml (268 líneas, deuda de estilo).
       # El resto SÍ bloquea: si esto falla, es un error real, no estilo.
-      run: ruff check vmagi/ tests/
+      run: ruff check venim/ tests/
 
     - name: Audit de dependencias Python (bloqueante)
       # pip-audit contra requirements.txt: 2026-08-16 encontró requests
@@ -186,8 +186,8 @@ jobs:
 
     - name: Audit de dependencias npm (bloqueante)
       # La GUI Tauri también cuenta: dompurify <=3.4.12 (vía monaco-editor)
-      # se corrigió con un override a ^3.4.13 en vmagi-gui/package.json.
-      working-directory: ./vmagi-gui
+      # se corrigió con un override a ^3.4.13 en venim-gui/package.json.
+      working-directory: ./venim-gui
       run: npm audit --omit=dev
 
     # pyright necesita poder IMPORTAR lo que el nucleo importa (pydantic,
@@ -200,33 +200,33 @@ jobs:
         pip install -r requirements.txt
 
     - name: Type check nucleo (bloqueante — a cero el 2026-08-16)
-      # pyright lee pyrightconfig.json. vmagi/core esta limpio desde el
+      # pyright lee pyrightconfig.json. venim/core esta limpio desde el
       # 2026-08-16 (26 errores -> 0, y dos bugs reales en el camino: la sonda
       # de latencia muerta por un import equivocado y t.nombre() llamando a
       # una property). Lo que esta a cero se queda bloqueante.
       run: |
         pip install pyright
-        pyright vmagi/core
+        pyright venim/core
 
     - name: Type check resto (informativo)
-      # vmagi/modules todavia tiene deuda de tipado. Misma idea que con ruff:
+      # venim/modules todavia tiene deuda de tipado. Misma idea que con ruff:
       # visibilidad progresiva; cuando llegue a cero, pasa a bloqueante.
       continue-on-error: true
-      run: pyright vmagi/
+      run: pyright venim/
 
     - name: No hardcoded machine paths
       run: |
-        if grep -rnE "D:/PROYECTOS\|d:/PROYECTOS\|C:\\\\Users\\\\[A-Za-z]" --include="*.py" vmagi/ \
+        if grep -rnE "D:/PROYECTOS\|d:/PROYECTOS\|C:\\\\Users\\\\[A-Za-z]" --include="*.py" venim/ \
            | grep -v "paths.py" | grep -v "naoko_repair.py" | grep -v "_attic"; then
-          echo "::error::Ruta absoluta a una máquina concreta. Usa vmagi.core.paths."
+          echo "::error::Ruta absoluta a una máquina concreta. Usa venim.core.paths."
           exit 1
         fi
         echo "sin rutas absolutas"
 
     - name: Database must not be committed
       run: |
-        if git ls-files | grep -q "venicemagi_brain.db"; then
-          echo "::error::venicemagi_brain.db versionado (contiene datos reales del usuario)"
+        if git ls-files | grep -q "venim_brain.db"; then
+          echo "::error::venim_brain.db versionado (contiene datos reales del usuario)"
           exit 1
         fi
         echo "base de datos fuera del repositorio"
@@ -238,7 +238,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: vmagi-gui
+        working-directory: venim-gui
     steps:
     - uses: actions/checkout@v4
 
@@ -246,7 +246,7 @@ jobs:
       with:
         node-version: '22'
         cache: 'npm'
-        cache-dependency-path: vmagi-gui/package-lock.json
+        cache-dependency-path: venim-gui/package-lock.json
 
     - name: Install dependencies
       run: npm ci

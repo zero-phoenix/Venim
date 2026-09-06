@@ -36,7 +36,7 @@ se omite.
 
 | Bloque | Por qué se queda fuera |
 |---|---|
-| **C6** | El `TypeError: argument of type 'NoneType' is not iterable` de HuggingSpace no se reproduce sin llamar al proveedor real, y arreglar a ciegas un adaptador de terceros es cómo se meten fallos peores. Queda con la evidencia guardada (`docs/comparativa/prueba-A-vmagi.json`) para atacarlo cuando se pueda reproducir. Lo que **sí** está hecho es que un proveedor roto ya no se confunde con uno agotado en el camino del árbitro (C11). |
+| **C6** | El `TypeError: argument of type 'NoneType' is not iterable` de HuggingSpace no se reproduce sin llamar al proveedor real, y arreglar a ciegas un adaptador de terceros es cómo se meten fallos peores. Queda con la evidencia guardada (`docs/comparativa/prueba-A-venim.json`) para atacarlo cuando se pueda reproducir. Lo que **sí** está hecho es que un proveedor roto ya no se confunde con uno agotado en el camino del árbitro (C11). |
 | **B3** | Caché de propuesta por (tarea, ronda, rama). Es la mejora con más riesgo de todas: una caché mal invalidada devuelve la propuesta anterior y el usuario ve un sistema que ignora sus correcciones. Se hace después de B4, con las medidas de B4 delante. |
 | **B5** | Una sola política de selección consultada desde las dos puertas. Requiere tocar `ProviderRegistry` en su camino más caliente; con B4 recién metido, hacerlo a la vez impediría saber cuál de los dos cambios movió los números. |
 | **B7** | Subir el factor de solape de 1,4× a 2,5×. Aquí no hay diagnóstico todavía: sé que hay 294 s de espera en 206 s de pared, pero no dónde se serializa. Reducir el candado «por si acaso» es exactamente el tipo de cambio que introduce carreras. Primero medir, después tocar. |

@@ -32,7 +32,7 @@ import time
 
 import pytest
 
-from vmagi.core.providers.base import (
+from venim.core.providers.base import (
     CompletionRequest,
     CompletionResponse,
     Message,
@@ -73,8 +73,8 @@ class ProveedorRapido:
 def _registro(reg_cls, proveedores):
     """Un ProviderRegistry con los candidatos que se le den, sin red."""
     r = reg_cls.__new__(reg_cls)
-    from vmagi.core.providers.cache import TTLCache
-    from vmagi.core.providers.circuit import CircuitBreaker
+    from venim.core.providers.cache import TTLCache
+    from venim.core.providers.circuit import CircuitBreaker
 
     class Entrada:
         def __init__(self, p):
@@ -95,7 +95,7 @@ def _registro(reg_cls, proveedores):
 
 @pytest.fixture()
 def Registro():
-    from vmagi.core.providers.registry import ProviderRegistry
+    from venim.core.providers.registry import ProviderRegistry
     return ProviderRegistry
 
 
@@ -183,7 +183,7 @@ def test_la_capa_de_compatibilidad_pone_el_presupuesto():
     """
     import pathlib
 
-    fuente = (pathlib.Path(__file__).resolve().parents[1] / "vmagi" / "core"
+    fuente = (pathlib.Path(__file__).resolve().parents[1] / "venim" / "core"
               / "providers" / "cloud.py").read_text(encoding="utf-8")
     assert "presupuesto_s=150.0" in fuente, (
         "generate_text debe fijar el presupuesto de cadena")

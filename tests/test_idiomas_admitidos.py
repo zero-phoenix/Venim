@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core import idioma
+from venim.core import idioma
 
 # ------------------------------------------------ qué se acepta y qué no
 

@@ -20,7 +20,7 @@ import asyncio
 
 import pytest
 
-from vmagi.modules.swarm.subagentes import (
+from venim.modules.swarm.subagentes import (
     MAX_FRENTES,
     MIN_FRENTES_PARA_ABRIR,
     Abanico,
@@ -28,7 +28,7 @@ from vmagi.modules.swarm.subagentes import (
     reparte_encargo,
     resumen,
 )
-from vmagi.venice.modelos import (
+from venim.venice.modelos import (
     NODOS,
     FamiliaRepetida,
     catalogo_de_modelos,
@@ -185,19 +185,19 @@ def test_lo_que_no_se_cubrio_se_dice():
 
 async def test_balthasar_no_abre_subagentes():
     """Su turno ya es redundante por diseno: abrir mas es pagarlo dos veces."""
-    from vmagi.modules.swarm.agents import BalthasarAgent, MelchiorAgent
+    from venim.modules.swarm.agents import BalthasarAgent, MelchiorAgent
     assert BalthasarAgent.subagentes is False
     assert MelchiorAgent.subagentes is True
 
 
 async def test_un_abanico_roto_no_tumba_el_turno(monkeypatch):
     """Una optimizacion que puede dejarte sin respuesta no es una optimizacion."""
-    from vmagi.core.blackboard import Blackboard
-    from vmagi.core.bus import MagiBus
-    from vmagi.modules.swarm.agents import MelchiorAgent
+    from venim.core.blackboard import Blackboard
+    from venim.core.bus import MagiBus
+    from venim.modules.swarm.agents import MelchiorAgent
 
     a = MelchiorAgent(Blackboard(), MagiBus())
-    monkeypatch.setattr("vmagi.modules.swarm.subagentes.reparte_encargo",
+    monkeypatch.setattr("venim.modules.swarm.subagentes.reparte_encargo",
                         lambda *x, **k: (_ for _ in ()).throw(RuntimeError("boom")))
     encargo = "primera parte del encargo; segunda parte del encargo"
     assert await a._abanico("sys", encargo) == encargo
@@ -265,9 +265,9 @@ def test_el_informe_dice_de_donde_sale_cada_familia():
 def test_los_agentes_leen_el_reparto_efectivo():
     """Si leyeran el catalogo a secas, el mando cambiaria la interfaz y no
     los agentes — el mismo fallo de v5.0.28 una capa mas arriba."""
-    from vmagi.core.blackboard import Blackboard
-    from vmagi.core.bus import MagiBus
-    from vmagi.modules.swarm.agents import CasperAgent
+    from venim.core.blackboard import Blackboard
+    from venim.core.bus import MagiBus
+    from venim.modules.swarm.agents import CasperAgent
 
     fijar_familia("CASPER", "command")
     try:

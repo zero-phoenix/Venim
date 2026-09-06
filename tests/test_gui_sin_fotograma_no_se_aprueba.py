@@ -34,7 +34,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.verification import (
+from venim.core.verification import (
     _GUI_TIMEOUT_S,
     _MARCA_PRIMER_FOTOGRAMA,
     ProposalVerifier,
@@ -97,6 +97,6 @@ def test_el_guardian_imprime_la_marca():
     VERIFICADO» y el arreglo se convertiría en un bloqueo. La marca es la
     bisagra: tiene que estar en los dos sitios.
     """
-    from vmagi.core.verification import _GUI_GUARD
+    from venim.core.verification import _GUI_GUARD
 
     assert _MARCA_PRIMER_FOTOGRAMA in _GUI_GUARD

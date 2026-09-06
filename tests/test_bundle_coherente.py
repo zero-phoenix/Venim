@@ -3,7 +3,7 @@ Lo que el .spec deja fuera del .exe, el código no puede necesitarlo dentro.
 
 EL FALLO QUE ESTO IMPIDE
 ========================
-`VeniceMAGI.spec` excluye del binario una pila de ML que MAGI no usa y que
+`Venim.spec` excluye del binario una pila de ML que MAGI no usa y que
 entraba de polizón por una integración opcional de g4f:
 
     g4f/tools/files.py -> g4f.integration.markitdown -> markitdown
@@ -13,7 +13,7 @@ Excluirlos quitó peso y arregló además un cuelgue reproducible de la
 compilación (PyInstaller se quedaba parado en torch/__init__.py:265 resolviendo
 DLLs). Todo correcto.
 
-Pero esa exclusión es una AFIRMACIÓN sobre el código: «nada de vmagi/ importa
+Pero esa exclusión es una AFIRMACIÓN sobre el código: «nada de venim/ importa
 esto». Y esa afirmación no la vigila nadie. El día que alguien escriba
 `import torch` en un módulo —para una utilidad, para una prueba que se queda—
 pasará esto, en este orden:
@@ -38,8 +38,8 @@ import re
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parents[1]
-SPEC = RAIZ / "VeniceMAGI.spec"
-PAQUETE = RAIZ / "vmagi"
+SPEC = RAIZ / "Venim.spec"
+PAQUETE = RAIZ / "venim"
 
 #: se salta: andamiaje retirado, conservado como mapa y fuera del binario.
 IGNORADOS = {"_attic", "__pycache__"}
@@ -49,12 +49,12 @@ def _excluidos_del_spec() -> set[str]:
     """Los `excludes=[...]` del .spec, leídos del .spec y no copiados aquí."""
     texto = SPEC.read_text(encoding="utf-8")
     m = re.search(r"excludes\s*=\s*\[(.*?)\]", texto, re.DOTALL)
-    assert m, "no encuentro `excludes=[...]` en VeniceMAGI.spec"
+    assert m, "no encuentro `excludes=[...]` en Venim.spec"
     return set(re.findall(r"['\"]([A-Za-z0-9_.]+)['\"]", m.group(1)))
 
 
 def _modulos_importados_por_magi() -> dict[str, list[str]]:
-    """Raíz de cada módulo importado en `vmagi/`, con dónde se importa."""
+    """Raíz de cada módulo importado en `venim/`, con dónde se importa."""
     encontrados: dict[str, list[str]] = {}
     for fichero in PAQUETE.rglob("*.py"):
         if any(p in IGNORADOS for p in fichero.parts):
@@ -108,7 +108,7 @@ def test_nada_de_magi_importa_lo_que_el_spec_deja_fuera():
 
     choques = {mod: sitios for mod, sitios in importados.items() if mod in excluidos}
     assert not choques, (
-        "vmagi/ importa módulos que el .spec excluye del binario. El .exe "
+        "venim/ importa módulos que el .spec excluye del binario. El .exe "
         "publicado reventaría al arrancar, y ni los tests ni el CI lo verían "
         "porque en esas máquinas el paquete SÍ está instalado:\n" +
         "\n".join(f"  {mod}: {', '.join(sitios[:3])}"
@@ -119,16 +119,16 @@ def test_los_datos_que_el_exe_necesita_viajan_dentro():
     """
     `datas` del .spec contra lo que el sistema lee en tiempo de ejecución.
 
-    Un .exe sin `vmagi/data` arranca igual: se cae al respaldo de constantes y
+    Un .exe sin `venim/data` arranca igual: se cae al respaldo de constantes y
     funciona. Por eso este fallo es silencioso, y por eso se comprueba — lo que
     se pierde es justo lo que se buscaba al externalizar el catálogo: arreglar
     un proveedor caído sin recompilar 158 MB.
     """
     texto = SPEC.read_text(encoding="utf-8")
-    for necesario in ("vmagi/data", "vmagi-gui/dist", "assets"):
+    for necesario in ("venim/data", "venim-gui/dist", "assets"):
         assert necesario in texto, (
             f"'{necesario}' no viaja dentro del .exe según el .spec")
 
-    assert (RAIZ / "vmagi/data/catalogo_proveedores.json").exists(), (
+    assert (RAIZ / "venim/data/catalogo_proveedores.json").exists(), (
         "el catálogo de proveedores no está en el repositorio: el .spec lo "
         "empaquetaría vacío y el binario caería al respaldo sin avisar")

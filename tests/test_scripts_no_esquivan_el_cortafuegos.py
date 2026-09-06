@@ -103,7 +103,7 @@ def test_si_toca_g4f_instala_el_cortafuegos_antes(script: pathlib.Path):
         f"que la única ventana es la interfaz de MAGI.\n"
         f"\n"
         f"Pon esto ANTES de importar g4f:\n"
-        f"    from vmagi.core.no_browser import install as instalar_cortafuegos\n"
+        f"    from venim.core.no_browser import install as instalar_cortafuegos\n"
         f"    instalar_cortafuegos()")
 
     assert linea_install < linea_import, (

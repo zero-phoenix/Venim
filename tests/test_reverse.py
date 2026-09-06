@@ -6,15 +6,15 @@ si están, y si no, el resto sigue funcionando y lo dice.
 """
 import pytest
 
-from vmagi.core.tools import build_registry, registry_for_role
-from vmagi.modules.reverse.disasm import (
+from venim.core.tools import build_registry, registry_for_role
+from venim.modules.reverse.disasm import (
     available_tools,
     disassemble,
     extract_strings,
 )
-from vmagi.modules.reverse.emulate import differential_test, emulate
-from vmagi.modules.reverse.identify import CONSOLES, identify, profile
-from vmagi.modules.reverse.matrix import (
+from venim.modules.reverse.emulate import differential_test, emulate
+from venim.modules.reverse.identify import CONSOLES, identify, profile
+from venim.modules.reverse.matrix import (
     Reuse,
     analyze_port,
     compare_consoles,
@@ -283,7 +283,7 @@ def test_comparison_table_has_the_decisive_rows():
 
 def test_reverse_tools_are_in_the_swarm_catalog():
     """
-    Sin este enganche, todo vmagi/modules/reverse/ sería código correcto que
+    Sin este enganche, todo venim/modules/reverse/ sería código correcto que
     ningún agente puede invocar — el error que ya cometí tres veces.
     """
     names = set(build_registry().names())
@@ -339,7 +339,7 @@ def test_catalog_stays_within_a_free_provider_window():
     la firma de parámetros—, así que si esto vuelve a saltar la respuesta es
     reducir PARÁMETROS o afinar el dominio, no reescribir textos.
     """
-    from vmagi.core.tools import registry_for_role
+    from venim.core.tools import registry_for_role
 
     UN_DOMINIO = {
         "reverse": "portar el dynarec de PPSSPP a Vita",
@@ -361,7 +361,7 @@ def test_catalog_stays_within_a_free_provider_window():
 
 @pytest.mark.asyncio
 async def test_tools_execute_through_the_registry(tmp_path):
-    from vmagi.core.tools import ToolContext, WriteJournal
+    from venim.core.tools import ToolContext, WriteJournal
     ctx = ToolContext(task_id="t", cwd=tmp_path,
                       journal=WriteJournal("t", tmp_path / ".j"))
     reg = build_registry()

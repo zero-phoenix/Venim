@@ -88,9 +88,9 @@ def test_construir_el_kernel_no_carga_nada_pesado():
     tan tranquilo mientras el arranque seguía costando 3,4 s.
     """
     cargados, _ = _importar_en_proceso_limpio(
-        "from vmagi.core.kernel import Kernel\n"
+        "from venim.core.kernel import Kernel\n"
         "k = Kernel.__new__(Kernel)\n"
-        "from vmagi.modules.skills.loader import AASLoader\n"
+        "from venim.modules.skills.loader import AASLoader\n"
         "AASLoader(repo_path='/no/existe').load()\n"
     )
     assert not cargados, (
@@ -108,13 +108,13 @@ def test_importar_la_cadena_de_main_no_carga_nada_pesado():
     tiene sentido diferirla. Todo lo demás sí.
     """
     cargados, _ = _importar_en_proceso_limpio(
-        "from vmagi.core.no_browser import install\n"
-        "from vmagi.core.consola import configurar\n"
-        "from vmagi.gui_server import GUIServer\n"
-        "from vmagi.core.kernel import Kernel\n"
-        "from vmagi.modules.resilience.selector import CloudSelector\n"
-        "from vmagi.modules.route.gateway import Gateway\n"
-        "from vmagi.modules.memory.composer import Composer\n"
+        "from venim.core.no_browser import install\n"
+        "from venim.core.consola import configurar\n"
+        "from venim.gui_server import GUIServer\n"
+        "from venim.core.kernel import Kernel\n"
+        "from venim.modules.resilience.selector import CloudSelector\n"
+        "from venim.modules.route.gateway import Gateway\n"
+        "from venim.modules.memory.composer import Composer\n"
     )
     assert not cargados, (
         f"La cadena de arranque de main.py carga {', '.join(cargados)}. "
@@ -132,7 +132,7 @@ def test_el_catalogo_de_herramientas_no_carga_los_binarios():
     mismo que usarlo entero.
     """
     cargados, _ = _importar_en_proceso_limpio(
-        "from vmagi.core.tools import registry_for_role\n"
+        "from venim.core.tools import registry_for_role\n"
         "registry_for_role('MELCHIOR', task_hint='')\n"
     )
     assert not cargados, (

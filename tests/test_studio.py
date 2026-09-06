@@ -9,8 +9,8 @@ import asyncio
 
 import pytest
 
-from vmagi.core.tools import ToolContext, WriteJournal, build_registry
-from vmagi.modules.studio.artifacts import (
+from venim.core.tools import ToolContext, WriteJournal, build_registry
+from venim.modules.studio.artifacts import (
     ArtifactKind,
     Observation,
     available_backends,
@@ -232,7 +232,7 @@ def test_critic_and_judge_can_observe():
     Balthasar debe poder ARRANCAR el juego para criticarlo, y Casper mirar el
     artefacto en vez de fiarse del acta.
     """
-    from vmagi.core.tools import registry_for_role
+    from venim.core.tools import registry_for_role
     assert "observe_artifact" in registry_for_role("BALTHASAR").names()
     assert "observe_artifact" in registry_for_role("CASPER").names()
 
@@ -296,7 +296,7 @@ async def test_sin_pillow_un_juego_en_negro_no_pasa(tmp_path, monkeypatch):
     descripción decía «no se puede inspeccionar», no contenía "VACÍA", y un
     juego con la pantalla enteramente negra salía aprobado.
     """
-    import vmagi.modules.studio.artifacts as art
+    import venim.modules.studio.artifacts as art
 
     d = tmp_path / "juego"
     d.mkdir()
@@ -328,7 +328,7 @@ async def test_un_formato_de_datos_que_no_se_sabe_abrir_no_inventa_filas(tmp_pat
     108 bytes de basura pasaban como conjunto de datos válido. Inventar el
     dato es peor que no tenerlo.
     """
-    from vmagi.modules.studio.artifacts import observe_data
+    from venim.modules.studio.artifacts import observe_data
 
     p = tmp_path / "vacio.parquet"
     p.write_bytes(b"PAR1" + b"\x00" * 104)

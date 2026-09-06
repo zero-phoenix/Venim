@@ -8,16 +8,16 @@ import asyncio
 
 import pytest
 
-from vmagi.core.providers.backends.echo import EchoProvider
-from vmagi.core.providers.base import (
+from venim.core.providers.backends.echo import EchoProvider
+from venim.core.providers.base import (
     CompletionRequest,
     Message,
     ProviderError,
     ProviderState,
 )
-from vmagi.core.providers.cache import TTLCache, make_key
-from vmagi.core.providers.circuit import CircuitBreaker
-from vmagi.core.providers.registry import ProviderRegistry
+from venim.core.providers.cache import TTLCache, make_key
+from venim.core.providers.circuit import CircuitBreaker
+from venim.core.providers.registry import ProviderRegistry
 
 
 def _req(text="hola"):

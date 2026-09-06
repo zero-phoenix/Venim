@@ -10,8 +10,8 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core import idioma
-from vmagi.modules.studio import preview
+from venim.core import idioma
+from venim.modules.studio import preview
 
 # =========================================================== idioma
 
@@ -172,7 +172,7 @@ def test_el_self_test_no_cuenta_como_intento_de_abrir_navegador():
     contaba como violación y escupía un WARNING: el log se llenaba y Naoko
     informaba de intentos que nunca ocurrieron.
     """
-    from vmagi.core import no_browser
+    from venim.core import no_browser
     no_browser.install()
     antes = no_browser.violation_count()
     for _ in range(3):
@@ -206,8 +206,8 @@ def test_el_orden_pone_delante_al_candidato_mas_rapido(monkeypatch):
     tardara 13,9 s habiendo alternativas de 2 s en la misma familia.
     """
     pytest.importorskip("g4f.Provider")
-    from vmagi.core.providers.backends import g4f_backend as g
-    from vmagi.core.providers.backends.g4f_backend import G4FProvider
+    from venim.core.providers.backends import g4f_backend as g
+    from venim.core.providers.backends.g4f_backend import G4FProvider
 
     monkeypatch.setitem(g.FAMILY_SPECS, "_lab", list(_FAMILIA_DE_LABORATORIO))
     p = G4FProvider(family="_lab")
@@ -220,8 +220,8 @@ def test_el_orden_pone_delante_al_candidato_mas_rapido(monkeypatch):
 def test_la_latencia_es_una_media_movil(monkeypatch):
     """Un pico suelto no puede desterrar a un candidato que suele ir bien."""
     pytest.importorskip("g4f.Provider")
-    from vmagi.core.providers.backends import g4f_backend as g
-    from vmagi.core.providers.backends.g4f_backend import G4FProvider
+    from venim.core.providers.backends import g4f_backend as g
+    from venim.core.providers.backends.g4f_backend import G4FProvider
 
     monkeypatch.setitem(g.FAMILY_SPECS, "_lab", list(_FAMILIA_DE_LABORATORIO))
     p = G4FProvider(family="_lab")

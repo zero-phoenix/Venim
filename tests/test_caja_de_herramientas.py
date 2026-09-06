@@ -22,7 +22,7 @@ encargo, y mide si se usaron.
 """
 from __future__ import annotations
 
-from vmagi.modules.swarm import caja_de_herramientas as caja
+from venim.modules.swarm import caja_de_herramientas as caja
 
 
 def _nombres(encargo):

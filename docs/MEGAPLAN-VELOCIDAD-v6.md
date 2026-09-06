@@ -325,7 +325,7 @@ veredicto (prueba C). Lo cometí yo mismo en Ritsuko y ya está corregido con
 test; falta hacerlo en el resto del sistema.
 
 **Qué se hace:**
-1. Una función única —`es_degradada(texto, provider_id)`— en `vmagi/core/providers/base.py`,
+1. Una función única —`es_degradada(texto, provider_id)`— en `venim/core/providers/base.py`,
    y **todo** el que consuma una respuesta la usa: agentes, orquestador, Naoko.
 2. `agent_loop` devuelve también una marca máquina (`degraded=True` en
    `AgentTurn`), no solo un texto que empieza por corchete.
@@ -418,20 +418,20 @@ y sin test es una intención, no una tarea.
 
 | Bloque | Fichero(s) | Test que lo demuestra |
 |---|---|---|
-| C1 | `vmagi/modules/swarm/orchestrator.py` (`_orchestrate_loop`, publicación del veredicto) | `tests/test_arbitro_no_aprueba_a_ciegas.py` |
+| C1 | `venim/modules/swarm/orchestrator.py` (`_orchestrate_loop`, publicación del veredicto) | `tests/test_arbitro_no_aprueba_a_ciegas.py` |
 | C2 | `orchestrator.py` (`_publish_approval`) | mismo test: la propuesta viaja en el mensaje |
 | C3 | `agents.py::_ask_with_tools`, `agent_loop.py::run_agent` (`iteration_timeout_s`) | `tests/test_presupuesto_tarea.py` (ampliar) |
-| C4 | `orchestrator.py` + `vmagi/modules/swarm/intencion.py` | `tests/test_contrato_de_entregable.py` |
-| C5 | `vmagi/core/tools/__init__.py::registry_for_role`, prompts de `agents.py` | `tests/test_wiring.py` (ampliar: herramientas ofrecidas vs usadas) |
-| C6 | `vmagi/core/providers/backends/g4f_backend.py` (adaptador HuggingSpace) | test con respuesta `None` del proveedor |
-| C7 | `vmagi/core/verification.py::ProposalVerifier.verify` | `tests/test_verificacion_vacia.py` |
+| C4 | `orchestrator.py` + `venim/modules/swarm/intencion.py` | `tests/test_contrato_de_entregable.py` |
+| C5 | `venim/core/tools/__init__.py::registry_for_role`, prompts de `agents.py` | `tests/test_wiring.py` (ampliar: herramientas ofrecidas vs usadas) |
+| C6 | `venim/core/providers/backends/g4f_backend.py` (adaptador HuggingSpace) | test con respuesta `None` del proveedor |
+| C7 | `venim/core/verification.py::ProposalVerifier.verify` | `tests/test_verificacion_vacia.py` |
 | C8 | `scripts/auditar_sistema.py` + `ritsuko.evidencia()` | el propio informe de auditoría |
-| C9 / C16 | `vmagi/modules/studio/entrega.py`, `packager.py` | `tests/test_entrega_artefactos.py` (ampliar) |
+| C9 / C16 | `venim/modules/studio/entrega.py`, `packager.py` | `tests/test_entrega_artefactos.py` (ampliar) |
 | C10 | prompts de `agents.py` (especificación y crítica) | revisión del prompt en `tests/test_prompts.py` |
-| C11 | `vmagi/core/providers/base.py` (nueva `es_degradada`), `agent_loop.py` | `tests/test_ritsuko.py` (ya) + uno en el orquestador |
+| C11 | `venim/core/providers/base.py` (nueva `es_degradada`), `agent_loop.py` | `tests/test_ritsuko.py` (ya) + uno en el orquestador |
 | C12 | `orchestrator.py` (contraste síntesis ↔ registro) | `tests/test_contrato_de_entregable.py` |
-| C13 | `vmagi/modules/infrastructure/naoko.py::_check_drift` | `tests/test_sonda_no_envenena.py` (ampliar) |
-| C14 | `vmagi/modules/infrastructure/ritsuko.py::_pensar` | `tests/test_ritsuko.py::test_ritsuko_no_comparte_familia` |
+| C13 | `venim/modules/infrastructure/naoko.py::_check_drift` | `tests/test_sonda_no_envenena.py` (ampliar) |
+| C14 | `venim/modules/infrastructure/ritsuko.py::_pensar` | `tests/test_ritsuko.py::test_ritsuko_no_comparte_familia` |
 | C15 | prompt de Casper en `agents.py` | revisión del prompt |
 
 ## Orden final, con las tres pruebas encima de la mesa

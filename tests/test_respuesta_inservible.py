@@ -30,7 +30,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.providers.backends.g4f_backend import (
+from venim.core.providers.backends.g4f_backend import (
     MINIMO_UTIL,
     por_que_es_inservible,
 )
@@ -103,7 +103,7 @@ def test_esta_conectado_donde_importa():
     import inspect
     import textwrap
 
-    from vmagi.core.providers.backends import g4f_backend
+    from venim.core.providers.backends import g4f_backend
 
     # `textwrap.dedent` no es adorno: `inspect.getsource` de un método devuelve
     # el fuente CON su indentación de clase, y `ast.parse` lo rechaza con

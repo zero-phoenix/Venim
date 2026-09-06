@@ -19,7 +19,7 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.modules.swarm import ronda_verificada as rv
+from venim.modules.swarm import ronda_verificada as rv
 
 
 @pytest.mark.parametrize("encargo", [

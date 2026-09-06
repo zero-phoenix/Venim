@@ -7,7 +7,7 @@ mencionó el abandono ni una vez**. Nadie lo notó porque nadie llevaba la lista
 """
 from __future__ import annotations
 
-from vmagi.modules.swarm import contrato
+from venim.modules.swarm import contrato
 
 PING_PONG = "Crea un juego de ping pong de 32 bits a todo color en un unico ejecutable exe portable."
 NDS_PSP = ("Disena el plan para portar un emulador de NDS a PSP. Di que se "

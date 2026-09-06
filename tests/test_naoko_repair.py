@@ -16,7 +16,7 @@ fallo no pueda repetirse en silencio.
 """
 import pytest
 
-from vmagi.modules.infrastructure.naoko_repair import (
+from venim.modules.infrastructure.naoko_repair import (
     RepairOutcome,
     RepairReport,
     current_version,
@@ -59,14 +59,14 @@ def test_rejects_malformed():
 
 
 def test_patch_increments_correctly(monkeypatch):
-    import vmagi.modules.infrastructure.naoko_repair as nr
+    import venim.modules.infrastructure.naoko_repair as nr
     monkeypatch.setattr(nr, "current_version", lambda root=None: "v5.0.28")
     assert nr.next_patch_version() == "v5.0.29"
 
 
 def test_report_renders_outcome():
     r = RepairReport(RepairOutcome.FIXED, hypothesis="timeout ausente",
-                     files_touched=["vmagi/core/providers/cloud.py"],
+                     files_touched=["venim/core/providers/cloud.py"],
                      branch="naoko/fix-1")
     out = r.render()
     assert r.success and "fixed" in out and "cloud.py" in out
@@ -99,7 +99,7 @@ def test_naoko_source_no_longer_defaults_to_v100():
     """Guarda directa: el default peligroso no puede volver al código."""
     from pathlib import Path
     src = _executable_source(Path(__file__).resolve().parents[1]
-                             / "vmagi/modules/infrastructure/naoko.py")
+                             / "venim/modules/infrastructure/naoko.py")
     assert "'v1.0.0'" not in src and '"v1.0.0"' not in src
     assert "git add ." not in src, "git add . arrastraba todo el árbol de trabajo"
 
@@ -109,6 +109,6 @@ def test_naoko_no_longer_appends_to_readme():
     crecía sin fin y quedó con una frase cortada a medias."""
     from pathlib import Path
     src = _executable_source(Path(__file__).resolve().parents[1]
-                             / "vmagi/modules/infrastructure/naoko.py")
+                             / "venim/modules/infrastructure/naoko.py")
     assert "readme_content +=" not in src
     assert "Actualización Autónoma" not in src

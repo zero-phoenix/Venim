@@ -70,8 +70,8 @@ SCRIPT = RAIZ / "scripts" / "huerfanos.py"
 # trinquete existe justamente para que no se suba a la ligera.
 #
 # El techo solo puede bajar en el curso normal del proyecto. Lo que pasó aquí
-# no es el curso normal: el port de VeniceMAGI incorpora DOS paquetes nuevos
-# enteros —`vmagi/venice` (el núcleo cloud-first) y `vmagi/repl` (el REPL de
+# no es el curso normal: el port de Venim incorpora DOS paquetes nuevos
+# enteros —`venim/venice` (el núcleo cloud-first) y `venim/repl` (el REPL de
 # consola que el manifiesto promete)— que llegan con su propia superficie
 # pública. No es andamiaje que alguien dejó a medias: es código que ya
 # funcionaba en otro repositorio y que aquí entra completo.
@@ -80,7 +80,7 @@ SCRIPT = RAIZ / "scripts" / "huerfanos.py"
 #   · se borró `proveedor_guest`, que nadie llamaba (el trinquete lo cazó);
 #   · se conectó `studio/arte.py` desde `crear_arte` en el registro de
 #     herramientas, en vez de dejarlo como capacidad inalcanzable;
-#   · se conectó `vmagi/repl` desde `main.py --consola`.
+#   · se conectó `venim/repl` desde `main.py --consola`.
 #
 # A partir de aquí vuelve a la regla de siempre: solo baja, y en el mismo
 # commit que la bajada real.
@@ -131,16 +131,16 @@ TECHO = 83
 #: crece el andamiaje sin conectar, que es lo accionable. Misma regla que el
 #: techo global: solo pueden bajar, y en el mismo commit que la baja real.
 #:
-#: 2026-08-30: `vmagi/venice` y `vmagi/repl` entran con techo propio en vez de
+#: 2026-08-30: `venim/venice` y `venim/repl` entran con techo propio en vez de
 #: diluirse en el total. Es lo que hace accionable el desglose: si mañana el
 #: andamiaje crece, se sabrá en cuál de los dos, y no habrá que buscarlo.
-#: `vmagi/core` sube de 18 a 20 por el backend `guest_web` y los alias del
+#: `venim/core` sube de 18 a 20 por el backend `guest_web` y los alias del
 #: manifiesto en `core/tools`.
 #: 2026-08-31: `core` baja de 20 a 17 y `venice` sube de 5 a 6 — el desglose
 #: enseñando exactamente para lo que existe: el total bajó, pero no bajó en
 #: todas partes. `venice` creció con `seedance_admitido`, que es la regla de
 #: versiones que sustituyó a dos comparaciones de cadenas.
-#: 2026-09-02: `vmagi/modules` baja de 63 a 59 en dos pasos. Primero a 62 con
+#: 2026-09-02: `venim/modules` baja de 63 a 59 en dos pasos. Primero a 62 con
 #: la entrada del medidor de estilo —un módulo nuevo que hace bajar el
 #: desglose, porque no basta con que lo añadido esté conectado: tiene que no
 #: duplicar lo que ya había—. Después a 59 al cablear `loop.py`, `spec.py` y
@@ -150,13 +150,13 @@ TECHO = 83
 #: salida del auditor, y los tests los comprueban por tipo en vez de fiarse de
 #: los atributos: un auditor que devuelva dos formas distintas segun el
 #: resultado obliga a quien lo llama a adivinar.
-#: 2026-09-03: `vmagi/modules` baja a 58 con la entrada del minero de corpus.
+#: 2026-09-03: `venim/modules` baja a 58 con la entrada del minero de corpus.
 #: Otro módulo nuevo que hace bajar el desglose: sus dos tipos públicos entran
 #: conectados por contrato desde los tests, y de paso se conectó `VideoInfo`,
 #: que llevaba suelto desde su creación siendo el tipo de retorno de `probe()`
 #: —media docena de sitios leen `info.duration` dando por hecho que existe.
-TECHOS_POR_PAQUETE = {"vmagi/modules": 58, "vmagi/core": 17,
-                      "vmagi/venice": 6, "vmagi/repl": 2}
+TECHOS_POR_PAQUETE = {"venim/modules": 58, "venim/core": 17,
+                      "venim/venice": 6, "venim/repl": 2}
 
 
 def _cuenta() -> int:
@@ -176,7 +176,7 @@ def _por_paquete() -> dict[str, int]:
     conteo: dict[str, int] = {}
     for item in json.loads(r.stdout):
         partes = item["sitios"][0].replace("\\", "/").split("/")
-        paquete = "/".join(partes[:2]) if partes[0] == "vmagi" and len(partes) > 2 else partes[0]
+        paquete = "/".join(partes[:2]) if partes[0] == "venim" and len(partes) > 2 else partes[0]
         conteo[paquete] = conteo.get(paquete, 0) + 1
     return conteo
 
@@ -248,7 +248,7 @@ def test_el_codigo_publico_sin_llamar_no_crece():
         f"{TECHO}. Algo nuevo se ha quedado sin conectar.\n\n"
         f"Ejecuta `python scripts/huerfanos.py` para ver cuáles. Cada una es "
         f"una de tres cosas: una capacidad a la que le falta el cable "
-        f"(CONÉCTALA), andamiaje que sobra (BÓRRALO o llévalo a vmagi/_attic/), "
+        f"(CONÉCTALA), andamiaje que sobra (BÓRRALO o llévalo a venim/_attic/), "
         f"o un punto de entrada legítimo (añádelo a ENTRADAS en el script, con "
         f"el motivo escrito).")
 

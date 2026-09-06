@@ -3,7 +3,7 @@ El arnés de medida no puede dejar basura en la base del usuario.
 
 LO QUE PASÓ, MEDIDO
 ===================
-Estado real de `venicemagi_brain.db` el 2026-08-20, tras una tarde de auditorías:
+Estado real de `venim_brain.db` el 2026-08-20, tras una tarde de auditorías:
 
     total: 23   WAITING_USER_APPROVAL: 14   interrumpida: 7
 
@@ -20,7 +20,7 @@ y —lo más importante— que NO toque nada del usuario.
 """
 from __future__ import annotations
 
-from vmagi.core.store.state import (
+from venim.core.store.state import (
     ESPERANDO_USUARIO,
     TaskState,
     TaskStore,

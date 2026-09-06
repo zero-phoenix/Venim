@@ -20,7 +20,7 @@ frases como «Se compiló exitosamente el binario ejecutable único portable
 """
 from __future__ import annotations
 
-from vmagi.modules.swarm import aceptacion
+from venim.modules.swarm import aceptacion
 
 
 def _nombres(lista):

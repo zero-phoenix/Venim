@@ -34,8 +34,8 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core import idioma
-from vmagi.modules.swarm.agents import BalthasarAgent, MelchiorAgent
+from venim.core import idioma
+from venim.modules.swarm.agents import BalthasarAgent, MelchiorAgent
 
 CHINO = "结论：方案 B 最稳固。其代码逻辑简单且无参数矛盾；三种方案均未涉及网络。"
 ESPANOL = "La propuesta B es la más sólida porque su lógica no tiene contradicciones."

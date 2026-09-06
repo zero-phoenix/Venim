@@ -48,7 +48,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 # La segunda dirección es la peligrosa: es exactamente el fallo que este
 # fichero existe para cazar, escondido en el propio instrumento de medida.
 # 2026-08-16: capabilities, reasoning, fabrication, device, os_portable y
-# vision se movieron FÍSICAMENTE a vmagi/_attic/ (cero importadores, andamiaje
+# vision se movieron FÍSICAMENTE a venim/_attic/ (cero importadores, andamiaje
 # aspiracional). Ya no necesitan estar aquí: esto solo exime del rinquete a
 # directorios que siguen en su sitio.
 ATTIC_DIRS = {
@@ -60,16 +60,16 @@ ATTIC_DIRS = {
 
 def _call_graph() -> dict[str, set[str]]:
     calls: dict[str, set[str]] = defaultdict(set)
-    for f in (ROOT / "vmagi").rglob("*.py"):
+    for f in (ROOT / "venim").rglob("*.py"):
         # `as_posix()`, no `str()`. En Windows `str(Path)` da
-        # 'vmagi\\core\\kernel.py' y la tabla WIRING dice 'vmagi/core/kernel.py',
+        # 'venim\\core\\kernel.py' y la tabla WIRING dice 'venim/core/kernel.py',
         # así que las 31 comprobaciones de cableado fallaban en Windows por el
         # separador. Y lo grave no era eso: el filtro de ATTIC_DIRS de la línea
         # siguiente busca '/attic/', que nunca casaba, de modo que en Windows
         # el grafo de llamadas INCLUÍA el código del ático. Un símbolo que solo
         # se invoca desde código muerto habría pasado por cableado real.
         rel = f.relative_to(ROOT).as_posix()
-        if any(f"/{d}/" in rel or rel.startswith(f"vmagi/{d}/") for d in ATTIC_DIRS):
+        if any(f"/{d}/" in rel or rel.startswith(f"venim/{d}/") for d in ATTIC_DIRS):
             continue
         try:
             tree = ast.parse(f.read_text(encoding="utf-8"))
@@ -100,7 +100,7 @@ def _module_name(path: pathlib.Path) -> str:
 
 
 def _magi_imports(path: pathlib.Path) -> set[str]:
-    """Imports de `vmagi.*` de un fichero, resolviendo los relativos."""
+    """Imports de `venim.*` de un fichero, resolviendo los relativos."""
     try:
         tree = ast.parse(path.read_text(encoding="utf-8"))
     except SyntaxError:
@@ -122,19 +122,19 @@ def _magi_imports(path: pathlib.Path) -> set[str]:
             out.add(target)
             # `from x import y`: y puede ser un submódulo, no un símbolo.
             out.update(f"{target}.{a.name}" for a in n.names)
-    return {m for m in out if m.startswith("vmagi")}
+    return {m for m in out if m.startswith("venim")}
 
 
 def _reachable_modules() -> set[str]:
     """
-    Cierre transitivo de imports desde `vmagi/main.py`.
+    Cierre transitivo de imports desde `venim/main.py`.
 
     Es la definición operativa de "el sistema usa esto": si un módulo no
     aparece aquí, arrancar MAGI nunca ejecuta una línea suya.
     """
-    files = {_module_name(f): f for f in (ROOT / "vmagi").rglob("*.py")}
+    files = {_module_name(f): f for f in (ROOT / "venim").rglob("*.py")}
     seen: set[str] = set()
-    pending = ["vmagi.main"]
+    pending = ["venim.main"]
     while pending:
         mod = pending.pop()
         if mod in seen:
@@ -154,31 +154,31 @@ REACHABLE = _reachable_modules()
 
 
 def _dir_is_reachable(d: str) -> bool:
-    prefix = f"vmagi.modules.{d}"
+    prefix = f"venim.modules.{d}"
     return any(m == prefix or m.startswith(prefix + ".") for m in REACHABLE)
 
 
 def _module_dirs() -> list[str]:
-    return sorted(p.name for p in (ROOT / "vmagi/modules").iterdir()
+    return sorted(p.name for p in (ROOT / "venim/modules").iterdir()
                   if p.is_dir() and any(p.rglob("*.py")))
 
 
 # Cada pieza del plan con el fichero desde el que DEBE invocarse.
 WIRING = [
-    ("classify",            "vmagi/core/kernel.py",                  "§2.3 enrutamiento adaptativo"),
-    ("run_agent",           "vmagi/modules/swarm/agents.py",         "§2.2 bucle de herramientas en el enjambre"),
-    ("registry_for_role",   "vmagi/modules/swarm/agents.py",         "§2.2 perfiles de herramientas por rol"),
-    ("_ask_with_tools",     "vmagi/modules/swarm/agents.py",         "§2.2 nodos que actúan"),
-    ("generate_variants",   "vmagi/modules/swarm/orchestrator.py",   "§2.4 propuestas en paralelo"),
-    ("critique_multi_axis", "vmagi/modules/swarm/orchestrator.py",   "§2.4 crítica multi-eje"),
-    ("memory_for",          "vmagi/modules/swarm/orchestrator.py",   "§2.6 memoria episódica"),
-    ("style_fragment",      "vmagi/modules/swarm/agents.py",         "§2.7 estilo narrativo"),
-    ("VerifiedRepair",      "vmagi/modules/infrastructure/naoko.py", "§3.1 reparación verificada"),
-    ("MetricsCollector",    "vmagi/core/kernel.py",                  "§3.4 colector de métricas"),
-    ("attach",              "vmagi/core/kernel.py",                  "§3.4 enganche al bus"),
-    ("record_provider",     "vmagi/core/providers/registry.py",      "§3.4 el registro mide"),
-    ("health_summary",      "vmagi/modules/infrastructure/naoko.py", "§3.4 salud en el prompt de Naoko"),
-    ("canary_probe",        "vmagi/modules/infrastructure/naoko.py", "§3.4 sonda de deriva"),
+    ("classify",            "venim/core/kernel.py",                  "§2.3 enrutamiento adaptativo"),
+    ("run_agent",           "venim/modules/swarm/agents.py",         "§2.2 bucle de herramientas en el enjambre"),
+    ("registry_for_role",   "venim/modules/swarm/agents.py",         "§2.2 perfiles de herramientas por rol"),
+    ("_ask_with_tools",     "venim/modules/swarm/agents.py",         "§2.2 nodos que actúan"),
+    ("generate_variants",   "venim/modules/swarm/orchestrator.py",   "§2.4 propuestas en paralelo"),
+    ("critique_multi_axis", "venim/modules/swarm/orchestrator.py",   "§2.4 crítica multi-eje"),
+    ("memory_for",          "venim/modules/swarm/orchestrator.py",   "§2.6 memoria episódica"),
+    ("style_fragment",      "venim/modules/swarm/agents.py",         "§2.7 estilo narrativo"),
+    ("VerifiedRepair",      "venim/modules/infrastructure/naoko.py", "§3.1 reparación verificada"),
+    ("MetricsCollector",    "venim/core/kernel.py",                  "§3.4 colector de métricas"),
+    ("attach",              "venim/core/kernel.py",                  "§3.4 enganche al bus"),
+    ("record_provider",     "venim/core/providers/registry.py",      "§3.4 el registro mide"),
+    ("health_summary",      "venim/modules/infrastructure/naoko.py", "§3.4 salud en el prompt de Naoko"),
+    ("canary_probe",        "venim/modules/infrastructure/naoko.py", "§3.4 sonda de deriva"),
     # `default_bench` estaba aquí, y era verdad hasta el 2026-09-05: Naoko
     # decidía si conservar un cambio mirando SOLO capacidad general. Ese día
     # `read_file` falló 8 de 8 veces y esa nota no se habría movido —47 por 23
@@ -186,25 +186,25 @@ WIRING = [
     # auto-mejora podía aceptar un cambio que dejara al enjambre ciego. Ahora
     # entra por `mide_los_dos_ejes`, que corre los dos bancos y funde el
     # resultado para que una lectura rota cuente como la regresión que es.
-    ("mide_los_dos_ejes",   "vmagi/modules/infrastructure/naoko.py", "§3.5 banco de evaluación, los dos ejes"),
-    ("mide_los_dos_ejes",   "vmagi/core/kernel.py",                  "§3.5 el banco, invocable desde la ventana"),
-    ("corredor_que_ve",     "vmagi/core/eval/banco_del_proyecto.py", "§3.5 el examen se contesta mirando"),
-    ("run_self_improvement","vmagi/core/kernel.py",                  "§3.5 auto-mejora invocable"),
-    ("register_reverse_tools", "vmagi/core/tools/builtin.py",        "§5.3 toolchain de RE en el enjambre"),
-    ("register_studio_tools",  "vmagi/core/tools/builtin.py",        "§5 fábrica de artefactos en el enjambre"),
-    ("index_source_tree",      "vmagi/modules/reverse/tools.py",     "§5.3 indexado de corpus de emuladores"),
-    ("compare_corpora",        "vmagi/modules/reverse/tools.py",     "§5.3 contraste de código real"),
-    ("compose_page",           "vmagi/modules/studio/tools.py",      "§5.4 composición de manga"),
-    ("domains_for",            "vmagi/core/tools/builtin.py",        "§2.2 catálogo acotado por dominio"),
-    ("register_world_tools",   "vmagi/core/tools/builtin.py",        "§6 conocimiento del mundo en el enjambre"),
-    ("fred_series",            "vmagi/modules/world/tools.py",       "§6.2 macro desde FRED"),
-    ("compare_countries",      "vmagi/modules/world/tools.py",       "§6.2 contraste entre países"),
-    ("headlines",              "vmagi/modules/world/tools.py",       "§6.1 actualidad por RSS"),
-    ("fundamentals",           "vmagi/modules/world/tools.py",       "§6.3 fundamentales de EDGAR"),
-    ("owner_earnings",         "vmagi/modules/world/tools.py",       "§6.3 ganancias del propietario"),
-    ("dcf_sensitivity",        "vmagi/modules/world/tools.py",       "§6.3 DCF con sensibilidad"),
-    ("quality_checklist",      "vmagi/modules/world/tools.py",       "§6.3 rúbrica de calidad"),
-    ("ThesisLog",              "vmagi/modules/world/tools.py",       "§6.3 registro de tesis calibrado"),
+    ("mide_los_dos_ejes",   "venim/modules/infrastructure/naoko.py", "§3.5 banco de evaluación, los dos ejes"),
+    ("mide_los_dos_ejes",   "venim/core/kernel.py",                  "§3.5 el banco, invocable desde la ventana"),
+    ("corredor_que_ve",     "venim/core/eval/banco_del_proyecto.py", "§3.5 el examen se contesta mirando"),
+    ("run_self_improvement","venim/core/kernel.py",                  "§3.5 auto-mejora invocable"),
+    ("register_reverse_tools", "venim/core/tools/builtin.py",        "§5.3 toolchain de RE en el enjambre"),
+    ("register_studio_tools",  "venim/core/tools/builtin.py",        "§5 fábrica de artefactos en el enjambre"),
+    ("index_source_tree",      "venim/modules/reverse/tools.py",     "§5.3 indexado de corpus de emuladores"),
+    ("compare_corpora",        "venim/modules/reverse/tools.py",     "§5.3 contraste de código real"),
+    ("compose_page",           "venim/modules/studio/tools.py",      "§5.4 composición de manga"),
+    ("domains_for",            "venim/core/tools/builtin.py",        "§2.2 catálogo acotado por dominio"),
+    ("register_world_tools",   "venim/core/tools/builtin.py",        "§6 conocimiento del mundo en el enjambre"),
+    ("fred_series",            "venim/modules/world/tools.py",       "§6.2 macro desde FRED"),
+    ("compare_countries",      "venim/modules/world/tools.py",       "§6.2 contraste entre países"),
+    ("headlines",              "venim/modules/world/tools.py",       "§6.1 actualidad por RSS"),
+    ("fundamentals",           "venim/modules/world/tools.py",       "§6.3 fundamentales de EDGAR"),
+    ("owner_earnings",         "venim/modules/world/tools.py",       "§6.3 ganancias del propietario"),
+    ("dcf_sensitivity",        "venim/modules/world/tools.py",       "§6.3 DCF con sensibilidad"),
+    ("quality_checklist",      "venim/modules/world/tools.py",       "§6.3 rúbrica de calidad"),
+    ("ThesisLog",              "venim/modules/world/tools.py",       "§6.3 registro de tesis calibrado"),
     # §5.6 — el medidor de estilo. Va aquí y no como módulo suelto porque la
     # regla 3 dice que cada capacidad tiene que poder invocarse desde la
     # interfaz: un instrumento que solo se puede llamar desde fuera no le
@@ -217,32 +217,32 @@ WIRING = [
     # y `tools.py` sigue siendo la fábrica de artefactos y llama al otro. El
     # requisito de la regla 3 no cambia —siguen entrando al registro del
     # enjambre por un solo sitio—; cambia el fichero desde el que se invocan.
-    ("medir",                  "vmagi/modules/studio/herramientas_estilo.py", "§5.6 el enjambre mide el estilo de un vídeo"),
+    ("medir",                  "venim/modules/studio/herramientas_estilo.py", "§5.6 el enjambre mide el estilo de un vídeo"),
     # Antes esta fila decía `BibliaDeEstilo` y pasaba porque tres herramientas
     # CONSTRUÍAN la biblia a mano, cada una con su copia de las mismas nueve
     # líneas. Al unificar la lectura en `BibliaDeEstilo.desde_json`, el grafo
     # de llamadas dejó de ver el nombre de la clase —registra `n.func.attr`,
     # o sea `desde_json`— y la fila se cayó. El cableado no se rompió: lo que
     # estaba mal era la fila, que apuntaba a una duplicación.
-    ("desde",                  "vmagi/modules/studio/herramientas_estilo.py", "§5.6 la referencia se congela en biblia"),
-    ("desde_json",             "vmagi/modules/studio/herramientas_estilo.py", "§5.6 la biblia se lee de disco por un solo sitio"),
-    ("compara",                "vmagi/modules/studio/herramientas_estilo.py", "§5.6 el corte se juzga contra la biblia"),
-    ("informe_cascaron",       "vmagi/modules/studio/herramientas_estilo.py", "§5.7 el enjambre sabe qué percibe su maquina"),
-    ("detecta_rostros",        "vmagi/modules/studio/estilo.py",     "§5.7 escala de plano desde el cascaron local"),
-    ("rueda_hasta_cumplir",    "vmagi/modules/studio/herramientas_estilo.py", "§5.8 bucle de autocorreccion invocable"),
-    ("AutoCorrectionLoop",     "vmagi/modules/studio/bucle.py",      "§5.8 el bucle del plan, con medicion real detras"),
-    ("RightsGate",             "vmagi/modules/studio/bucle.py",      "§5.8 derechos comprobados ANTES de generar"),
-    ("MediaSpec",              "vmagi/modules/studio/bucle.py",      "§5.8 el encargo se vuelve criterios duros"),
-    ("ataca",                  "vmagi/modules/studio/herramientas_estilo.py", "§5.9 el enjambre audita su propio medidor"),
-    ("mina",                   "vmagi/modules/studio/herramientas_estilo.py", "§5.10 curacion de corpus desde el enjambre"),
-    ("CriterioDeGenero",       "vmagi/modules/studio/herramientas_estilo.py", "§5.10 el genero se declara con umbrales, no a ojo"),
-    ("register_style_tools",   "vmagi/modules/studio/tools.py",      "§5.6 un solo punto de entrada al registro"),
+    ("desde",                  "venim/modules/studio/herramientas_estilo.py", "§5.6 la referencia se congela en biblia"),
+    ("desde_json",             "venim/modules/studio/herramientas_estilo.py", "§5.6 la biblia se lee de disco por un solo sitio"),
+    ("compara",                "venim/modules/studio/herramientas_estilo.py", "§5.6 el corte se juzga contra la biblia"),
+    ("informe_cascaron",       "venim/modules/studio/herramientas_estilo.py", "§5.7 el enjambre sabe qué percibe su maquina"),
+    ("detecta_rostros",        "venim/modules/studio/estilo.py",     "§5.7 escala de plano desde el cascaron local"),
+    ("rueda_hasta_cumplir",    "venim/modules/studio/herramientas_estilo.py", "§5.8 bucle de autocorreccion invocable"),
+    ("AutoCorrectionLoop",     "venim/modules/studio/bucle.py",      "§5.8 el bucle del plan, con medicion real detras"),
+    ("RightsGate",             "venim/modules/studio/bucle.py",      "§5.8 derechos comprobados ANTES de generar"),
+    ("MediaSpec",              "venim/modules/studio/bucle.py",      "§5.8 el encargo se vuelve criterios duros"),
+    ("ataca",                  "venim/modules/studio/herramientas_estilo.py", "§5.9 el enjambre audita su propio medidor"),
+    ("mina",                   "venim/modules/studio/herramientas_estilo.py", "§5.10 curacion de corpus desde el enjambre"),
+    ("CriterioDeGenero",       "venim/modules/studio/herramientas_estilo.py", "§5.10 el genero se declara con umbrales, no a ojo"),
+    ("register_style_tools",   "venim/modules/studio/tools.py",      "§5.6 un solo punto de entrada al registro"),
     # §5.11 — megaplan v4. Los dos módulos que cierran los dos agujeros que la
     # autoauditoría encontró: el jurado no ve (perito) y las cuatro pasadas de
     # reglas a mano no son una optimización (búsqueda).
-    ("interroga",              "vmagi/modules/studio/herramientas_estilo.py", "§5.11 el perito declara y se le contrainterroga"),
-    ("busca",                  "vmagi/modules/studio/herramientas_estilo.py", "§5.11 busqueda evolutiva invocable desde el enjambre"),
-    ("compara",                "vmagi/modules/studio/busqueda.py",   "§5.11 el medidor ES la funcion de aptitud"),
+    ("interroga",              "venim/modules/studio/herramientas_estilo.py", "§5.11 el perito declara y se le contrainterroga"),
+    ("busca",                  "venim/modules/studio/herramientas_estilo.py", "§5.11 busqueda evolutiva invocable desde el enjambre"),
+    ("compara",                "venim/modules/studio/busqueda.py",   "§5.11 el medidor ES la funcion de aptitud"),
 ]
 
 
@@ -258,7 +258,7 @@ def test_piece_is_actually_invoked(symbol, expected_caller, section):
 
 def test_proposal_verifier_is_invoked():
     """ProposalVerifier se instancia; se comprueba por nombre de clase."""
-    src = (ROOT / "vmagi/modules/swarm/orchestrator.py").read_text(encoding="utf-8")
+    src = (ROOT / "venim/modules/swarm/orchestrator.py").read_text(encoding="utf-8")
     assert "ProposalVerifier(" in src, "§2.5 verificación ejecutable sin conectar"
 
 
@@ -267,7 +267,7 @@ def test_swarm_agents_can_reach_the_tools():
     Comprobación de contrato: los tres nodos declaran perfil de herramientas y
     tienen el método que las usa.
     """
-    from vmagi.modules.swarm.agents import (
+    from venim.modules.swarm.agents import (
         BalthasarAgent,
         CasperAgent,
         MelchiorAgent,
@@ -282,7 +282,7 @@ def test_swarm_agents_can_reach_the_tools():
 
 def test_role_profiles_differ_in_capability():
     """El reparto de herramientas debe ser real, no tres veces el mismo."""
-    from vmagi.core.tools import registry_for_role
+    from venim.core.tools import registry_for_role
     m = set(registry_for_role("MELCHIOR").names())
     b = set(registry_for_role("BALTHASAR").names())
     c = set(registry_for_role("CASPER").names())
@@ -309,9 +309,9 @@ def test_no_dead_parameters_in_the_swarm_path():
     Un parámetro que se acepta y no se usa es la misma clase de mentira que un
     <select> que no envía su valor. use_tools debe llegar hasta el despacho.
     """
-    agents = (ROOT / "vmagi/modules/swarm/agents.py").read_text(encoding="utf-8")
-    parallel = (ROOT / "vmagi/modules/swarm/parallel.py").read_text(encoding="utf-8")
-    orch = (ROOT / "vmagi/modules/swarm/orchestrator.py").read_text(encoding="utf-8")
+    agents = (ROOT / "venim/modules/swarm/agents.py").read_text(encoding="utf-8")
+    parallel = (ROOT / "venim/modules/swarm/parallel.py").read_text(encoding="utf-8")
+    orch = (ROOT / "venim/modules/swarm/orchestrator.py").read_text(encoding="utf-8")
 
     assert "if use_tools:" in agents, "agents.py acepta use_tools sin despacharlo"
     assert "use_tools and axis in _AXES_WITH_TOOLS" in parallel, \
@@ -321,7 +321,7 @@ def test_no_dead_parameters_in_the_swarm_path():
 
 def test_route_controls_round_budget():
     """El tope de rondas debe venir de la ruta, no ser un 3 fijo."""
-    src = (ROOT / "vmagi/modules/swarm/orchestrator.py").read_text(encoding="utf-8")
+    src = (ROOT / "venim/modules/swarm/orchestrator.py").read_text(encoding="utf-8")
     assert 'state.get("max_rounds", 3)' in src
     assert "current_round >= 3" not in src, "el tope de 3 rondas sigue fijo"
 
@@ -367,7 +367,7 @@ def test_attic_dirs_all_exist():
     importan. `quant` llegó a estar aquí siendo un directorio vacío.
     """
     fantasmas = sorted(d for d in ATTIC_DIRS
-                       if d != "_attic" and not (ROOT / "vmagi/modules" / d).is_dir())
+                       if d != "_attic" and not (ROOT / "venim/modules" / d).is_dir())
     assert not fantasmas, f"ATTIC_DIRS nombra directorios inexistentes: {fantasmas}"
 
 
@@ -378,14 +378,14 @@ def test_reachability_finds_the_real_system():
     y los dos tests de arriba se pondrían verdes por vacuidad.
     """
     assert len(REACHABLE) > 40, f"solo {len(REACHABLE)} módulos alcanzables: el BFS está roto"
-    for esperado in ("vmagi.core.kernel", "vmagi.modules.swarm.orchestrator",
-                     "vmagi.core.tools.builtin", "vmagi.modules.studio.tools"):
+    for esperado in ("venim.core.kernel", "venim.modules.swarm.orchestrator",
+                     "venim.core.tools.builtin", "venim.modules.studio.tools"):
         assert esperado in REACHABLE, f"{esperado} debería ser alcanzable"
 
 
 def test_kernel_publishes_the_routing_decision():
     """La GUI debe poder mostrar por qué ruta fue una petición."""
-    src = (ROOT / "vmagi/core/kernel.py").read_text(encoding="utf-8")
+    src = (ROOT / "venim/core/kernel.py").read_text(encoding="utf-8")
     assert "swarm.routed" in src
 
 
@@ -398,7 +398,7 @@ def test_final_resolution_declares_every_parameter_it_uses():
     import ast
     import inspect
 
-    from vmagi.modules.swarm.agents import CasperAgent
+    from venim.modules.swarm.agents import CasperAgent
 
     for fn in (CasperAgent.generate_final_resolution, CasperAgent.arbitrate):
         tree = ast.parse(inspect.getsource(fn).lstrip())
@@ -419,7 +419,7 @@ def test_final_resolution_declares_every_parameter_it_uses():
         # nombre no declarado. El código estaba bien; el instrumento, desfasado.
         import builtins
 
-        import vmagi.modules.swarm.agents as _mod
+        import venim.modules.swarm.agents as _mod
         conocidos = set(vars(_mod)) | set(dir(builtins)) | {"self"}
         unknown = used - declared - assigned - conocidos
         assert not unknown, f"{fn.__name__} usa nombres no declarados: {unknown}"
@@ -428,9 +428,9 @@ def test_final_resolution_declares_every_parameter_it_uses():
 # ------------------------------------------------------- §6 conocimiento del mundo
 
 def test_world_tools_estan_en_el_catalogo():
-    """Sin esto, todo vmagi/modules/world/ sería andamiaje bien probado."""
-    from vmagi.core.tools import build_registry
-    from vmagi.core.tools.builtin import WORLD_TOOLS
+    """Sin esto, todo venim/modules/world/ sería andamiaje bien probado."""
+    from venim.core.tools import build_registry
+    from venim.core.tools.builtin import WORLD_TOOLS
     nombres = set(build_registry().names())
     faltan = WORLD_TOOLS - nombres
     assert not faltan, f"herramientas del mundo sin registrar: {sorted(faltan)}"
@@ -441,7 +441,7 @@ def test_el_dominio_del_mundo_se_activa_con_lenguaje_real():
     Las pistas tienen que cubrir cómo se pregunta de verdad, no el vocabulario
     que a mí me salió al escribir la lista.
     """
-    from vmagi.core.tools.builtin import domains_for
+    from venim.core.tools.builtin import domains_for
     for frase in ("analiza los fundamentales de Apple",
                   "¿cómo está la inflación en Europa?",
                   "compara el gasto militar de España y Francia",
@@ -453,8 +453,8 @@ def test_el_dominio_del_mundo_se_activa_con_lenguaje_real():
 
 def test_una_tarea_de_emuladores_no_carga_las_finanzas():
     """El motivo de existir del acotado por dominio (§2.2)."""
-    from vmagi.core.tools import registry_for_role
-    from vmagi.core.tools.builtin import REVERSE_TOOLS, WORLD_TOOLS
+    from venim.core.tools import registry_for_role
+    from venim.core.tools.builtin import REVERSE_TOOLS, WORLD_TOOLS
     nombres = set(registry_for_role(
         "MELCHIOR", task_hint="portar el dynarec de PPSSPP a Vita").names())
     assert REVERSE_TOOLS <= nombres
@@ -467,8 +467,8 @@ def test_sin_pista_se_ofrecen_todos_los_dominios():
     "studio"} en dos sitios. Al añadir 'world' esa rama dejó de significar
     "todos" y empezó a recortar el catálogo en silencio.
     """
-    from vmagi.core.tools import registry_for_role
-    from vmagi.core.tools.builtin import (
+    from venim.core.tools import registry_for_role
+    from venim.core.tools.builtin import (
         ALL_DOMAINS,
         REVERSE_TOOLS,
         STUDIO_TOOLS,
@@ -487,7 +487,7 @@ def test_cada_dominio_declarado_tiene_su_conjunto_de_herramientas():
     pero sin herramientas se activaría y no añadiría nada, y el síntoma sería
     un agente sin capacidades y ningún error.
     """
-    from vmagi.core.tools.builtin import _DOMAIN_HINTS, _DOMAIN_TOOLSETS
+    from venim.core.tools.builtin import _DOMAIN_HINTS, _DOMAIN_TOOLSETS
     assert set(_DOMAIN_HINTS) == set(_DOMAIN_TOOLSETS), (
         "pistas y conjuntos de herramientas desalineados: "
         f"{set(_DOMAIN_HINTS) ^ set(_DOMAIN_TOOLSETS)}")
@@ -519,12 +519,12 @@ def test_nadie_pide_el_catalogo_sin_acotar():
     """
     import re
     ofensores = []
-    for f in (ROOT / "vmagi").rglob("*.py"):
+    for f in (ROOT / "venim").rglob("*.py"):
         # as_posix(): el mismo fallo de separador que tenía `_call_graph`. En
-        # Windows `str(Path)` da 'vmagi\\gui\\...' y el filtro busca 'vmagi/gui/',
+        # Windows `str(Path)` da 'venim\\gui\\...' y el filtro busca 'venim/gui/',
         # así que el ático NO se excluía y este guard señalaba código muerto.
         rel = f.relative_to(ROOT).as_posix()
-        if any(rel.startswith(f"vmagi/{d}/") for d in ATTIC_DIRS):
+        if any(rel.startswith(f"venim/{d}/") for d in ATTIC_DIRS):
             continue
         src = f.read_text(encoding="utf-8")
         for m in re.finditer(r"registry_for_role\(([^)]*)\)", src):
@@ -549,7 +549,7 @@ def test_todo_ArtifactKind_tiene_rama_en_observe():
     """
     import inspect
 
-    from vmagi.modules.studio.artifacts import ArtifactKind, observe
+    from venim.modules.studio.artifacts import ArtifactKind, observe
 
     src = inspect.getsource(observe)
     sin_rama = [k.name for k in ArtifactKind
@@ -567,8 +567,8 @@ def test_el_schema_de_observe_artifact_no_promete_de_mas():
     que existir en el enum. Ofrecer un valor inexistente hace que el agente lo
     use y reciba un error incomprensible.
     """
-    from vmagi.core.tools import build_registry
-    from vmagi.modules.studio.artifacts import ArtifactKind
+    from venim.core.tools import build_registry
+    from venim.modules.studio.artifacts import ArtifactKind
 
     herramienta = build_registry().get("observe_artifact")
     props = herramienta.parameters["properties"]
@@ -593,16 +593,16 @@ def test_el_schema_de_observe_artifact_no_promete_de_mas():
 # Esta lista es un TRINQUETE: puede encogerse, nunca crecer. Cada entrada es
 # deuda declarada de v5.0.28, no permiso para añadir más.
 KNOWN_ORPHANS = {
-    "vmagi.core.agent", "vmagi.core.evolution", "vmagi.core.hive",
-    "vmagi.core.membrane", "vmagi.core.octopus",
-    "vmagi.core.providers.wal",
-    "vmagi.gui.server",
-    "vmagi.modules.memgraph.knowledge_store",
-    "vmagi.modules.memory.compression", "vmagi.modules.memory.handover",
-    "vmagi.modules.memory.hyperdimensional", "vmagi.modules.memory.semantic",
-    "vmagi.modules.route.providers", "vmagi.modules.route.providers.base",
-    "vmagi.modules.route.providers.claude_cli",
-    "vmagi.modules.route.providers.cloud_api",
+    "venim.core.agent", "venim.core.evolution", "venim.core.hive",
+    "venim.core.membrane", "venim.core.octopus",
+    "venim.core.providers.wal",
+    "venim.gui.server",
+    "venim.modules.memgraph.knowledge_store",
+    "venim.modules.memory.compression", "venim.modules.memory.handover",
+    "venim.modules.memory.hyperdimensional", "venim.modules.memory.semantic",
+    "venim.modules.route.providers", "venim.modules.route.providers.base",
+    "venim.modules.route.providers.claude_cli",
+    "venim.modules.route.providers.cloud_api",
     # 2026-09-02: salen `studio.loop`, `studio.rights` y `studio.spec`. Eran
     # tres módulos completos —motor de convergencia con meseta, contrato de
     # criterios medibles y control de derechos— que llevaban aquí desde su
@@ -616,7 +616,7 @@ KNOWN_ORPHANS = {
 def _orphan_modules() -> set[str]:
     """Módulos de directorios vivos que no alcanza nadie desde main.py."""
     huerfanos = set()
-    for f in (ROOT / "vmagi").rglob("*.py"):
+    for f in (ROOT / "venim").rglob("*.py"):
         mod = _module_name(f)
         if mod in REACHABLE or "_attic" in mod:
             continue
@@ -662,10 +662,10 @@ def test_el_toolchain_de_re_no_tiene_mocks_que_inventen_analisis():
     nada, porque se parece a algo.
     """
     for nombre in ("decompiler", "differential", "triage"):
-        assert not (ROOT / f"vmagi/modules/reverse/{nombre}.py").exists(), (
+        assert not (ROOT / f"venim/modules/reverse/{nombre}.py").exists(), (
             f"reverse/{nombre}.py volvió: era andamiaje de v5.0.28")
     # La entropía de triage.py sí era útil y se reescribió conectada.
-    assert (ROOT / "vmagi/modules/reverse/entropy.py").exists()
+    assert (ROOT / "venim/modules/reverse/entropy.py").exists()
 
 
 # ------------------------------------- capacidades alcanzables desde la interfaz
@@ -700,11 +700,11 @@ def test_toda_capacidad_del_backend_se_puede_invocar_desde_la_interfaz():
     """
     import re
 
-    kernel = (ROOT / "vmagi/core/kernel.py").read_text(encoding="utf-8")
+    kernel = (ROOT / "venim/core/kernel.py").read_text(encoding="utf-8")
     handlers = set(re.findall(r'register_handler\("([^"]+)"', kernel))
 
     gui = ""
-    for f in (ROOT / "vmagi-gui/src").rglob("*.ts*"):
+    for f in (ROOT / "venim-gui/src").rglob("*.ts*"):
         gui += f.read_text(encoding="utf-8")
     gui = re.sub(r"/\*.*?\*/|//[^\n]*", "", gui, flags=re.S)
 
@@ -724,7 +724,7 @@ def test_la_lista_de_exentos_no_se_queda_rancia():
     importan.
     """
     import re
-    kernel = (ROOT / "vmagi/core/kernel.py").read_text(encoding="utf-8")
+    kernel = (ROOT / "venim/core/kernel.py").read_text(encoding="utf-8")
     handlers = set(re.findall(r'register_handler\("([^"]+)"', kernel))
     fantasmas = sorted(RPC_SIN_INTERFAZ - handlers)
     assert not fantasmas, f"RPC_SIN_INTERFAZ nombra handlers inexistentes: {fantasmas}"
@@ -741,7 +741,7 @@ def test_la_paleta_alcanza_todas_las_pestañas():
     existe y a la que la paleta no llega.
     """
     from source_helpers import code_of
-    app = code_of(ROOT / "vmagi-gui/src/App.tsx")
+    app = code_of(ROOT / "venim-gui/src/App.tsx")
     assert "CommandPalette" in app
     assert "PESTAÑAS.map" in app, "el catálogo no se deriva de las pestañas"
     # La barra tiene que usar la misma constante, no una lista repetida.
@@ -758,7 +758,7 @@ def test_la_paleta_alcanza_todas_las_pestañas():
 def test_las_acciones_de_la_paleta_existen():
     """Un id sin manejador es un comando que no hace nada al pulsarlo."""
     from source_helpers import code_of
-    app = code_of(ROOT / "vmagi-gui/src/App.tsx")
+    app = code_of(ROOT / "venim-gui/src/App.tsx")
     import re
     ids = set(re.findall(r'\{\s*id:\s*"([a-z]+)"', app))
     despacho = app[app.index("const ejecutarComando"):]
@@ -782,7 +782,7 @@ _ALIAS_PAQUETE = {
 
 def _modulos_que_el_runner_importa() -> dict[str, pathlib.Path]:
     """
-    Todo módulo de `vmagi` que el runner acabará importando de verdad.
+    Todo módulo de `venim` que el runner acabará importando de verdad.
 
     Son dos raíces, no una: lo que alcanza `main.py` (arrancar el sistema) y
     lo que alcanzan los tests (correr la suite). Mirar el árbol entero daría
@@ -791,8 +791,8 @@ def _modulos_que_el_runner_importa() -> dict[str, pathlib.Path]:
     dejaría fuera un módulo que solo usan los tests. Esta es la lista exacta
     de ficheros cuyo import duro puede tumbar la compilación.
     """
-    files = {_module_name(f): f for f in (ROOT / "vmagi").rglob("*.py")}
-    pendientes = ["vmagi.main"]
+    files = {_module_name(f): f for f in (ROOT / "venim").rglob("*.py")}
+    pendientes = ["venim.main"]
     for t in (ROOT / "tests").glob("*.py"):
         pendientes.extend(_magi_imports(t))
 
@@ -872,7 +872,7 @@ def test_requirements_cubre_todo_import_duro_del_sistema_y_de_la_suite():
     `needs: test`, NO se generaba el .exe.
 
     Segunda versión, que la primera guarda no cazaba porque solo miraba los
-    tests: `vmagi/modules/skills/loader.py` importa `numpy` y `sklearn` arriba,
+    tests: `venim/modules/skills/loader.py` importa `numpy` y `sklearn` arriba,
     el kernel lo importa, y ningún test los nombra. La suite entera se caía
     por una dependencia que ningún fichero de tests menciona. Por eso ahora se
     recorre también el código de producción: lo que rompe la suite no es lo
@@ -884,7 +884,7 @@ def test_requirements_cubre_todo_import_duro_del_sistema_y_de_la_suite():
     import sys
 
     declarados = _paquetes_declarados()
-    propios = {"vmagi", "source_helpers", "conftest", "tests"}
+    propios = {"venim", "source_helpers", "conftest", "tests"}
 
     ficheros = sorted((ROOT / "tests").glob("*.py"))
     ficheros += sorted(_modulos_que_el_runner_importa().values())
@@ -924,7 +924,7 @@ def test_nadie_lanza_python_con_sys_executable():
     Releases, cada una de esas llamadas RELANZA MAGI:
 
       · `run_test_suite` y `_local_build`, que es la puerta previa a publicar:
-        `VeniceMAGI.exe -m pytest` arranca otra GUI y otro servidor.
+        `Venim.exe -m pytest` arranca otra GUI y otro servidor.
       · `observe_program`, `observe_game` y `capture_program`: el bucle de
         observación del §5 acababa mirando a MAGI en lugar del artefacto que
         se acababa de generar.
@@ -938,12 +938,12 @@ def test_nadie_lanza_python_con_sys_executable():
     """
     import ast
 
-    permitidos = {"vmagi/core/paths.py"}
+    permitidos = {"venim/core/paths.py"}
     culpables: list[str] = []
 
-    for f in sorted((ROOT / "vmagi").rglob("*.py")):
+    for f in sorted((ROOT / "venim").rglob("*.py")):
         rel = str(f.relative_to(ROOT)).replace("\\", "/")
-        if rel in permitidos or any(rel.startswith(f"vmagi/{d}/")
+        if rel in permitidos or any(rel.startswith(f"venim/{d}/")
                                     for d in ATTIC_DIRS):
             continue
         try:
@@ -958,7 +958,7 @@ def test_nadie_lanza_python_con_sys_executable():
                 culpables.append(f"{rel}:{n.lineno}")
 
     assert not culpables, (
-        "`sys.executable` fuera de vmagi/core/paths.py: dentro del .exe es el "
+        "`sys.executable` fuera de venim/core/paths.py: dentro del .exe es el "
         "propio .exe y lanzarlo relanza MAGI en vez de ejecutar Python. Usa "
         "`paths.python_executable()`, que devuelve None si no hay intérprete "
         "en vez de hacer algo raro en silencio. Sitios: " + ", ".join(culpables))
@@ -990,7 +990,7 @@ def _sin_python_embebido(monkeypatch):
     Neutralizando la tercera vía, los dos guardas vuelven a probar exactamente
     su promesa: sin intérprete en ninguna parte, None. Nunca el .exe.
     """
-    import vmagi.core.embedded_python as emb
+    import venim.core.embedded_python as emb
     monkeypatch.setattr(emb, "embedded_python_executable", lambda: None)
 
 
@@ -1003,7 +1003,7 @@ def test_python_executable_no_devuelve_el_propio_ejecutable_congelado(monkeypatc
     import shutil
     import sys as _sys
 
-    import vmagi.core.paths as paths
+    import venim.core.paths as paths
 
     paths.python_executable.cache_clear()
     monkeypatch.setattr(paths, "is_frozen", lambda: True)
@@ -1024,7 +1024,7 @@ def test_python_executable_descarta_el_alias_que_apunta_al_exe(monkeypatch):
     import shutil
     import sys as _sys
 
-    import vmagi.core.paths as paths
+    import venim.core.paths as paths
 
     paths.python_executable.cache_clear()
     monkeypatch.setattr(paths, "is_frozen", lambda: True)

@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.modules.swarm import bitacora
+from venim.modules.swarm import bitacora
 
 BITACORA_FALSA = """# Bitácora de prueba
 
@@ -181,8 +181,8 @@ def test_el_orquestador_inyecta_la_bitacora():
     inocua — la misma lección que la del alias, un nivel arriba.
     """
     import re
-    orch = Path("vmagi/modules/swarm/orchestrator.py").read_text(encoding="utf-8")
-    iny = Path("vmagi/modules/swarm/inyecciones.py").read_text(encoding="utf-8")
+    orch = Path("venim/modules/swarm/orchestrator.py").read_text(encoding="utf-8")
+    iny = Path("venim/modules/swarm/inyecciones.py").read_text(encoding="utf-8")
     assert re.search(r"import\s+inyecciones\s+as\s+\w+", orch) and \
         "acumuladas" in orch, "el orquestador no llama a las inyecciones"
     m = re.search(r"import\s+bitacora\s+as\s+(\w+)", iny)

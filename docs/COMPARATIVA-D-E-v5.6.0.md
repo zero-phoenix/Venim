@@ -1,8 +1,8 @@
 # Pruebas D y E contra la v5.6.0 — qué arregló el megaplan y qué falta
 
 **Fecha:** 2026-08-20 · kernel real, proveedores reales, motor `deep`, Naoko y
-Ritsuko vivas · Evidencia: `docs/comparativa/prueba-D-vmagi.json` y
-`prueba-E-vmagi.json`
+Ritsuko vivas · Evidencia: `docs/comparativa/prueba-D-venim.json` y
+`prueba-E-venim.json`
 
 Las mismas dos formas de encargo que en agosto —una pregunta muy difícil y un
 producto— contra el sistema ya parcheado. Comparadas con lo que entrego yo.

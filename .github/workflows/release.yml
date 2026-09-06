@@ -1,4 +1,4 @@
-name: Build and Release VeniceMAGI
+name: Build and Release Venim
 
 on:
   push:
@@ -56,7 +56,7 @@ jobs:
              --include='*.py' --include='*.json' --include='*.toml' \
              --include='*.yml' --include='*.yaml' \
              --exclude=paths.py --exclude=naoko_repair.py \
-             vmagi/ pyrightconfig.json pyproject.toml; then
+             venim/ pyrightconfig.json pyproject.toml; then
           echo "Ruta absoluta detectada: el .exe no arrancaria en otra maquina"
           exit 1
         fi
@@ -127,7 +127,7 @@ jobs:
       with:
         node-version: '22'
         cache: 'npm'
-        cache-dependency-path: vmagi-gui/package-lock.json
+        cache-dependency-path: venim-gui/package-lock.json
 
     # DEL LOCK, NO DE requirements.txt — y la diferencia con el job `test` de
     # arriba es deliberada, no un descuido.
@@ -150,17 +150,17 @@ jobs:
         pip install pyinstaller pywebview
 
     - name: Build Frontend
-      working-directory: ./vmagi-gui
+      working-directory: ./venim-gui
       run: |
         npm ci
         npm run build
 
     # SE COMPILA CON EL .spec, NO CON LA LÍNEA DE COMANDOS
     # ===================================================
-    # Antes esta receta iba escrita a mano aquí, y `VeniceMAGI.spec` se usaba
+    # Antes esta receta iba escrita a mano aquí, y `Venim.spec` se usaba
     # solo en local. Dos recetas para el mismo binario es una que se queda
     # atrás, y ya pasó: al externalizar el catálogo de proveedores se añadió
-    # `--add-data "vmagi/data;vmagi/data"` al .spec, y esta línea no se enteró.
+    # `--add-data "venim/data;venim/data"` al .spec, y esta línea no se enteró.
     # El .exe publicado habría arrancado con el respaldo de las constantes —
     # funciona, pero pierde justo lo que se buscaba: poder arreglar un
     # proveedor caído sin recompilar 158 MB.
@@ -171,15 +171,15 @@ jobs:
     # además de hinchar el binario colgaban la compilación indefinidamente en
     # torch/__init__.py:265.
     - name: Build Executable (PyInstaller, desde el .spec)
-      run: pyinstaller --clean --noconfirm VeniceMAGI.spec
+      run: pyinstaller --clean --noconfirm Venim.spec
 
     - name: Verificar que lo que hace falta viajó dentro
       # Las tres cosas que un .exe puede perder SIN dar error al arrancar, que
       # es lo que las hace peligrosas: se publicaría un binario que parece
       # bueno y hace la mitad.
       run: |
-        if (-not (Test-Path "vmagi/data/catalogo_proveedores.json")) {
-          throw "falta vmagi/data/catalogo_proveedores.json en el repo"
+        if (-not (Test-Path "venim/data/catalogo_proveedores.json")) {
+          throw "falta venim/data/catalogo_proveedores.json en el repo"
         }
 
         # El Python embebido. Sin él, `sys.executable` dentro del onefile es el
@@ -191,7 +191,7 @@ jobs:
           throw "falta el Python embebido (assets/python-embed/extracted): el .exe no podria ejecutar nada"
         }
 
-        if (-not (Test-Path "dist/VeniceMAGI.exe")) {
+        if (-not (Test-Path "dist/Venim.exe")) {
           throw "PyInstaller no produjo el .exe"
         }
 
@@ -204,7 +204,7 @@ jobs:
         # embebido», y el binario salió a 107,3 porque dentro va comprimido.
         # Sumar tamaños en disco para predecir el de un archivo comprimido es
         # inventarse un número — y tumbó un build correcto.
-        $toc = "build/VeniceMAGI/Analysis-00.toc"
+        $toc = "build/Venim/Analysis-00.toc"
         if (-not (Test-Path $toc)) { throw "no encuentro el inventario $toc" }
         if (-not (Select-String -Path $toc -Pattern "python-embed" -Quiet)) {
           throw "el Python embebido NO entro en el binario: el .exe publicado no podria ejecutar nada"
@@ -213,7 +213,7 @@ jobs:
 
         # Y un suelo de tamaño, ahora sí MEDIDO y no calculado: 94,1 MB sin
         # embebido (v5.2.0) y 107,3 con él (v5.3.0). 100 queda entre los dos.
-        $mb = [math]::Round((Get-Item "dist/VeniceMAGI.exe").Length / 1MB, 1)
+        $mb = [math]::Round((Get-Item "dist/Venim.exe").Length / 1MB, 1)
         Write-Host "exe: $mb MB"
         if ($mb -lt 100) { throw "el .exe pesa $mb MB: se quedo algo fuera" }
 
@@ -222,36 +222,36 @@ jobs:
       # navegadores bloquean o avisan sobre un .exe descargado directamente.
       #
       # El zip lleva el TAG en el nombre, como promete el README
-      # (`VeniceMAGI-<tag>.zip`). Un nombre fijo hace que dos releases
-      # descargados acaben como `VeniceMAGI.zip` y `VeniceMAGI (1).zip` en la
+      # (`Venim-<tag>.zip`). Un nombre fijo hace que dos releases
+      # descargados acaben como `Venim.zip` y `Venim (1).zip` en la
       # carpeta de Descargas, y a partir de ahí nadie sabe cuál es cuál —
       # justo cuando hace falta saberlo, que es al reportar un fallo.
       run: |
-        $zip = "dist/VeniceMAGI-$env:RELEASE_TAG.zip"
-        Compress-Archive -Path "dist/VeniceMAGI.exe" -DestinationPath $zip -Force
+        $zip = "dist/Venim-$env:RELEASE_TAG.zip"
+        Compress-Archive -Path "dist/Venim.exe" -DestinationPath $zip -Force
         $z = [math]::Round((Get-Item $zip).Length / 1MB, 1)
         Write-Host "zip: $zip ($z MB)"
 
     - name: Checksums SHA256
       # El binario no está firmado y SmartScreen asusta; lo que SÍ se puede
       # garantizar es la integridad: quien descargue puede verificar con
-      # `certutil -hashfile VeniceMAGI.zip SHA256` contra CHECKSUMS.txt.
+      # `certutil -hashfile Venim.zip SHA256` contra CHECKSUMS.txt.
       # Se generan del .zip Y del .exe interno por si alguien descomprime.
       run: |
-        $zip = "dist/VeniceMAGI-$env:RELEASE_TAG.zip"
+        $zip = "dist/Venim-$env:RELEASE_TAG.zip"
         $h1 = (Get-FileHash $zip -Algorithm SHA256).Hash
-        $h2 = (Get-FileHash "dist/VeniceMAGI.exe" -Algorithm SHA256).Hash
-        "$($h1.ToLower())  VeniceMAGI-$env:RELEASE_TAG.zip" | Out-File dist/CHECKSUMS.txt -Encoding ascii -Append
-        "$($h2.ToLower())  VeniceMAGI.exe"                  | Out-File dist/CHECKSUMS.txt -Encoding ascii -Append
+        $h2 = (Get-FileHash "dist/Venim.exe" -Algorithm SHA256).Hash
+        "$($h1.ToLower())  Venim-$env:RELEASE_TAG.zip" | Out-File dist/CHECKSUMS.txt -Encoding ascii -Append
+        "$($h2.ToLower())  Venim.exe"                  | Out-File dist/CHECKSUMS.txt -Encoding ascii -Append
         Get-Content dist/CHECKSUMS.txt
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ env.RELEASE_TAG }}
-        name: "VeniceMAGI ${{ env.RELEASE_TAG }}"
+        name: "Venim ${{ env.RELEASE_TAG }}"
         files: |
-          dist/VeniceMAGI-${{ env.RELEASE_TAG }}.zip
+          dist/Venim-${{ env.RELEASE_TAG }}.zip
           dist/CHECKSUMS.txt
         body_path: RELEASE_NOTES.md
         draft: false

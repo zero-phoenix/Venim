@@ -10,7 +10,7 @@ import math
 
 import pytest
 
-from vmagi.modules.percepcion import oidos
+from venim.modules.percepcion import oidos
 
 SR = 8000          # suficiente para el análisis; no se reproduce nada
 TRAMO = oidos.TRAMO_MS
@@ -94,8 +94,8 @@ def test_empezar_sin_backend_devuelve_false(monkeypatch):
 # --- la herramienta del enjambre -----------------------------------------
 
 def _registro():
-    from vmagi.core.tools.registry import ToolRegistry
-    from vmagi.modules.percepcion.tools import register_percepcion_tools
+    from venim.core.tools.registry import ToolRegistry
+    from venim.modules.percepcion.tools import register_percepcion_tools
     return register_percepcion_tools(ToolRegistry())
 
 
@@ -147,6 +147,6 @@ def test_audio_available_no_falla_nunca(monkeypatch):
 def test_builtin_registra_la_percepcion():
     """Un módulo que nadie registra es andamiaje. Ya pasó tres veces."""
     from pathlib import Path
-    fuente = Path("vmagi/core/tools/builtin.py").read_text(encoding="utf-8")
+    fuente = Path("venim/core/tools/builtin.py").read_text(encoding="utf-8")
     assert "register_percepcion_tools" in fuente, (
         "los oídos no están enganchados en builtin.py")

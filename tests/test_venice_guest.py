@@ -1,6 +1,6 @@
 """El nucleo cloud-first: sitios guest, racion y contenedor virtual.
 
-Estos tests fijan las promesas del manifiesto de VeniceMAGI que un
+Estos tests fijan las promesas del manifiesto de Venim que un
 refactor puede romper sin que nada explote:
 
   · «Sin cuenta ni key obligatoria en modo cloud»  -> ningun sitio del
@@ -16,11 +16,11 @@ from __future__ import annotations
 
 import pytest
 
-import vmagi.venice.racion as mod_racion
-from vmagi.venice.cliente import Venice, VeniceError
-from vmagi.venice.contenedor import CloudModelContainer
-from vmagi.venice.puerta import Puerta, perfil_dir
-from vmagi.venice.sitios import NOTRACK, SITIOS, VENICE, sitio, sitios_con
+import venim.venice.racion as mod_racion
+from venim.venice.cliente import Venice, VeniceError
+from venim.venice.contenedor import CloudModelContainer
+from venim.venice.puerta import Puerta, perfil_dir
+from venim.venice.sitios import NOTRACK, SITIOS, VENICE, sitio, sitios_con
 
 
 @pytest.fixture(autouse=True)

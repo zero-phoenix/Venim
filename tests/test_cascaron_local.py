@@ -20,8 +20,8 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.modules.studio import cascaron as C
-from vmagi.modules.studio import estilo as E
+from venim.modules.studio import cascaron as C
+from venim.modules.studio import estilo as E
 
 
 @pytest.fixture(autouse=True)
@@ -197,7 +197,7 @@ async def test_sin_detector_la_escala_queda_sin_medir_no_en_plano_general(
     biblia de planos generales sin que nadie hubiera mirado una sola imagen.
     """
     monkeypatch.setattr(
-        "vmagi.modules.studio.cascaron.detector_disponible", lambda: False)
+        "venim.modules.studio.cascaron.detector_disponible", lambda: False)
     m = E.MedidaEstilo()
     await E._mide_rostros(tmp_path / "loquesea.mp4", m)
     assert m.escala_plano is None, "inventó una escala sin detector"

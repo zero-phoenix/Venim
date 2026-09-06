@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
 
 @pytest.fixture()

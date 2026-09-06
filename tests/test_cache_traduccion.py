@@ -6,7 +6,7 @@ añade latencia. Estos tests fijan el contrato de la caché.
 """
 from __future__ import annotations
 
-from vmagi.core import idioma
+from venim.core import idioma
 
 
 def _limpia():

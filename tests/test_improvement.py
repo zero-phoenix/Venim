@@ -18,7 +18,7 @@ existe.
 """
 import pytest
 
-from vmagi.modules.infrastructure.improvement import (
+from venim.modules.infrastructure.improvement import (
     CIRCUITOS,
     GATES,
     SECUENCIA,
@@ -293,7 +293,7 @@ def test_naoko_tiene_las_dos_vias_separadas():
     quedaría en el prompt y no en el código.
     """
     from source_helpers import code_of
-    src = code_of(ROOT / "vmagi/modules/infrastructure/naoko.py")
+    src = code_of(ROOT / "venim/modules/infrastructure/naoko.py")
     for metodo in ("propose_improvement", "draft_plan", "run_circuit",
                    "execute_improvement", "publish_improvement"):
         assert f"async def {metodo}" in src, f"falta {metodo}"
@@ -308,7 +308,7 @@ def test_publicar_exige_la_aprobacion_explicita():
     """
     import inspect
 
-    from vmagi.modules.infrastructure.naoko import NaokoAgent
+    from venim.modules.infrastructure.naoko import NaokoAgent
     src = inspect.getsource(NaokoAgent.publish_improvement)
     assert "Stage.PUBLICADO" in src and "raise" in src
 
@@ -316,7 +316,7 @@ def test_publicar_exige_la_aprobacion_explicita():
 def test_publicar_no_sigue_con_la_compilacion_rota():
     import inspect
 
-    from vmagi.modules.infrastructure.naoko import NaokoAgent
+    from venim.modules.infrastructure.naoko import NaokoAgent
     src = inspect.getsource(NaokoAgent.publish_improvement)
     assert "_local_build" in src
     assert "no publico" in src
@@ -324,7 +324,7 @@ def test_publicar_no_sigue_con_la_compilacion_rota():
 
 def test_el_kernel_expone_el_ciclo():
     from source_helpers import code_of
-    src = code_of(ROOT / "vmagi/core/kernel.py")
+    src = code_of(ROOT / "venim/core/kernel.py")
     for h in ("naoko.improve.propose", "naoko.improve.decide",
               "naoko.improve.list"):
         assert h in src, f"{h} no está registrado"
@@ -335,7 +335,7 @@ def test_el_rol_creativo_prohibe_las_propuestas_de_adorno():
     Una propuesta sin un antes y un después medibles es ruido, y el ruido hace
     que se dejen de leer las propuestas buenas.
     """
-    from vmagi.modules.infrastructure.naoko import NaokoAgent
+    from venim.modules.infrastructure.naoko import NaokoAgent
     rol = NaokoAgent.ROL_CREATIVO
     assert "MÁS EFICIENTE" in rol and "MÁS RÁPIDO" in rol
     assert "NO propongas" in rol
@@ -424,7 +424,7 @@ def test_solo_las_fases_de_trabajo_pueden_fallar():
 
 
 def test_el_motivo_del_fallo_sobrevive_al_reinicio(tmp_path):
-    from vmagi.modules.infrastructure.improvement import ImprovementLog
+    from venim.modules.infrastructure.improvement import ImprovementLog
     log = ImprovementLog(tmp_path / "b.db")
     m = start("naoko", "x")
     user_decides(m, True)
@@ -445,7 +445,7 @@ def test_naoko_publica_de_verdad_cuando_se_le_autoriza():
     """
     import inspect
 
-    from vmagi.modules.infrastructure.naoko import NaokoAgent
+    from venim.modules.infrastructure.naoko import NaokoAgent
     src = inspect.getsource(NaokoAgent._git_push)
     assert "publish: bool = False" in src, "falta la vía de publicación"
     assert '"git", "push", "origin"' in src, "sigue sin subir nada"
@@ -459,7 +459,7 @@ def test_la_autocorreccion_no_publica_sola():
     """
     import inspect
 
-    from vmagi.modules.infrastructure.naoko import NaokoAgent
+    from venim.modules.infrastructure.naoko import NaokoAgent
     # La reparación vive en `_handle_error_event`: es la que llama a
     # `_git_push` tras verificar, y tiene que hacerlo SIN `publish=True`.
     src = inspect.getsource(NaokoAgent._handle_error_event)
@@ -476,7 +476,7 @@ def test_la_guarda_de_publicar_no_esta_invertida():
     """
     import inspect
 
-    from vmagi.modules.infrastructure.naoko import NaokoAgent
+    from venim.modules.infrastructure.naoko import NaokoAgent
     src = inspect.getsource(NaokoAgent.publish_improvement)
     assert "is not Stage.PUBLICANDO" in src
     assert "is not Stage.PUBLICADO" not in src
@@ -511,12 +511,12 @@ def test_la_release_adjunta_el_exe_dentro_de_un_zip():
     # (el .exe no está firmado: la integridad verificable es lo que hay).
     #
     # El nombre del zip lleva el TAG dentro, como promete el README
-    # (`VeniceMAGI-<tag>.zip`), así que se comprueba el prefijo y la extensión
+    # (`Venim-<tag>.zip`), así que se comprueba el prefijo y la extensión
     # y no la cadena literal: la primera versión de este test exigía
-    # `VeniceMAGI.zip` exacto y habría bloqueado precisamente el cambio que
+    # `Venim.zip` exacto y habría bloqueado precisamente el cambio que
     # hace distinguibles dos releases en la carpeta de Descargas.
     files = crear["with"]["files"]
-    assert "VeniceMAGI-" in files and ".zip" in files, (
+    assert "Venim-" in files and ".zip" in files, (
         f"la release tiene que adjuntar un zip con el tag en el nombre: {files!r}")
     assert "CHECKSUMS.txt" in files
     assert ".exe" not in files, (
@@ -585,7 +585,7 @@ class _LogFalso:
 
 def _naoko_de_prueba(tmp_path):
     """Naoko sin nube, sin enjambre y sin base de datos real."""
-    from vmagi.modules.infrastructure.naoko import NaokoAgent
+    from venim.modules.infrastructure.naoko import NaokoAgent
     n = NaokoAgent.__new__(NaokoAgent)
     n.bus = _BusFalso()
     n.db = None
@@ -727,7 +727,7 @@ async def test_la_autocorreccion_nunca_pide_publicar(tmp_path, monkeypatch):
     """
     import inspect
 
-    from vmagi.modules.infrastructure import naoko as mod
+    from venim.modules.infrastructure import naoko as mod
 
     fuente = inspect.getsource(mod.NaokoAgent._handle_error_event)
 
@@ -763,7 +763,7 @@ async def test_las_notas_de_la_release_acaban_EN_EL_FICHERO(tmp_path, monkeypatc
     describiendo cosas que no eran las novedades — y el test que había pasaba
     igual, porque solo comprobaba de dónde saca el cuerpo el YAML.
     """
-    import vmagi.core.paths as paths
+    import venim.core.paths as paths
 
     raiz = tmp_path / "repo"
     raiz.mkdir()
@@ -792,7 +792,7 @@ async def test_el_readme_no_acumula_la_misma_linea(tmp_path, monkeypatch):
     intento insertaba OTRA viñeta igual. Dos reintentos dejaban la frase tres
     veces: la reincidencia exacta del fallo de v5.0.28.
     """
-    import vmagi.core.paths as paths
+    import venim.core.paths as paths
 
     raiz = tmp_path / "repo"
     raiz.mkdir()
@@ -822,10 +822,10 @@ async def test_un_renombrado_no_rompe_el_commit(tmp_path, monkeypatch):
     """
     n = _naoko_de_prueba(tmp_path)
 
-    porcelain = (b'R  vmagi/viejo.py -> vmagi/nuevo.py\n'
-                 b' M vmagi/core/kernel.py\n'
+    porcelain = (b'R  venim/viejo.py -> venim/nuevo.py\n'
+                 b' M venim/core/kernel.py\n'
                  b'?? scratch/notas.md\n'
-                 b' M venicemagi_brain.db\n')
+                 b' M venim_brain.db\n')
 
     class _Proc:
         returncode = 0
@@ -839,10 +839,10 @@ async def test_un_renombrado_no_rompe_el_commit(tmp_path, monkeypatch):
     monkeypatch.setattr("asyncio.create_subprocess_exec", _falso)
     ficheros = await n._changed_files(tmp_path)
 
-    assert "vmagi/nuevo.py" in ficheros, "el destino del rename se perdió"
+    assert "venim/nuevo.py" in ficheros, "el destino del rename se perdió"
     assert not any("->" in f for f in ficheros), (
         f"una flecha de rename se coló como ruta: {ficheros}")
-    assert "venicemagi_brain.db" not in ficheros, "la base de datos no se commitea"
+    assert "venim_brain.db" not in ficheros, "la base de datos no se commitea"
 
 
 @pytest.mark.asyncio
@@ -853,7 +853,7 @@ async def test_si_el_commit_falla_no_se_etiqueta_nada(tmp_path, monkeypatch):
     empujándolo. La release se construía sin la mejora dentro, con la mejora
     marcada como publicada y sin salida.
     """
-    from vmagi.modules.infrastructure import naoko_repair
+    from venim.modules.infrastructure import naoko_repair
 
     n = _naoko_de_prueba(tmp_path)
     ordenes = []
@@ -868,7 +868,7 @@ async def test_si_el_commit_falla_no_se_etiqueta_nada(tmp_path, monkeypatch):
     monkeypatch.setattr(naoko_repair, "commit_files", commit_que_falla)
 
     async def cambiados(root):
-        return ["vmagi/core/kernel.py"]
+        return ["venim/core/kernel.py"]
     monkeypatch.setattr(n, "_changed_files", cambiados)
 
     async def _exec(*args, **k):

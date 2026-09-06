@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.modules.infrastructure.diagnostico import (
+from venim.modules.infrastructure.diagnostico import (
     CATALOGO,
     Situacion,
     catalogo_legible,

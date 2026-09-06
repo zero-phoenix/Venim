@@ -10,12 +10,12 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.venice.cliente import (
+from venim.venice.cliente import (
     COLA_PROMPT,
     LIMITE_PROMPT,
     recorta_prompt,
 )
-from vmagi.venice.medios import VideoSeedanceError
+from venim.venice.medios import VideoSeedanceError
 
 # ================================================ 1 · el error que no se lanza
 
@@ -162,7 +162,7 @@ def test_chatresp_declara_cuanto_se_recorto():
     `recortado != 0` significa que el modelo contestó sobre un encargo
     incompleto, y eso pertenece al resultado.
     """
-    from vmagi.venice.cliente import ChatResp
+    from venim.venice.cliente import ChatResp
     limpia = ChatResp(texto="ok", modelo="venice-guest", ms=1.0)
     assert limpia.recortado == 0, "por defecto tiene que ser cero, no None"
     coja = ChatResp(texto="ok", modelo="venice-guest", ms=1.0, recortado=812)

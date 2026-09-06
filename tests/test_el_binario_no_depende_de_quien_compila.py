@@ -3,7 +3,7 @@ El .exe de aquí y el .exe publicado tienen que ser el mismo programa.
 
 LA AFIRMACIÓN QUE ESTE TEST PUEDE REFUTAR
 =========================================
-«Compilar VeniceMAGI produce el mismo binario en cualquier máquina.»
+«Compilar Venim produce el mismo binario en cualquier máquina.»
 
 Sostenida hoy, y con una corrección mía dentro.
 
@@ -16,7 +16,7 @@ Dije que era UPX recomprimiendo el archivo del arranque, lo escribí en el
 `.spec` como si estuviera medido, y era falso: `Get-Command upx` no encuentra
 UPX en esta máquina, así que `upx=True` nunca se aplicó. La causa real eran dos
 instancias del programa abiertas que impedían a PyInstaller sobrescribir
-`dist/VeniceMAGI.exe`; lo que se probaba era un binario viejo a medio escribir.
+`dist/Venim.exe`; lo que se probaba era un binario viejo a medio escribir.
 
 Antes de eso hubo otros dos diagnósticos equivocados —puerto ocupado por
 SRManager, frontend sin compilar—, los tres plausibles y ninguno comprobado. La
@@ -40,13 +40,13 @@ from pathlib import Path
 import pytest
 
 RAIZ = Path(__file__).resolve().parents[1]
-SPEC = RAIZ / "VeniceMAGI.spec"
+SPEC = RAIZ / "Venim.spec"
 
 
 @pytest.fixture(scope="module")
 def spec() -> str:
     if not SPEC.is_file():
-        pytest.skip("no está VeniceMAGI.spec en este árbol")
+        pytest.skip("no está Venim.spec en este árbol")
     return SPEC.read_text(encoding="utf-8")
 
 

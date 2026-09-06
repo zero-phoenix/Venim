@@ -31,7 +31,7 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.core import paths
+from venim.core import paths
 
 RAIZ = Path(__file__).resolve().parents[1]
 
@@ -77,7 +77,7 @@ def test_dos_corridas_seguidas_no_comparten_directorio():
 
 def test_el_temporal_vive_bajo_los_datos_de_magi_y_no_en_el_repositorio():
     """
-    Ni en el repositorio ni en el CWD: eso ya pasó con `venicemagi_brain.db`, que
+    Ni en el repositorio ni en el CWD: eso ya pasó con `venim_brain.db`, que
     acabó versionado con datos reales dentro.
     """
     ruta = Path([x for x in _argv() if x.startswith("--basetemp=")][0]
@@ -113,9 +113,9 @@ def test_la_poda_no_puede_impedir_correr_los_tests(tmp_path):
 
 
 @pytest.mark.parametrize("fichero,pista", [
-    ("vmagi/core/tools/builtin.py", "run_tests de Balthasar"),
-    ("vmagi/modules/infrastructure/naoko_repair.py", "verificación de reparación"),
-    ("vmagi/modules/infrastructure/naoko.py", "compuerta de publicación"),
+    ("venim/core/tools/builtin.py", "run_tests de Balthasar"),
+    ("venim/modules/infrastructure/naoko_repair.py", "verificación de reparación"),
+    ("venim/modules/infrastructure/naoko.py", "compuerta de publicación"),
 ])
 def test_los_tres_sitios_que_lanzan_pytest_usan_el_helper(fichero, pista):
     """

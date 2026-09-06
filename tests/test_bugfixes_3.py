@@ -14,18 +14,18 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.core.blackboard import Blackboard
-from vmagi.core.bus import MagiBus
-from vmagi.core.providers.backends.echo import EchoProvider
-from vmagi.core.providers.cloud import set_registry
-from vmagi.core.providers.registry import ProviderRegistry
-from vmagi.core.router import classify_heuristic
-from vmagi.core.store.state import TaskStore
-from vmagi.core.tools.protocol import parse_tool_calls, strip_tool_calls
-from vmagi.modules.memory.episodic import MAX_ATTEMPTS_RETAINED, EpisodicMemory
-from vmagi.modules.reverse.disasm import disassemble
-from vmagi.modules.reverse.identify import identify
-from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+from venim.core.blackboard import Blackboard
+from venim.core.bus import MagiBus
+from venim.core.providers.backends.echo import EchoProvider
+from venim.core.providers.cloud import set_registry
+from venim.core.providers.registry import ProviderRegistry
+from venim.core.router import classify_heuristic
+from venim.core.store.state import TaskStore
+from venim.core.tools.protocol import parse_tool_calls, strip_tool_calls
+from venim.modules.memory.episodic import MAX_ATTEMPTS_RETAINED, EpisodicMemory
+from venim.modules.reverse.disasm import disassemble
+from venim.modules.reverse.identify import identify
+from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
 # ---- BUG 1: 24 de 25 tareas concurrentes se perdían en silencio ----
 
@@ -201,7 +201,7 @@ def test_old_schema_entries_do_not_break_loading(tmp_path):
 
 
 def test_metrics_series_stay_bounded():
-    from vmagi.core.obs.metrics import MetricsCollector
+    from venim.core.obs.metrics import MetricsCollector
     m = MetricsCollector()
     for i in range(5000):
         m.record_provider("p", 1000.0 + i, ok=True)

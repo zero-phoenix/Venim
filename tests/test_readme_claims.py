@@ -106,7 +106,7 @@ def test_el_readme_cita_la_cantidad_real_de_herramientas(readme):
     suelo: las herramientas son un catálogo curado que cambia pocas veces, y
     cuando cambia, el README describe algo que ya no existe.
     """
-    from vmagi.core.tools.builtin import build_registry
+    from venim.core.tools.builtin import build_registry
     m = re.search(r"\*\*(\d+)\s+herramientas\*\*", readme)
     assert m, (
         "El README debería citar la cifra canónica en negrita: "
@@ -127,8 +127,8 @@ def test_el_enjambre_tiene_exactamente_tres_nodos(readme):
     'tres') debe revisarse entero, no solo la cifra.
     """
     # Verificamos que las tres clases de agente existen y son distintas.
-    from vmagi.modules.swarm.agents import BalthasarAgent, MelchiorAgent
-    from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+    from venim.modules.swarm.agents import BalthasarAgent, MelchiorAgent
+    from venim.modules.swarm.orchestrator import SwarmOrchestrator
     roles = {MelchiorAgent, BalthasarAgent}
     # Casper vive dentro del orquestador como árbitro; lo importante es que
     # haya exactamente dos agentes especializados más el orquestador.

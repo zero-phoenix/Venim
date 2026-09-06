@@ -3,8 +3,8 @@ Tests para la ordenación de proveedores por latencia p95 en ProviderRegistry.
 """
 import pytest
 
-from vmagi.core.providers.base import BaseProvider, CompletionRequest, CompletionResponse, Usage
-from vmagi.core.providers.registry import ProviderRegistry
+from venim.core.providers.base import BaseProvider, CompletionRequest, CompletionResponse, Usage
+from venim.core.providers.registry import ProviderRegistry
 
 
 class _SlowProvider(BaseProvider):

@@ -1,4 +1,4 @@
-# MEGAPLAN v2 — VeniceMAGI: guest multi-familia, taller de arte y la red de Ritsuko
+# MEGAPLAN v2 — Venim: guest multi-familia, taller de arte y la red de Ritsuko
 
 Estado: **aplicado** en v2.0.0.
 
@@ -10,13 +10,13 @@ arreglo.
 
 ## 0. El punto de partida
 
-VeniceMAGI v1 eran 40 ficheros y ~3 000 líneas: un REPL sobre **un** proveedor
+Venim v1 eran 40 ficheros y ~3 000 líneas: un REPL sobre **un** proveedor
 guest (Venice), con contenedor virtual, pipeline de medios y una GUI web
 mínima. MAGI-System-IDE eran ~2 700 ficheros y 256 000 líneas: enjambre
 dialéctico, 50 herramientas reales, GUI React, Naoko, Ritsuko, sonda de
 proveedores, cortacircuitos y 1 472 tests.
 
-El encargo era hacer VeniceMAGI **idéntico** a MAGI-System-IDE sin perder su
+El encargo era hacer Venim **idéntico** a MAGI-System-IDE sin perder su
 finalidad. Las dos mitades chocan en un punto concreto, y ese choque es lo que
 este documento resuelve.
 
@@ -29,7 +29,7 @@ su argumento entero: si el crítico comparte sesgos con el proponente, el debate
 popperiano no vale nada. Su Ritsuko lleva la idea al extremo — corre en una
 familia que **no comparte con ninguna** de las cuatro que audita.
 
-VeniceMAGI v1 era **monocultivo deliberado**: los cuatro roles eran el mismo
+Venim v1 era **monocultivo deliberado**: los cuatro roles eran el mismo
 modelo de Venice, y la dialéctica vivía en los contratos, no en la diversidad.
 
 No se pueden tener las dos. Y la elección no es de gusto:
@@ -41,7 +41,7 @@ No se pueden tener las dos. Y la elección no es de gusto:
 
 ### La decisión
 
-Multi-familia, **pero todas guest y sin clave**. La promesa que VeniceMAGI hace
+Multi-familia, **pero todas guest y sin clave**. La promesa que Venim hace
 no es «un solo proveedor»: es «sin cuenta ni key obligatoria en el camino
 principal». Eso se cumple con dos sitios guest operados por navegador (`venice`,
 `notrack`) más las familias de g4f, que también son gratuitas y sin clave.
@@ -65,7 +65,7 @@ La v1 traía Venice hardcodeado en `sesion.py`: la URL, el texto del enlace de
 invitado, las marcas del modal y las del cupo, esparcidas entre la puerta y el
 cliente. Añadir un segundo sitio exigía tocar las dos.
 
-`vmagi/venice/sitios.py` declara cada sitio como una fila. La puerta recibe un
+`venim/venice/sitios.py` declara cada sitio como una fila. La puerta recibe un
 `SitioGuest` y lo opera sin saber de ninguno en concreto.
 
 Tres fallos que la generalización destapó, todos reales:

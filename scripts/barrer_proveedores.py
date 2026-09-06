@@ -79,7 +79,7 @@ sys.path.insert(0, str(RAIZ))
 #
 # Cuando la consecuencia de equivocarse es una ventana abierta en la máquina
 # del usuario, la regla verificable de un vistazo gana a la regla lista.
-from vmagi.core.no_browser import install as _instalar_cortafuegos  # noqa: E402
+from venim.core.no_browser import install as _instalar_cortafuegos  # noqa: E402
 
 _instalar_cortafuegos()
 
@@ -105,7 +105,7 @@ def plegar(texto: str) -> str:
 
 
 def idioma_de(texto: str) -> str:
-    from vmagi.core import idioma
+    from venim.core import idioma
     return idioma.detectar(texto, por_defecto="?")
 
 
@@ -146,8 +146,8 @@ def medir(plazo: float) -> list[dict]:
     # haberse cargado por otra vía entre medias.
     _instalar_cortafuegos()
 
-    from vmagi.core.providers.compat_curl import aplicar as compat_curl
-    from vmagi.core.providers.compat_g4f import aplicar as compat_g4f
+    from venim.core.providers.compat_curl import aplicar as compat_curl
+    from venim.core.providers.compat_g4f import aplicar as compat_g4f
     compat_curl()
     compat_g4f()
 

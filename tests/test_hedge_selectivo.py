@@ -20,13 +20,13 @@ CUBRE DOS CAPAS
 """
 import pytest
 
-from vmagi.core.blackboard import Blackboard
-from vmagi.core.bus import MagiBus
-from vmagi.core.providers.backends.g4f_backend import HEDGE_MAX, G4FProvider
-from vmagi.core.providers.base import CompletionRequest, Message
-from vmagi.core.providers.cloud import FreeCloudLLM
-from vmagi.modules.swarm.agents import BalthasarAgent, CasperAgent, MelchiorAgent
-from vmagi.modules.swarm.parallel import critique_multi_axis, generate_variants
+from venim.core.blackboard import Blackboard
+from venim.core.bus import MagiBus
+from venim.core.providers.backends.g4f_backend import HEDGE_MAX, G4FProvider
+from venim.core.providers.base import CompletionRequest, Message
+from venim.core.providers.cloud import FreeCloudLLM
+from venim.modules.swarm.agents import BalthasarAgent, CasperAgent, MelchiorAgent
+from venim.modules.swarm.parallel import critique_multi_axis, generate_variants
 
 
 def _backend():

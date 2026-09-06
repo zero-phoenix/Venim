@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.verification import (
+from venim.core.verification import (
     ProposalVerifier,
     VerificationReport,
     _es_bloque_gui,
@@ -146,7 +146,7 @@ def test_el_informe_sin_codigo_lo_dice():
 
 
 def test_feedback_para_el_autor_cita_los_fallos():
-    from vmagi.core.verification import BlockResult
+    from venim.core.verification import BlockResult
     report = VerificationReport(had_code=True)
     report.blocks = [BlockResult("python", 0, False, "run", "NameError: x")]
     fb = report.feedback_for_author()

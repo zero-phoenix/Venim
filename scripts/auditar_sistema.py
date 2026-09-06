@@ -41,9 +41,9 @@ RAIZ = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RAIZ))
 
 # El cortafuegos de navegador, ANTES de tocar nada que arrastre g4f. Mismo
-# orden que `vmagi/main.py` y por el mismo motivo: una auditoria que abre un
+# orden que `venim/main.py` y por el mismo motivo: una auditoria que abre un
 # Chrome deja de medir el sistema y pasa a medir la maquina.
-from vmagi.core.no_browser import install as _cortafuegos  # noqa: E402
+from venim.core.no_browser import install as _cortafuegos  # noqa: E402
 
 _cortafuegos()
 
@@ -61,7 +61,7 @@ def _instrumentar(t0: float) -> None:
     Envolver y no sustituir importa: una auditoria que altera lo que audita
     mide otra cosa. Aqui solo se anota el antes y el despues.
     """
-    from vmagi.core.providers.cloud import FreeCloudLLM
+    from venim.core.providers.cloud import FreeCloudLLM
 
     original = FreeCloudLLM.generate
 
@@ -107,8 +107,8 @@ def _cronometrar_etapas(t0: float) -> None:
     "el sistema espera al modelo" habria sido exactamente el tipo de informe
     que este proyecto no quiere.
     """
-    from vmagi.core.verification import ProposalVerifier
-    from vmagi.modules.swarm.agents import SwarmAgentBase
+    from venim.core.verification import ProposalVerifier
+    from venim.modules.swarm.agents import SwarmAgentBase
 
     def envolver(clase, nombre):
         original = getattr(clase, nombre, None)
@@ -139,7 +139,7 @@ def _cronometrar_etapas(t0: float) -> None:
     # directamente. Sin envolver las dos, el informe atribuye a "otras cosas"
     # lo que en realidad es esperar al modelo, y el plan de velocidad ataca el
     # sitio equivocado.
-    from vmagi.core.providers.registry import ProviderRegistry
+    from venim.core.providers.registry import ProviderRegistry
     envolver(ProviderRegistry, "complete")
     envolver(ProviderRegistry, "stream")
 
@@ -230,7 +230,7 @@ def _calidad_de_entrega(tarea: str) -> dict:
     hay forma de saber si una version mejora: las opiniones sobre calidad se
     empatan solas.
     """
-    from vmagi.modules.swarm.intencion import pide_artefacto
+    from venim.modules.swarm.intencion import pide_artefacto
 
     producido = sum(len(r["texto"]) for r in RESPUESTAS)
     final = [r for r in RESPUESTAS if str(r.get("agente")) == "CASPER"]
@@ -276,8 +276,8 @@ async def auditar(tarea: str, motor: str, rondas: int, espera_s: float,
     _instrumentar(t0)
 
     t_imp = time.perf_counter()
-    from vmagi.core.bus import BusEvent
-    from vmagi.core.kernel import Kernel
+    from venim.core.bus import BusEvent
+    from venim.core.kernel import Kernel
     imports_s = round(time.perf_counter() - t_imp, 2)
     _cronometrar_etapas(t0)
 
@@ -289,7 +289,7 @@ async def auditar(tarea: str, motor: str, rondas: int, espera_s: float,
 
     _escuchar(kernel.bus, t0)
 
-    from vmagi.core.providers.cloud import get_registry
+    from venim.core.providers.cloud import get_registry
     reg = await get_registry()
     familias = sorted({getattr(p, "family", "?") for p in getattr(reg, "_providers", [])}) \
         if hasattr(reg, "_providers") else []

@@ -68,8 +68,8 @@ def test_comprueba_los_imports_del_nucleo_igual_que_el_CI():
     porque los tests importan lo que necesitan, no todo.
     """
     fuente = _fuente()
-    for modulo in ("vmagi.core.paths", "vmagi.core.router",
-                   "vmagi.core.providers.registry", "vmagi.core.tools"):
+    for modulo in ("venim.core.paths", "venim.core.router",
+                   "venim.core.providers.registry", "venim.core.tools"):
         assert modulo in fuente, f"falta {modulo}"
         assert modulo in _pasos_ci("test")
 

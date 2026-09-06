@@ -7,7 +7,7 @@ se le dan pantallas descritas por sus estadísticas y textos reales de juego
 """
 import pytest
 
-from vmagi.modules.percepcion import vista
+from venim.modules.percepcion import vista
 
 SATURN = ["up", "down", "left", "right", "A", "B", "C", "X", "Y", "Z",
           "L", "R", "start"]
@@ -188,8 +188,8 @@ def test_sin_backend_devuelve_vacio_no_falso(monkeypatch):
 # --- la herramienta del enjambre -----------------------------------------
 
 def _registro():
-    from vmagi.core.tools.registry import ToolRegistry
-    from vmagi.modules.percepcion.tools import register_percepcion_tools
+    from venim.core.tools.registry import ToolRegistry
+    from venim.modules.percepcion.tools import register_percepcion_tools
     return register_percepcion_tools(ToolRegistry())
 
 

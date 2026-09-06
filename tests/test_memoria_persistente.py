@@ -11,7 +11,7 @@ import os
 
 import pytest
 
-from vmagi.modules.swarm import memoria_persistente as mem
+from venim.modules.swarm import memoria_persistente as mem
 
 CONTROLES = {
     "consolas": {
@@ -27,7 +27,7 @@ CONTROLES = {
 
 @pytest.fixture
 def memoria(tmp_path, monkeypatch):
-    d = tmp_path / "vmagi" / "data" / "memoria"
+    d = tmp_path / "venim" / "data" / "memoria"
     d.mkdir(parents=True)
     (d / mem.CONTROLES).write_text(json.dumps(CONTROLES), encoding="utf-8")
     (d / mem.DESCARTES).write_text(
@@ -130,7 +130,7 @@ def test_esta_en_la_secuencia_de_inyecciones(memoria):
     sin que ningún prompt lo leyera; esto lo hace imposible sin que un test
     se ponga rojo.
     """
-    from vmagi.modules.swarm import inyecciones
+    from venim.modules.swarm import inyecciones
     t = inyecciones.acumuladas("optimiza el emulador yabause, ronda 4")
     assert "MEMORIA PERMANENTE DE MAGI" in t
 

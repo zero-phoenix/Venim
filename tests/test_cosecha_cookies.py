@@ -30,7 +30,7 @@ import pathlib
 
 import pytest
 
-from vmagi.core import sesion_web
+from venim.core import sesion_web
 
 RAIZ = pathlib.Path(__file__).resolve().parents[1]
 
@@ -63,7 +63,7 @@ def test_nunca_se_lanza_con_ventana():
     """
     import ast
 
-    arbol = ast.parse((RAIZ / "vmagi/core/sesion_web.py").read_text(encoding="utf-8"))
+    arbol = ast.parse((RAIZ / "venim/core/sesion_web.py").read_text(encoding="utf-8"))
     llamadas = [n for n in ast.walk(arbol)
                 if isinstance(n, ast.Call)
                 and getattr(n.func, "id", getattr(n.func, "attr", "")) == "Camoufox"]
@@ -85,7 +85,7 @@ def test_no_se_usa_el_toolkit_de_ventanas_de_camoufox():
     entero. No se instala ni se importa: sería meter en el sistema justo lo que
     la regla prohíbe, y de paso decenas de megas.
     """
-    fuente = (RAIZ / "vmagi/core/sesion_web.py").read_text(encoding="utf-8")
+    fuente = (RAIZ / "venim/core/sesion_web.py").read_text(encoding="utf-8")
     assert "PySide6" not in fuente
     reqs = (RAIZ / "requirements.txt").read_text(encoding="utf-8")
     assert "camoufox[gui]" not in reqs

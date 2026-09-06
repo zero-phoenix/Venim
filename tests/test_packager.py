@@ -1,5 +1,5 @@
 """
-Tests para vmagi/modules/studio/packager.py
+Tests para venim/modules/studio/packager.py
 """
 import asyncio
 import shutil
@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.modules.studio.packager import (
+from venim.modules.studio.packager import (
     _find_entry,
     _looks_like_gui,
     _read_requirements,

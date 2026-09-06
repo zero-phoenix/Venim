@@ -1,6 +1,6 @@
 # MEGA PLAN — reexamen del plan y revisión integral de MAGI
 
-**Fecha:** 2026-08-13 · **Base:** 1007 tests, 192 módulos, 29 589 líneas en `vmagi/`
+**Fecha:** 2026-08-13 · **Base:** 1007 tests, 192 módulos, 29 589 líneas en `venim/`
 
 Todo lo que sigue está **medido hoy**, con fecha y con el comando que lo produjo.
 Donde no hay medida, se dice que no la hay. Esa regla es la única forma de que
@@ -113,7 +113,7 @@ ojo que cae justo encima del valor real no es un umbral, es una moneda al aire.*
 
 ## §1. El error de fondo: comprobar que el muro existe antes de escalarlo
 
-El plan entero (`PLAN-SESION-WEB.md`, `vmagi/core/sesion_web.py`, 812 líneas,
+El plan entero (`PLAN-SESION-WEB.md`, `venim/core/sesion_web.py`, 812 líneas,
 tres ficheros de tests) partía de esta línea del catálogo:
 
 ```
@@ -171,7 +171,7 @@ Desde fuera eso se ve *exactamente* igual que «Perplexity está roto». Ahí es
 la trampa: **«roto» y «no lo hemos mirado bien» son indistinguibles desde el
 otro lado de una excepción.**
 
-### El arreglo — `vmagi/core/providers/compat_g4f.py`
+### El arreglo — `venim/core/providers/compat_g4f.py`
 
 Valores por defecto a nivel de clase. No se toca g4f, no se pisa nada: si el
 servidor manda el campo, la instancia lo asigna encima y gana.
@@ -403,7 +403,7 @@ ambas ramas. Falso positivo de mi propio escáner. **El defecto está contenido.
 Historial del mismo fallo en este sistema:
 
 1. Una respuesta entera del enjambre perdida por un acento en consola cp1252
-   (de ahí `vmagi/core/consola.py`).
+   (de ahí `venim/core/consola.py`).
 2. `diagnostico_legible()` con `✓` → `UnicodeEncodeError` al imprimirlo.
 3. **Hoy, en el producto:** el arreglo de (2) solo cubría *el texto que escribí
    yo*. `detalle` sale de `str(e)` de cualquier excepción, y ahí cabe cualquier
@@ -428,7 +428,7 @@ Historial del mismo fallo en este sistema:
 | `naoko.py` | **1 385 líneas** | la GUI tiene tope de 900; el núcleo no tiene ninguno |
 | `agents.py` | 991 líneas | idem |
 | `kernel.py` | 901 líneas | idem |
-| Cobertura `vmagi/core` | ~79 %, **no bloqueante** | una caída no rompe nada |
+| Cobertura `venim/core` | ~79 %, **no bloqueante** | una caída no rompe nada |
 | `ruff` completo | `--exit-zero` | la deuda se cuenta, no se frena |
 | `pyright` | `continue-on-error` | tipado parcial e invisible |
 | Huérfanos | 107 (techo) | trinquete puesto; no baja solo |
@@ -551,11 +551,11 @@ candidato rápido hace dos días»* en vez de *«MELCHIOR va lento»*.
    *Un test que se rompe cuando un proveedor mejora está mal escrito.*
    Coste estimado: 2 h y unos 10 tests que tocar.
 
-1. Tope de líneas para `vmagi/core/**` como el de la GUI, con techo actual y
+1. Tope de líneas para `venim/core/**` como el de la GUI, con techo actual y
    trinquete (igual que huérfanos: no baja solo, pero no sube).
 2. Cobertura bloqueante a partir del 79 % medido, subiendo 1 punto por release.
 3. `ruff` completo a bloqueante **por carpeta**, empezando por
-   `vmagi/core/providers/`.
+   `venim/core/providers/`.
 4. `VENTANA_CONTEXTO` por familia en cuanto la sonda mida el truncado real.
 
 ---

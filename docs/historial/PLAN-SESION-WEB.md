@@ -253,7 +253,7 @@ que falta un mecanismo.
 
 El proyecto ya pagó esto caro: una respuesta entera del enjambre se perdió por
 escribir un acento en una consola cp1252, y de ahí salió
-`vmagi/core/consola.py`. Que vuelva a ocurrir en la herramienta de diagnóstico
+`venim/core/consola.py`. Que vuelva a ocurrir en la herramienta de diagnóstico
 —la que se llama **justo cuando algo va mal**— es el peor sitio posible:
 añade un error propio encima del que estabas investigando y te deja con dos
 problemas y ninguna pista.

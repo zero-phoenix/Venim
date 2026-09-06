@@ -330,7 +330,7 @@
       "t_rel": 657.86,
       "tema": "AGENT_POST",
       "agente": "CASPER",
-      "texto": "**Decisión Técnica:** APPROVED\n\n### Evaluación Dialéctica de las Propuestas\n\n**Tesis (Melchior - Enfoques A y C):**\n* **Acierto del Enfoque C:** Argumentó correctamente la imposibilidad técnica de compilar binarios de 16 bits reales compatibles con sistemas Windows de 64 bits actuales. Estableció la resolución retro VGA ($640 \\times 480$), la paleta limitada y el esquema de persistencia local mediante archivo `.ini` (`ping_pong_config.ini`).\n* **Fallo del Enfoque A:** Confundió la profundidad de color High Color de 16 bits ($65.536$ colores) con la restricción estética de paletas limitadas en consolas de 16 bits (SNES/Mega Drive).\n\n**Antítesis (Balthasar):**\n* Refutación acertada sobre los límites de color del Enfoque A. Determinó la validez técnica del Enfoque C y registró la caída del Enfoque B por agotamiento del tiempo de respuesta (*timeout*).\n\n---\n\n### Verificación y Generación del Artefacto Consolidado\n\n1. **Código Fuente Implementado (`ping_pong_retro.py`):**\n   * Bucle principal de juego con `pygame` a 60 FPS y resolución de $640 \\times 480$.\n   * Paleta visual reducida estilo VGA (16 colores).\n   * Controles para 2 jugadores en un mismo teclado (`W`/`S` y Flechas Arriba/Abajo) y física con incremento gradual de velocidad en colisiones.\n   * Persistencia transparente de puntuaciones máximas en `ping_pong_config.ini`.\n\n2. **Empaquetado Portable Final (`PyInstaller`):**\n   * Se compiló exitosamente el binario ejecutable único portable (`onefile`), totalmente independiente y ejecutable en directo sin dependencias externas:\n     `C:\\Users\\D\\AppData\\Local\\VeniceMAGI\\workspace\\dist\\PingPongRetro16BitPortable.exe`\n\n---\n\n### CONCLUSIÓN\nEl Enfoque C es la propuesta conceptual y técnica correcta. La solución completa ha sido escrita, probada y empaquetada como un único ejecutable `.exe` portable directamente distribuible.\n\n¿Apruebas la auto-ejecución del binario `PingPongRetro16BitPortable.exe` para validar el rendimiento interactivo del ciclo de renderizado?\n\nDECISIÓN: APROBADA",
+      "texto": "**Decisión Técnica:** APPROVED\n\n### Evaluación Dialéctica de las Propuestas\n\n**Tesis (Melchior - Enfoques A y C):**\n* **Acierto del Enfoque C:** Argumentó correctamente la imposibilidad técnica de compilar binarios de 16 bits reales compatibles con sistemas Windows de 64 bits actuales. Estableció la resolución retro VGA ($640 \\times 480$), la paleta limitada y el esquema de persistencia local mediante archivo `.ini` (`ping_pong_config.ini`).\n* **Fallo del Enfoque A:** Confundió la profundidad de color High Color de 16 bits ($65.536$ colores) con la restricción estética de paletas limitadas en consolas de 16 bits (SNES/Mega Drive).\n\n**Antítesis (Balthasar):**\n* Refutación acertada sobre los límites de color del Enfoque A. Determinó la validez técnica del Enfoque C y registró la caída del Enfoque B por agotamiento del tiempo de respuesta (*timeout*).\n\n---\n\n### Verificación y Generación del Artefacto Consolidado\n\n1. **Código Fuente Implementado (`ping_pong_retro.py`):**\n   * Bucle principal de juego con `pygame` a 60 FPS y resolución de $640 \\times 480$.\n   * Paleta visual reducida estilo VGA (16 colores).\n   * Controles para 2 jugadores en un mismo teclado (`W`/`S` y Flechas Arriba/Abajo) y física con incremento gradual de velocidad en colisiones.\n   * Persistencia transparente de puntuaciones máximas en `ping_pong_config.ini`.\n\n2. **Empaquetado Portable Final (`PyInstaller`):**\n   * Se compiló exitosamente el binario ejecutable único portable (`onefile`), totalmente independiente y ejecutable en directo sin dependencias externas:\n     `C:\\Users\\D\\AppData\\Local\\Venim\\workspace\\dist\\PingPongRetro16BitPortable.exe`\n\n---\n\n### CONCLUSIÓN\nEl Enfoque C es la propuesta conceptual y técnica correcta. La solución completa ha sido escrita, probada y empaquetada como un único ejecutable `.exe` portable directamente distribuible.\n\n¿Apruebas la auto-ejecución del binario `PingPongRetro16BitPortable.exe` para validar el rendimiento interactivo del ciclo de renderizado?\n\nDECISIÓN: APROBADA",
       "extra": {
         "type": "AGENT_POST",
         "task_id": "auditoria-1787208706",
@@ -365,7 +365,7 @@
   "ritsuko": {
     "contesto": true,
     "informes_escritos": 1,
-    "ruta_ultimo": "C:\\Users\\D\\AppData\\Local\\VeniceMAGI\\informes-ritsuko\\informe-20260820-020317.md",
+    "ruta_ultimo": "C:\\Users\\D\\AppData\\Local\\Venim\\informes-ritsuko\\informe-20260820-020317.md",
     "veredicto": "[Inferencia no disponible: todos los proveedores fallaron: familia 'deepseek' agotada (1 candidatos): Perplexity: 4 caracteres ('tud.')]",
     "evidencia": {
       "ventana_eventos": 15,
@@ -374,8 +374,8 @@
         "derivas_declaradas": 5,
         "ultimas": [
           "Pensando (claude45sonnet)...",
-          "⚠️ He detectado una anomalía en el sistema:\n```\n{'message': '[ERROR] vmagi.core.tools.registry: [tools] observe_artifact falló\\nTraceback (most recent call last):\\n  File \"D:\\\\Games Only\\\\MAGI-System-I",
-          "### Diagnóstico\nEl error se produce en `vmagi/modules/studio/artifacts.py` al intentar mapear la cadena `'app'` a una instancia de `ArtifactKind`. La función recibe `kind='app'`, pero la enumeración `A"
+          "⚠️ He detectado una anomalía en el sistema:\n```\n{'message': '[ERROR] venim.core.tools.registry: [tools] observe_artifact falló\\nTraceback (most recent call last):\\n  File \"D:\\\\Games Only\\\\MAGI-System-I",
+          "### Diagnóstico\nEl error se produce en `venim/modules/studio/artifacts.py` al intentar mapear la cadena `'app'` a una instancia de `ArtifactKind`. La función recibe `kind='app'`, pero la enumeración `A"
         ]
       },
       "nodos": {
@@ -515,8 +515,8 @@
       "Deriva detectada en g4f-gemini: solo 1/3 respuestas canarias correctas. Las comparaciones con resultados anteriores dejan de ser válidas.",
       "Deriva detectada en g4f-llama: solo 0/3 respuestas canarias correctas. Las comparaciones con resultados anteriores dejan de ser válidas.",
       "Deriva detectada en g4f-perplexity: solo 0/3 respuestas canarias correctas. Las comparaciones con resultados anteriores dejan de ser válidas.",
-      "⚠️ He detectado una anomalía en el sistema:\n```\n{'message': '[ERROR] vmagi.core.tools.registry: [tools] observe_artifact falló\\nTraceback (most recent call last):\\n  File \"D:\\\\Games Only\\\\VeniceMAGI\\\\vmagi\\\\core\\\\tools\\\\registry.py\", line 154, in execute\\n    result = await result\\n  File \"D:\\\\Ga",
-      "### Diagnóstico\nEl error se produce en `vmagi/modules/studio/artifacts.py` al intentar mapear la cadena `'app'` a una instancia de `ArtifactKind`. La función recibe `kind='app'`, pero la enumeración `ArtifactKind` no reconoce `'app'` como un valor válido, lo que causa que `ArtifactKind('app')` lance ",
+      "⚠️ He detectado una anomalía en el sistema:\n```\n{'message': '[ERROR] venim.core.tools.registry: [tools] observe_artifact falló\\nTraceback (most recent call last):\\n  File \"D:\\\\Games Only\\\\Venim\\\\venim\\\\core\\\\tools\\\\registry.py\", line 154, in execute\\n    result = await result\\n  File \"D:\\\\Ga",
+      "### Diagnóstico\nEl error se produce en `venim/modules/studio/artifacts.py` al intentar mapear la cadena `'app'` a una instancia de `ArtifactKind`. La función recibe `kind='app'`, pero la enumeración `ArtifactKind` no reconoce `'app'` como un valor válido, lo que causa que `ArtifactKind('app')` lance ",
       "Deriva detectada en g4f-gemini: solo 0/3 respuestas canarias correctas. Las comparaciones con resultados anteriores dejan de ser válidas.",
       "Deriva detectada en g4f-llama: solo 0/3 respuestas canarias correctas. Las comparaciones con resultados anteriores dejan de ser válidas.",
       "Deriva detectada en g4f-hf: solo 0/3 respuestas canarias correctas. Las comparaciones con resultados anteriores dejan de ser válidas."
@@ -867,7 +867,7 @@
       "t_rel": 583.83,
       "tema": "naoko.log",
       "agente": "NAOKO",
-      "texto": "⚠️ He detectado una anomalía en el sistema:\n```\n{'message': '[ERROR] vmagi.core.tools.registry: [tools] observe_artifact falló\\nTraceback (most recent call last):\\n  File \"D:\\\\Games Only\\\\VeniceMAGI\\\\vmagi\\\\core\\\\tools\\\\registry.py\", line 154, in execute\\n    result = await result\\n  File \"D:\\\\Games Only\\\\VeniceMAGI\\\\vmagi\\\\modules\\\\studio\\\\tools.py\", line 37, in observe_artifact\\n    obs ="
+      "texto": "⚠️ He detectado una anomalía en el sistema:\n```\n{'message': '[ERROR] venim.core.tools.registry: [tools] observe_artifact falló\\nTraceback (most recent call last):\\n  File \"D:\\\\Games Only\\\\Venim\\\\venim\\\\core\\\\tools\\\\registry.py\", line 154, in execute\\n    result = await result\\n  File \"D:\\\\Games Only\\\\Venim\\\\venim\\\\modules\\\\studio\\\\tools.py\", line 37, in observe_artifact\\n    obs ="
     },
     {
       "t_rel": 583.83,
@@ -897,7 +897,7 @@
       "t_rel": 614.52,
       "tema": "naoko.log",
       "agente": "NAOKO",
-      "texto": "### Diagnóstico\nEl error se produce en `vmagi/modules/studio/artifacts.py` al intentar mapear la cadena `'app'` a una instancia de `ArtifactKind`. La función recibe `kind='app'`, pero la enumeración `ArtifactKind` no reconoce `'app'` como un valor válido, lo que causa que `ArtifactKind('app')` lance un `ValueError`.\n\n### Diagnóstico\n1. **Locus:** `vmagi/modules/studio/artifacts.py` (alrededor de la "
+      "texto": "### Diagnóstico\nEl error se produce en `venim/modules/studio/artifacts.py` al intentar mapear la cadena `'app'` a una instancia de `ArtifactKind`. La función recibe `kind='app'`, pero la enumeración `ArtifactKind` no reconoce `'app'` como un valor válido, lo que causa que `ArtifactKind('app')` lance un `ValueError`.\n\n### Diagnóstico\n1. **Locus:** `venim/modules/studio/artifacts.py` (alrededor de la "
     },
     {
       "t_rel": 643.23,
@@ -1017,7 +1017,7 @@
       "t_rel": 692.49,
       "tema": "ritsuko.log",
       "agente": "RITSUKO",
-      "texto": "[Inferencia no disponible: todos los proveedores fallaron: familia 'deepseek' agotada (1 candidatos): Perplexity: 4 caracteres ('tud.')]\n\n[Descargable] C:\\Users\\D\\AppData\\Local\\VeniceMAGI\\informes-ritsuko\\informe-20260820-020317.md"
+      "texto": "[Inferencia no disponible: todos los proveedores fallaron: familia 'deepseek' agotada (1 candidatos): Perplexity: 4 caracteres ('tud.')]\n\n[Descargable] C:\\Users\\D\\AppData\\Local\\Venim\\informes-ritsuko\\informe-20260820-020317.md"
     },
     {
       "t_rel": 692.49,

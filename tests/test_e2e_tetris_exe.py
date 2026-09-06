@@ -13,9 +13,9 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.core.paths import python_executable
-from vmagi.core.tools.builtin import ToolContext, build_registry
-from vmagi.modules.studio.packager import build_project_exe
+from venim.core.paths import python_executable
+from venim.core.tools.builtin import ToolContext, build_registry
+from venim.modules.studio.packager import build_project_exe
 
 TETRIS_MAIN = r'''
 import sys

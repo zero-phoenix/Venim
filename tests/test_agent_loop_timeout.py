@@ -1,16 +1,16 @@
 """
-Tests de timeout y degradado en vmagi/core/agent_loop.py
+Tests de timeout y degradado en venim/core/agent_loop.py
 """
 import asyncio
 from unittest.mock import AsyncMock
 
 import pytest
 
-from vmagi.core.agent_loop import run_agent
-from vmagi.core.providers.base import CompletionResponse, Usage
-from vmagi.core.providers.registry import ProviderRegistry
-from vmagi.core.tools.builtin import ToolContext
-from vmagi.core.tools.registry import ToolRegistry
+from venim.core.agent_loop import run_agent
+from venim.core.providers.base import CompletionResponse, Usage
+from venim.core.providers.registry import ProviderRegistry
+from venim.core.tools.builtin import ToolContext
+from venim.core.tools.registry import ToolRegistry
 
 
 class _FakeProvider:

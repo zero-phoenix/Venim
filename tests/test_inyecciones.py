@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.modules.swarm import inyecciones
+from venim.modules.swarm import inyecciones
 
 
 @pytest.fixture
@@ -26,12 +26,12 @@ def encargo_de_emulador() -> str:
 def test_concatena_a_todas(monkeypatch, encargo_de_emulador):
     """Cada módulo aporta su trozo; ninguno se queda sin llamar."""
     llamadas = []
-    import vmagi.modules.swarm.aceptacion as acept
-    import vmagi.modules.swarm.automodelo as auto
-    import vmagi.modules.swarm.bitacora as bit
-    import vmagi.modules.swarm.caja_de_herramientas as caja
-    import vmagi.modules.swarm.memoria_persistente as memo
-    import vmagi.modules.swarm.ronda_verificada as ronda
+    import venim.modules.swarm.aceptacion as acept
+    import venim.modules.swarm.automodelo as auto
+    import venim.modules.swarm.bitacora as bit
+    import venim.modules.swarm.caja_de_herramientas as caja
+    import venim.modules.swarm.memoria_persistente as memo
+    import venim.modules.swarm.ronda_verificada as ronda
 
     def espiar(nombre, original):
         def espia(encargo, *a, **kw):

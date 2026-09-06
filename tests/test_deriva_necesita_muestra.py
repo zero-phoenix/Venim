@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.modules.infrastructure.naoko import deriva_es_concluyente
+from venim.modules.infrastructure.naoko import deriva_es_concluyente
 
 
 @pytest.mark.parametrize("acertados,total", [(0, 3), (1, 3), (1, 2), (2, 5)])

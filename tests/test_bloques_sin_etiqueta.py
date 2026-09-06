@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.verification import extract_blocks
+from venim.core.verification import extract_blocks
 
 PY = "import sys\n\ndef main():\n    print('hola')\n"
 
@@ -57,7 +57,7 @@ def test_una_etiqueta_explicita_manda_sobre_la_heuristica():
 
 def test_la_fabrica_ve_el_codigo_que_antes_se_le_escapaba():
     """El caso completo: propuesta con bloque sin etiquetar -> hay python."""
-    from vmagi.modules.studio.entrega import _unir_bloques
+    from venim.modules.studio.entrega import _unir_bloques
 
     propuesta = f"Propuesta:\n\n```\n{PY}```\n\nY para instalarlo:\n\n```bash\npip install x\n```"
     assert _unir_bloques(propuesta).strip() == PY.strip()

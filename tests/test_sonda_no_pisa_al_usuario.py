@@ -31,7 +31,7 @@ from __future__ import annotations
 
 import inspect
 
-from vmagi.core.kernel import Kernel
+from venim.core.kernel import Kernel
 
 
 class _Enjambre:

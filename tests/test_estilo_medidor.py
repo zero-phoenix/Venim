@@ -29,7 +29,7 @@ from pathlib import Path
 
 import pytest
 
-from vmagi.modules.studio import estilo as E
+from venim.modules.studio import estilo as E
 
 # ------------------------------------------------------------------ utilidad
 
@@ -252,7 +252,7 @@ def test_el_etalonaje_entra_en_el_grafo_de_filtros():
     ramas, porque son dos cadenas de filtros distintas y es exactamente el
     sitio donde una se arregla y la otra se olvida.
     """
-    from vmagi.modules.studio.video import Slide, VideoSpec, build_filtergraph
+    from venim.modules.studio.video import Slide, VideoSpec, build_filtergraph
 
     diapos = [Slide("a.png", 2.0), Slide("b.png", 2.0)]
     for ken in (True, False):
@@ -309,7 +309,7 @@ async def test_una_animatica_encadenada_no_duplica_los_planos(
         assert r.returncode == 0
         imgs.append(p)
 
-    from vmagi.modules.studio.video import Slide, VideoSpec, render_slideshow
+    from venim.modules.studio.video import Slide, VideoSpec, render_slideshow
     salida = d / "animatica.mp4"
     obs = await render_slideshow(
         VideoSpec(slides=[Slide(str(p), 3.0) for p in imgs],
@@ -664,8 +664,8 @@ async def test_el_instrumento_es_determinista(camara_fija):
 # ============================================ el enjambre alcanza el instrumento
 
 def _registro():
-    from vmagi.core.tools.registry import ToolRegistry
-    from vmagi.modules.studio.tools import register_studio_tools
+    from venim.core.tools.registry import ToolRegistry
+    from venim.modules.studio.tools import register_studio_tools
     return register_studio_tools(ToolRegistry())
 
 
@@ -742,7 +742,7 @@ async def test_probe_devuelve_el_contrato_que_promete(camara_fija):
     diccionario en su lugar «porque es más cómodo», esos sitios fallan con
     `AttributeError` en tiempo de ejecución y no al importar.
     """
-    from vmagi.modules.studio.video import VideoInfo, probe
+    from venim.modules.studio.video import VideoInfo, probe
 
     info = await probe(camara_fija)
     assert isinstance(info, VideoInfo)

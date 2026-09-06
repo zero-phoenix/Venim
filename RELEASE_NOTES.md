@@ -1,154 +1,118 @@
-# v2.3.0 — la ventana deja de esconder el trabajo, y una capa local que no llama
+# v3.0.0 — Venim: el sistema deja de ser un IDE que además dibuja
 
-**Qué cambia:** la interfaz se ha rehecho pieza a pieza comprobando cada una
-sobre la aplicación en marcha, no leyendo el código. Y el sistema estrena una
-forma de puntuarse que **baja cuando se queda ciego** — la anterior no.
+**Qué cambia:** VeniceMAGI pasa a llamarse **Venim**, y no es solo un nombre.
+El fin del sistema es **crear imagen, vídeo y cine de alta calidad**. Todo lo
+demás que lleva dentro —desensamblar binarios, pilotar emuladores, consultar
+datos macroeconómicos— deja de ser una lista de funciones y pasa a ser lo que
+siempre debió ser: **las formas de conseguir material real cuando lo que pides
+tiene que parecer real**.
 
-**Descarga:** en Assets, `VeniceMAGI-v2.3.0.zip`. Dentro hay **un solo
-fichero**, `VeniceMAGI.exe`: onefile, con su propio Python 3.10 dentro.
+**Descarga:** en Assets, `Venim-v3.0.0.zip`. Dentro hay **un solo fichero**,
+`Venim.exe`: onefile, con su propio Python 3.10 dentro.
+
+> **Tus datos se mudan solos.** El historial de conversaciones, la carpeta de
+> trabajo elegida y los artefactos generados viven en una carpeta que ahora se
+> llama distinto. La primera vez que abras Venim se renombra sola, con todo
+> dentro. Si no puede hacerse —la carpeta abierta en otro proceso, permisos— se
+> te dice y tus datos siguen intactos donde estaban: perderlos por intentar
+> moverlos habría sido peor que el problema que se venía a resolver.
 
 ---
 
-## 25 de los 50 avisos del sistema se tiraban a la basura
+## Por qué el nombre cambia lo que hace
 
-El motor publicaba 50 sucesos distintos y la ventana solo atendía 25. Entre los
-descartados estaban los dos que más falta hacen mientras esperas:
+Un generador de imágenes te da lo que salga. Venim convierte tu encargo en un
+**contrato de promesas separables**, se lo da a **dos autores que no se ven**, y
+pone a un **crítico más estricto** —en otro modelo— a contar cuáles se
+cumplieron. Lo que una máquina puede medir lo mide una máquina; lo que no, se
+declara **sin verificar** en vez de aprobarse por omisión.
 
-- `swarm.ronda` — qué ronda va, cuántas variantes hay, cuántas llamadas quedan
-- `agent.thought` — qué está pensando el nodo ahora mismo
+«Salió una imagen» y «salió LA imagen» dejan de ser lo mismo. Y cuando la
+máquina y el modelo discrepan, **manda la máquina**.
 
-El resultado medido era **veinte segundos de pantalla en blanco** mientras el
-registro tenía todo el detalle. Ahora hay un **pulso** por conversación que
-escribe una línea por suceso, y una **traza de herramientas** que dice quién
-llamó a qué, con qué argumento, qué salió y cuánto tardó.
+## Ingeniería inversa y emuladores, reencuadrados
 
-Para que no vuelva a pasar hay un `contrato.py` que declara los 50 sucesos con
-su destino; los internos **exigen un motivo escrito** de por qué nadie los ve.
-Un test compara las dos listas y se pone rojo si se separan.
+No se ha borrado nada. Se ha dicho para qué está:
 
-> Mi propio recuento de esto estaba mal: dije 20 de 43 porque mi búsqueda no
-> veía la forma `emit("...")` del bucle de agente. Lo encontré revisando mi
-> propio trabajo y la cifra real era peor.
+- **Ingeniería inversa** — sacar material de donde está: formatos de textura,
+  tablas de paleta, assets dentro de un binario. Una referencia real vale más
+  que una descrita.
+- **Emuladores** — capturar movimiento auténtico. Un plano grabado de una
+  consola real es material medible; la descripción de ese plano, no.
+- **Datos del mundo real** — cuando la pieza tiene que ser realista, los datos
+  que aparecen en ella también. Cada uno con su fuente y su fecha.
 
-## La ventana se puede pilotar sin ratón
+## Identidad propia
 
-Las doce pestañas del panel derecho eran `<div onClick>`. Los dos controles más
-consecuentes de toda la aplicación —**PARAR ESTA** y **PARAR TODO**— eran
-`<span onClick>`. Cambiar de conversación, lo que más se hace, otro `<div>`.
+Icono nuevo: un **diafragma de tres hojas** —lo que decide cuánta luz entra, la
+primera decisión de cualquier imagen— con los colores del tema. Tres hojas
+porque el sistema tiene tres nodos, y ninguna más porque a 16 px una cuarta no
+se distingue. Fondo transparente, legible sobre claro y sobre oscuro.
 
-Nada de eso existía para `Tab`, ni para un lector de pantalla, ni para
-automatizar la ventana. Ahora son botones de verdad, con el patrón ARIA de
-pestañas: flechas para moverse, `Home`/`End`, y **una sola parada en el
-recorrido de Tab** en vez de doce.
+El anterior era un triángulo, que es la forma del sistema del que salió este.
+Un programa que se presenta con la cara de su antecesor no se distingue de él en
+la barra de tareas.
 
-Verificado sobre el DOM de la aplicación en marcha: 12 pestañas, 31 controles
-enfocables, **0 sin nombre accesible**.
+## LILIM: no llamar es más rápido que llamar rápido
 
-> Y el error que cometí haciéndolo: le puse a cada botón su propio
-> `outline: 2px solid`, pisando el anillo de foco que el tema ya definía con
-> `box-shadow`. Funcionaba, y era un segundo sistema de foco montado encima del
-> que había. Lo encontré leyendo `getComputedStyle` en la ventana real.
+El coste dominante no es pensar: es **esperar**. Los proveedores gratuitos
+tardan de 3 a 22 segundos por llamada y una vuelta del enjambre son tres.
 
-## Una sola decisión, y sin saltos de pestaña
+Ahora hay un índice local que contesta lo que ya se sabe **en 0,76 a 10,44 ms**,
+medido. Trae 9 herramientas nuevas; el catálogo pasa de 71 a 80. No es un modelo
+y no razona: cuando no sabe algo dice `NO LO SÉ` y escala al enjambre — un
+índice que inventa sería más rápido y peor que no tenerlo.
 
-Había **tres controles de aprobación** compitiendo, con textos que se
-contradecían: uno decía «aplicar cambios» sobre una tarea que no tocaba ningún
-fichero. Ahora hay **una barra** que dice los hechos —cuántos ficheros, si los
-tests pasaron— y cambia el verbo cuando no hay nada que aplicar.
+El freno que lo hace seguro es una lista de verbos de trabajo: una pregunta
+ataja, un encargo no, aunque lleven las mismas palabras.
 
-Y la ventana ya no salta sola de pestaña mientras lees.
+## La vaina de mielina, envolviendo al crítico
 
-## Cabe en un tercio de pantalla
+Antes de que critique, un analizador estático recorre el AST de la propuesta y
+le entrega los defectos objetivos —un `SyntaxError` con su línea, una función
+que solo tiene `pass`, un `except:` desnudo— en microsegundos y sin red. El
+prompt los da por ciertos y le pide lo que un AST no puede ver.
 
-Las columnas llevaban `minWidth` en línea que sumaban 1060 px: por debajo de
-eso, la interfaz se rompía. Ahora se apilan y **funciona a 853 px de ancho**,
-que es un tercio de un monitor de 2560.
+Quien levante un **KoboldCpp** local (Qwen 2.5 1.5B, gratis, va en CPU sin
+AVX2) obtiene además crítica neuronal local con `VENIM_KOBOLD=1`. Quien no, no
+paga nada: la sonda no se hace.
+
+## La ventana deja de esconder el trabajo
+
+- **25 de los 50 avisos del sistema se tiraban a la basura**, incluidos los dos
+  que más falta hacen mientras esperas: qué ronda va y qué está pensando el
+  nodo. Ahora hay un pulso por conversación y una traza de herramientas que dice
+  quién llamó a qué, con qué argumento, qué salió y cuánto tardó.
+- **Se puede pilotar sin ratón.** Las doce pestañas y los dos botones de parada
+  eran `<div onClick>`: no existían para `Tab` ni para un lector de pantalla.
+- **Una sola decisión.** Había tres controles de aprobación con textos que se
+  contradecían.
+- **Cabe en un tercio de pantalla**: funciona a 853 px de ancho.
 
 ## El banco que baja cuando el sistema se queda ciego
 
-Pilotando la aplicación, `read_file` falló **8 de 8 veces**: el enjambre
-buscaba el código en una carpeta vacía. El banco de evaluación habría dado
-exactamente la misma nota que el día anterior, porque 47 × 23 sigue siendo 1081
-aunque el sistema no encuentre un solo fichero.
+`read_file` falló **8 de 8 veces** y el banco de evaluación habría dado la misma
+nota que el día anterior: 47 × 23 sigue siendo 1081 aunque el sistema esté
+ciego. Ahora hay un segundo banco cuyas respuestas se leen del repositorio al
+construirlo, corrido con herramientas de lectura. Las dos notas **no se
+promedian**: 100 % de saber con 0 % de ver da un 50 % que no describe nada.
 
-Hay un segundo banco cuyas **respuestas se leen del repositorio** al construirlo
-—si mañana una constante cambia, el banco espera el valor nuevo sin que nadie lo
-toque— y que se corre con un corredor **con herramientas de lectura**, porque
-con un modelo pelado su cero significaría «le tapamos los ojos» en vez de «está
-ciego».
+## Errores míos, escritos
 
-Las dos notas **no se promedian**: 100 % de saber y 0 % de ver da un 50 % que no
-describe nada. La auto-mejora de Naoko sí las funde, y así una lectura rota
-cuenta como la regresión que es y revierte el cambio.
-
-> Este banco corrige un fallo mío: en mi propio plan había propuesto medir el
-> sistema con un examen **escrito por mí**, que es el mismo jurado circular que
-> este repositorio ya había cazado y anotado como refutado.
-
-## La capa local: no llamar es más rápido que llamar rápido
-
-El coste dominante de este sistema no es pensar: es **esperar**. Los
-proveedores gratuitos tardan de 3 a 22 segundos por llamada y una vuelta del
-enjambre son tres como mínimo. Ninguna optimización de prompt compite con no
-hacer la llamada.
-
-Ahora hay un índice local —**LILIM**, traído del proyecto de origen— que
-contesta lo que ya se sabe **en 0,76 a 10,44 ms**, medido en esta máquina.
-Entre 300 y 25.000 veces más rápido que la vuelta que sustituye. Trae 9
-herramientas nuevas para el enjambre; el catálogo pasa de 71 a 80.
-
-No es un modelo y no razona: es un índice sobre memoria versionada. Cuando no
-sabe algo dice `NO LO SÉ` y escala al enjambre en vez de rellenar el hueco —
-un índice que inventa sería más rápido y peor que no tenerlo.
-
-El freno que lo hace seguro es una lista de verbos de trabajo: «¿qué controles
-tiene la Vita?» ataja, «arregla el mapeo de controles de la Vita» no, aunque
-lleve las mismas palabras. Seis encargos de trabajo cargados de términos
-indexados van en la suite intentando colarse.
-
-## La vaina de mielina, envolviendo a Balthasar
-
-Antes de que Balthasar critique, un analizador estático recorre el AST de la
-propuesta y le entrega los defectos objetivos —un `SyntaxError` con su línea,
-una función que solo tiene `pass`, un `except:` desnudo— en microsegundos y sin
-red. El prompt los da por ciertos y le pide lo que un AST no puede ver.
-
-Sin esto, la mitad de las críticas de la primera ronda eran «esto no compila»,
-cuatro veces en paralelo, a 3-22 s la llamada.
-
-Quien levante un **KoboldCpp** local (Qwen 2.5 1.5B, gratis, va en CPU sin
-AVX2) obtiene además una crítica neuronal local, activándola con
-`VENICEMAGI_KOBOLD=1`. Quien no, no paga nada: la sonda no se hace.
-
-> Esa activación explícita salió de un error mío. La primera versión sondeaba
-> siempre y memoizaba un minuto, que parecía barato; donde el puerto está
-> filtrado en vez de cerrado, el plazo se agota entero y la suite de tests se
-> arrastró. Un acelerador opcional que cobra peaje al que no lo usa está mal
-> hecho, por pequeño que sea el peaje.
-
-> **Lo que no se ha traído, y por qué.** El paquete original incluía sentidos
-> —ojos (PDF), oídos (audio), brazos (`.docx`)— y cuatro funciones de
-> lubricación neuronal. Al medirlo, ninguna tenía un solo llamante en
-> producción: tests verdes y cero uso. Traerlas habría sido mudar código muerto
-> de un repositorio a otro y llamarlo actualización.
-
-## Elegir la carpeta de trabajo
-
-El sistema apuntaba a una caja de arena vacía y no había forma de cambiarlo
-desde la ventana. Ahora se elige en ⚙, y el panel dice cuántos ficheros `.py`
-ve realmente donde apunta.
+- Culpé a UPX de un `.exe` que moría al arrancar. UPX no estaba ni instalado:
+  eran dos instancias abiertas que impedían sobrescribir el binario.
+- La sonda de KoboldCpp se hacía siempre. Donde el puerto está filtrado en vez
+  de cerrado, el plazo se agota entero y la suite de tests se arrastró. Un
+  acelerador opcional que cobra peaje al que no lo usa está mal hecho.
+- Metí el atajo local dentro del orquestador y el trinquete de líneas se puso
+  rojo. Hizo de detector de humo: la pieza tenía que tener casa propia.
 
 ## Otros arreglos
 
 - Una conversación reanudada se tragaba en silencio todos los mensajes
   siguientes.
-- Casper podía entregar `tud.` —cuatro caracteres— como respuesta final, con la
-  capa de proveedores ya avisando de que no servía. Ahora la respuesta final
-  pasa por el mismo filtro antes de publicarse.
-- Los borradores de auto-ejecución se escribían en la raíz del repositorio y uno
-  llegó a colarse en un commit.
-- Icono nuevo: tres trazos que no se tocan y un punto en el centro, con los
-  colores del tema. Fondo transparente, legible a 16 px.
+- El árbitro podía entregar `tud.` —cuatro caracteres— como respuesta final.
+- Los borradores de auto-ejecución se escribían en la raíz del repositorio.
 - La ventana abre con su fondo oscuro definitivo en vez de un fogonazo blanco.
 
 ---

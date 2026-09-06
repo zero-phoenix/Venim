@@ -162,7 +162,7 @@ del proveedor, no la identidad del modelo.
 
 ## 5. Ritsuko: de documentación a control de calidad
 
-> «evalúa qué rol mayor le puedes dar a ritsuko para que el sistema vmagi y
+> «evalúa qué rol mayor le puedes dar a ritsuko para que el sistema venim y
 > naoko funcione mejor»
 
 ### El diagnóstico honesto de su situación actual

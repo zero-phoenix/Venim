@@ -23,7 +23,7 @@ from __future__ import annotations
 
 import pytest
 
-from vmagi.core.providers.registry import ORDEN_DE_MERITO, SWARM_ROLES
+from venim.core.providers.registry import ORDEN_DE_MERITO, SWARM_ROLES
 
 
 class _Reg:
@@ -50,7 +50,7 @@ class _Registro:
         return list(self._pool)
 
     # se reutiliza la implementación real
-    from vmagi.core.providers.registry import ProviderRegistry as _P
+    from venim.core.providers.registry import ProviderRegistry as _P
     select_for_swarm = _P.select_for_swarm
     _merito = _P._merito
 

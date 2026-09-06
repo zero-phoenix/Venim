@@ -11,8 +11,8 @@ import json
 
 import pytest
 
-from vmagi.core.providers import catalogo as cat
-from vmagi.core.providers.backends import g4f_backend as g
+from venim.core.providers import catalogo as cat
+from venim.core.providers.backends import g4f_backend as g
 
 
 def test_el_json_dice_lo_mismo_que_las_constantes():
@@ -52,7 +52,7 @@ def test_el_reparto_del_enjambre_apunta_a_familias_vivas():
     """Ningún nodo puede apuntar a una familia que nadie sirve.
 
     «Servir» son ahora DOS cosas, no una. `FAMILY_SPECS` solo conoce lo que
-    sirve g4f por HTTP; en VeniceMAGI el camino principal lo sirven los
+    sirve g4f por HTTP; en Venim el camino principal lo sirven los
     sitios guest operados por navegador (`venice`, `notrack`), que por
     definición no están ahí. La primera versión de este test daba
     «MELCHIOR apunta a venice, que no existe» sobre un reparto correcto:
@@ -61,7 +61,7 @@ def test_el_reparto_del_enjambre_apunta_a_familias_vivas():
     Lo que el test protege sigue intacto: la familia tiene que tener a
     ALGUIEN detrás, y para las de g4f, alguien no roto.
     """
-    from vmagi.venice.sitios import SITIOS
+    from venim.venice.sitios import SITIOS
 
     guest = {s.familia for s in SITIOS.values() if s.chat}
     for rol, fam in g.DEFAULT_SWARM_FAMILIES.items():

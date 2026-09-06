@@ -10,22 +10,22 @@ La suite no toca la red: todo pasa por `FrozenFetcher`.
 """
 import pytest
 
-from vmagi.modules.world.edgar import (
+from venim.modules.world.edgar import (
     annual_series,
     concept_facts,
     fundamentals,
     render_fundamentals,
     resolve_cik,
 )
-from vmagi.modules.world.feeds import fetch_feed, headlines, parse_feed
-from vmagi.modules.world.macro import (
+from venim.modules.world.feeds import fetch_feed, headlines, parse_feed
+from venim.modules.world.macro import (
     compare_countries,
     ecb_series,
     fred_series,
     macro_snapshot,
     worldbank,
 )
-from vmagi.modules.world.sources import Datum, FrozenFetcher, SourceError
+from venim.modules.world.sources import Datum, FrozenFetcher, SourceError
 
 # --------------------------------------------------------------- fixtures reales
 
@@ -374,7 +374,7 @@ def test_la_url_del_banco_mundial_no_mezcla_per_page_con_mrnev():
     silencio. Por eso este test mira la URL, que es lo único que se puede
     comprobar sin red.
     """
-    from vmagi.modules.world.macro import WB_JSON
+    from venim.modules.world.macro import WB_JSON
 
     url = WB_JSON.format(iso="ESP;USA;CHN", ind="NY.GDP.MKTP.CD", n=3, page=50)
     assert "mrnev" not in url, "mrnev es incompatible con per_page y multipaís"
@@ -397,7 +397,7 @@ def test_edgar_no_rotula_como_dolares_lo_que_no_lo_es():
     """
     import json
 
-    from vmagi.modules.world.edgar import annual_series
+    from venim.modules.world.edgar import annual_series
 
     cuerpo = json.dumps({"units": {"EUR": [
         {"start": "2023-01-01", "end": "2023-12-31", "val": 1000,

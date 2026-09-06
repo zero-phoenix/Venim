@@ -15,9 +15,9 @@ import subprocess
 
 import pytest
 
-from vmagi.core.tools import ToolContext, WriteJournal, build_registry
-from vmagi.modules.studio.artifacts import VIDEO_EXTS, ArtifactKind, observe
-from vmagi.modules.studio.video import (
+from venim.core.tools import ToolContext, WriteJournal, build_registry
+from venim.modules.studio.artifacts import VIDEO_EXTS, ArtifactKind, observe
+from venim.modules.studio.video import (
     FROZEN_THRESHOLD,
     Slide,
     VideoError,
@@ -390,7 +390,7 @@ async def test_un_csv_ya_no_se_ejecuta_como_python(tmp_path):
     enum entero, no uno escrito para este caso — que es la diferencia entre
     una guarda y una anécdota.
     """
-    from vmagi.modules.studio.artifacts import observe_data
+    from venim.modules.studio.artifacts import observe_data
     csv = tmp_path / "d.csv"
     csv.write_text("a,b,c\n1,2,3\n4,5,6\n", encoding="utf-8")
     o = await observe(csv)
@@ -438,7 +438,7 @@ def test_studio_backends_devuelve_texto_no_un_dict():
     empezó a fallar con "'str' object is not a mapping" — y solo se vio al
     arrancar el kernel y llamarla, porque ningún test la ejecutaba.
     """
-    from vmagi.modules.studio.artifacts import available_backends, backends_report
+    from venim.modules.studio.artifacts import available_backends, backends_report
     informe = backends_report()
     assert isinstance(informe, str) and informe.strip()
     assert "ffprobe" in available_backends()
@@ -459,7 +459,7 @@ def test_avisa_si_hay_ffmpeg_pero_no_ffprobe(monkeypatch):
     Sin ffprobe se pueden GENERAR vídeos y no inspeccionarlos: el bucle de
     observación se rompe justo donde no se nota.
     """
-    import vmagi.modules.studio.artifacts as art
+    import venim.modules.studio.artifacts as art
     monkeypatch.setattr(art.shutil, "which",
                         lambda n: "/usr/bin/ffmpeg" if n == "ffmpeg" else None)
     assert "no ffprobe" in art.backends_report()
@@ -480,7 +480,7 @@ async def test_sin_pillow_la_imagen_no_se_da_por_buena(tmp_path, monkeypatch):
     Este test no necesita Pillow ni que falte: fuerza la respuesta de
     `pillow_available`, así que vigila en cualquier máquina.
     """
-    import vmagi.modules.studio.artifacts as art
+    import venim.modules.studio.artifacts as art
     p = tmp_path / "captura.png"
     p.write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 64)
 
@@ -501,7 +501,7 @@ async def test_sin_pillow_el_video_no_se_da_por_bueno(tmp_path, monkeypatch):
     Mismo fallo y peor: un vídeo entero en negro y congelado salía con ok=True
     y cero problemas. Detectar eso es la única razón de ser de `observe_video`.
     """
-    import vmagi.modules.studio.video as vid
+    import venim.modules.studio.video as vid
     v = _lavfi(tmp_path / "negro.mp4", "color=c=black")
 
     monkeypatch.setattr(vid, "pillow_available", lambda: False)

@@ -8,8 +8,8 @@ sería exactamente lo que este proyecto lleva diez commits corrigiendo.
 """
 import pytest
 
-from vmagi.core.tools import ToolContext, WriteJournal, build_registry, registry_for_role
-from vmagi.modules.studio.manga import (
+from venim.core.tools import ToolContext, WriteJournal, build_registry, registry_for_role
+from venim.modules.studio.manga import (
     ComfyUIBackend,
     PageSpec,
     Panel,
@@ -125,7 +125,7 @@ async def test_composes_a_page_with_placeholders(tmp_path):
 @pytest.mark.asyncio
 async def test_composed_page_is_not_blank(tmp_path):
     """Se apoya en el mismo detector del bucle de observación (§5)."""
-    from vmagi.modules.studio.artifacts import observe_image
+    from venim.modules.studio.artifacts import observe_image
     spec = grid_page(2, 2, ["a", "b", "c", "d"])
     out = tmp_path / "p.png"
     await compose_page(spec, out)
@@ -186,7 +186,7 @@ async def test_comfyui_absent_fails_explicitly(tmp_path):
 
 
 def test_backends_report_says_what_is_missing():
-    from vmagi.modules.studio.artifacts import backends_report
+    from venim.modules.studio.artifacts import backends_report
     out = backends_report()
     assert "comfyui_local" in out
     if "no   comfyui_local" in out:

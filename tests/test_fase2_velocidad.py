@@ -20,19 +20,19 @@ import time
 
 import pytest
 
-from vmagi.core.providers.backends.echo import EchoProvider
-from vmagi.core.providers.base import (
+from venim.core.providers.backends.echo import EchoProvider
+from venim.core.providers.base import (
     BaseProvider,
     CompletionRequest,
     Delta,
     Message,
     ProviderError,
 )
-from vmagi.core.providers.registry import (
+from venim.core.providers.registry import (
     ProviderRegistry,
     _techo_dinamico_s,
 )
-from vmagi.modules.swarm.orchestrator import _n_variantes
+from venim.modules.swarm.orchestrator import _n_variantes
 
 # ---------------------------------------------------------------- §A3 fan-out
 
@@ -188,7 +188,7 @@ async def test_stream_llega_cuando_responde_a_tiempo():
 # ---------------------------------------------------------------- §C7 tasa
 
 def test_la_tasa_viene_del_catalogo():
-    from vmagi.core.providers.backends.g4f_backend import (
+    from venim.core.providers.backends.g4f_backend import (
         TASA_CAPACITY,
         TASA_RATE,
     )
@@ -203,13 +203,13 @@ async def test_el_bucket_espacia_la_rafaga_y_nunca_bloquea():
     la espera tiene un tope duro (2 s) y una llamada suelta inmediata pasa
     sin espera porque el bucket se recargó.
     """
-    from vmagi.core.providers.backends.g4f_backend import (
+    from venim.core.providers.backends.g4f_backend import (
         _MAX_ESPERA_TASA_S,
         _tasa_manager,
     )
 
     p = None  # no necesita el provider: _esperar_tasa vive en la clase
-    from vmagi.core.providers.backends.g4f_backend import G4FProvider
+    from venim.core.providers.backends.g4f_backend import G4FProvider
     p = G4FProvider("gpt", candidates=[("nostalgia", "v1")])
 
     # El bucket deja pasar el burst y luego espacia: con 2 tokens dentro,

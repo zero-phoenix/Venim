@@ -3,7 +3,7 @@ Una tarea recuperada tras un reinicio tiene que seguir escuchando.
 
 LA AFIRMACIÓN QUE ESTE TEST PUEDE REFUTAR
 =========================================
-«Si reinicias VeniceMAGI con una tarea a medias, puedes seguir hablándole.»
+«Si reinicias Venim con una tarea a medias, puedes seguir hablándole.»
 
 Refutada el 2026-09-05 pilotando la aplicación. Se reinició con una tarea en
 `WAITING_USER_APPROVAL`, el registro dijo
@@ -53,7 +53,7 @@ class _BusMudo:
 
 def _orquestador_con_tarea_rehidratada():
     """Un orquestador con una tarea recuperada, sin abrir base ni sockets."""
-    from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+    from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
     o = object.__new__(SwarmOrchestrator)
     o.bus = _BusMudo()
@@ -95,7 +95,7 @@ def test_la_decision_mira_el_bucle_y_no_el_evento():
     """
     import inspect
 
-    from vmagi.modules.swarm import orchestrator
+    from venim.modules.swarm import orchestrator
 
     fuente = inspect.getsource(orchestrator)
     assert 'if state.get("sin_bucle") or "approval_event" not in state:' in fuente, (
@@ -113,7 +113,7 @@ def test_lanzar_el_bucle_baja_la_bandera():
     """
     import inspect
 
-    from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+    from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
     fuente = inspect.getsource(SwarmOrchestrator._spawn_loop)
     assert 'sin_bucle' in fuente and 'False' in fuente, (
@@ -124,7 +124,7 @@ def test_lanzar_el_bucle_baja_la_bandera():
 def test_spawn_loop_sobre_una_tarea_desconocida_no_revienta():
     """Se puede lanzar el bucle de algo que aún no está en `active_tasks`
     —arranque en frío—, y eso no puede ser un AttributeError."""
-    from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+    from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
     o = object.__new__(SwarmOrchestrator)
     o.active_tasks = {}
@@ -142,7 +142,7 @@ def test_toda_tarea_recuperada_trae_la_bandera(estado_previo):
     bucle, así que la bandera no puede depender del estado en que se murió."""
     import inspect
 
-    from vmagi.modules.swarm.orchestrator import SwarmOrchestrator
+    from venim.modules.swarm.orchestrator import SwarmOrchestrator
 
     fuente = inspect.getsource(SwarmOrchestrator._rehydrate)
     assert '"sin_bucle": True' in fuente, (

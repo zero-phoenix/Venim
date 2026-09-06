@@ -1,7 +1,7 @@
-# VeniceMAGI — Plan de Arquitectura Técnica Integral
+# Venim — Plan de Arquitectura Técnica Integral
 ### Espacio de Trabajo de Escritorio Independiente y Motor Autónomo de Síntesis y Análisis
 
-**Producto:** **VeniceMAGI**. **Núcleo de ingeniería y síntesis:** `ATLAS-FORGE` (el motor que VeniceMAGI gobierna). **Deliberación:** los tres agentes **MELCHIOR • 1**, **BALTHASAR • 2** y **CASPER • 3**.
+**Producto:** **Venim**. **Núcleo de ingeniería y síntesis:** `ATLAS-FORGE` (el motor que Venim gobierna). **Deliberación:** los tres agentes **MELCHIOR • 1**, **BALTHASAR • 2** y **CASPER • 3**.
 **Versión del plan:** 1.0. **Idioma normativo:** español. **Formato:** documento único de arquitectura interna.
 
 ---
@@ -14,8 +14,8 @@
   - [I.3 Jerarquía de coste cero real (Niveles 1/2/3)](#i3-jerarquía-de-coste-cero-real-niveles-123)
   - [I.4 Fronteras legales codificadas como controles técnicos](#i4-fronteras-legales-codificadas-como-controles-técnicos)
   - [I.5 Convención de pasos y subpasos con puertas de verificación](#i5-convención-de-pasos-y-subpasos-con-puertas-de-verificación)
-  - [I.6 Identidad MAGI: los tres nodos, el núcleo ATLAS-FORGE y la nomenclatura](#i6-identidad-vmagi-los-tres-nodos-el-núcleo-atlas-forge-y-la-nomenclatura)
-  - [I.7 Integración de tecnologías externas: MAGI-MEM y MAGI-ROUTE](#i7-integración-de-tecnologías-externas-vmagi-mem-y-vmagi-route)
+  - [I.6 Identidad MAGI: los tres nodos, el núcleo ATLAS-FORGE y la nomenclatura](#i6-identidad-venim-los-tres-nodos-el-núcleo-atlas-forge-y-la-nomenclatura)
+  - [I.7 Integración de tecnologías externas: MAGI-MEM y MAGI-ROUTE](#i7-integración-de-tecnologías-externas-venim-mem-y-venim-route)
   - [I.8 Identidad de modelo declarada](#i8-identidad-de-modelo-declarada-cada-nodo-dice-siempre-qué-inteligencia-está-usando)
 - [Parte II — Desarrollo por áreas](#parte-ii--desarrollo-por-áreas)
   - [ÁREA 0 — Arquitectura global, modelo de datos y fundaciones](#área-0--arquitectura-global-modelo-de-datos-y-fundaciones)
@@ -31,15 +31,15 @@
   - [ÁREA 10 — Interfaz gráfica agentic y control total del sistema](#área-10--interfaz-gráfica-agentic-y-control-total-del-sistema)
   - [ÁREA 11 — Creatividad inventiva (motor de invención y explotación)](#área-11--creatividad-inventiva-motor-de-invención-y-explotación)
   - [ÁREA 12 — Núcleo cognitivo de capacidades de élite (C01–C39)](#área-12--núcleo-cognitivo-de-capacidades-de-élite-c01c39)
-  - [ÁREA 13 — MAGI-MEM: grafo de memoria de código persistente](#área-13--vmagi-mem-grafo-de-memoria-de-código-persistente)
-  - [ÁREA 14 — MAGI-ROUTE: pasarela universal de inferencia y economía de tokens](#área-14--vmagi-route-pasarela-universal-de-inferencia-y-economía-de-tokens)
+  - [ÁREA 13 — MAGI-MEM: grafo de memoria de código persistente](#área-13--venim-mem-grafo-de-memoria-de-código-persistente)
+  - [ÁREA 14 — MAGI-ROUTE: pasarela universal de inferencia y economía de tokens](#área-14--venim-route-pasarela-universal-de-inferencia-y-economía-de-tokens)
   - [ÁREA 15 — Ingesta universal de documentos: cualquier formato, de cualquier época](#área-15--ingesta-universal-de-documentos-cualquier-formato-de-cualquier-época)
   - [ÁREA 16 — Sistemas operativos portables y entornos de época](#área-16--sistemas-operativos-portables-y-entornos-de-época)
   - [ÁREA 17 — Centro de Configuración y Calibración](#área-17--centro-de-configuración-y-calibración)
-  - [ÁREA 18 — MAGI-KEEP: memoria íntegra y transferencia entre inteligencias](#área-18--vmagi-keep-memoria-íntegra-y-transferencia-entre-inteligencias)
-  - [ÁREA 19 — MAGI-WEB: navegación robusta y captura de evidencia](#área-19--vmagi-web-navegación-robusta-y-captura-de-evidencia)
-  - [ÁREA 20 — MAGI-STUDIO: videojuegos, música, imagen y vídeo con autocorrección](#área-20--vmagi-studio-creación-de-videojuegos-música-imagen-y-vídeo-con-autocorrección)
-  - [ÁREA 21 — MAGI-SHELL: aplicación, extensión de navegador y proyectos con repositorio](#área-21--vmagi-shell-aplicación-de-escritorio-extensión-de-navegador-y-proyectos-con-repositorio)
+  - [ÁREA 18 — MAGI-KEEP: memoria íntegra y transferencia entre inteligencias](#área-18--venim-keep-memoria-íntegra-y-transferencia-entre-inteligencias)
+  - [ÁREA 19 — MAGI-WEB: navegación robusta y captura de evidencia](#área-19--venim-web-navegación-robusta-y-captura-de-evidencia)
+  - [ÁREA 20 — MAGI-STUDIO: videojuegos, música, imagen y vídeo con autocorrección](#área-20--venim-studio-creación-de-videojuegos-música-imagen-y-vídeo-con-autocorrección)
+  - [ÁREA 21 — MAGI-SHELL: aplicación, extensión de navegador y proyectos con repositorio](#área-21--venim-shell-aplicación-de-escritorio-extensión-de-navegador-y-proyectos-con-repositorio)
 - [Parte III — Artefactos transversales](#parte-iii--artefactos-transversales)
   - [T1 Árbol de directorios completo](#t1-árbol-de-directorios-completo)
   - [T2 Catálogo maestro de eventos del bus](#t2-catálogo-maestro-de-eventos-del-bus)
@@ -52,8 +52,8 @@
   - [T9 Diez riesgos principales del proyecto](#t9-diez-riesgos-principales-del-proyecto)
   - [T10 Glosario final](#t10-glosario-final)
   - [T11 Plan maestro de construcción por pasos y subpasos con puertas de verificación](#t11-plan-maestro-de-construcción-por-pasos-y-subpasos-con-puertas-de-verificación)
-  - [T12 Sistema de diseño visual MAGI (tokens, componentes y accesibilidad)](#t12-sistema-de-diseño-visual-vmagi-tokens-componentes-y-accesibilidad)
-  - [T13 Addenda de integración: cambios que MAGI-MEM y MAGI-ROUTE introducen en T1–T11](#t13-addenda-de-integración-cambios-que-vmagi-mem-y-vmagi-route-introducen-en-t1t11)
+  - [T12 Sistema de diseño visual MAGI (tokens, componentes y accesibilidad)](#t12-sistema-de-diseño-visual-venim-tokens-componentes-y-accesibilidad)
+  - [T13 Addenda de integración: cambios que MAGI-MEM y MAGI-ROUTE introducen en T1–T11](#t13-addenda-de-integración-cambios-que-venim-mem-y-venim-route-introducen-en-t1t11)
   - [T14 Addenda de las Áreas 15 y 16: ingesta universal y sistemas portables](#t14-addenda-de-las-áreas-15-y-16-ingesta-universal-y-sistemas-portables)
   - [T15 Addenda de la interfaz conversacional, el Área 17 y la deliberación multi-ronda](#t15-addenda-de-la-interfaz-conversacional-el-área-17-y-la-deliberación-multi-ronda)
   - [T16 Addenda de las Áreas 18 y 19: memoria íntegra y navegación gobernada](#t16-addenda-de-las-áreas-18-y-19-memoria-íntegra-y-navegación-gobernada)
@@ -77,7 +77,7 @@ Interfaces de la HAL (exhaustivas, con su fichero):
 
 | Interfaz | Fichero | Responsabilidad | Impl. Windows | Impl. Linux |
 |---|---|---|---|---|
-| `PathsHAL` | `core/hal/paths.py` | Rutas de datos, caché, logs, modelos | `%LOCALAPPDATA%\VeniceMAGI\` | `~/.local/share/vmagi/` |
+| `PathsHAL` | `core/hal/paths.py` | Rutas de datos, caché, logs, modelos | `%LOCALAPPDATA%\Venim\` | `~/.local/share/venim/` |
 | `UsbHAL` | `core/hal/usb.py` | Enumeración y claim de dispositivos USB | `SetupAPI`/`CfgMgr32` + `libusb-1.0` (backend WinUSB/libusbK) | `pyudev` + `libusb-1.0` |
 | `SerialHAL` | `core/hal/serial.py` | Puertos serie, DTR/RTS, baudios no estándar | `COM*` vía `pyserial` (`win32` backend) | `/dev/ttyACM*`, `/dev/ttyUSB*` |
 | `HotplugHAL` | `core/hal/hotplug.py` | Eventos de conexión/desconexión en caliente | `CM_Register_Notification` + bomba `WM_DEVICECHANGE` en hilo dedicado | `pyudev.MonitorObserver` sobre netlink |
@@ -86,9 +86,9 @@ Interfaces de la HAL (exhaustivas, con su fichero):
 | `ServiceHAL` | `core/hal/service.py` | Trabajos de fondo persistentes | Tarea programada / servicio de Windows | unidad `systemd --user` |
 | `FsSnapshotHAL` | `core/hal/fssnap.py` | Instantáneas del espacio de trabajo | `git` embebido + copia dura (`CopyFileEx`) | `git` embebido + `cp --reflink=auto` |
 | `InputHAL` | `core/hal/input.py` | Automatización de escritorio | `SendInput` (user32) | `libei`/`XTEST` según sesión (Wayland/X11) |
-| `ToolchainHAL` | `core/hal/toolchain.py` | Localización de toolchains externas | nativo, y `wsl.exe -d VeniceMAGI -- <cmd>` para OpenLane/Magic/netgen | nativo o `podman`/`docker` |
+| `ToolchainHAL` | `core/hal/toolchain.py` | Localización de toolchains externas | nativo, y `wsl.exe -d Venim -- <cmd>` para OpenLane/Magic/netgen | nativo o `podman`/`docker` |
 
-**Decisión:** las toolchains sin build nativo Windows decente (OpenLane 2, Magic 8.3.x, netgen 1.5.x, KLayout en modo batch para LVS) se ejecutan bajo WSL2 con una distro dedicada `VeniceMAGI` (Ubuntu 24.04) — porque duplicar esos flujos en Windows nativo cuesta más que mantener una distro reproducible.
+**Decisión:** las toolchains sin build nativo Windows decente (OpenLane 2, Magic 8.3.x, netgen 1.5.x, KLayout en modo batch para LVS) se ejecutan bajo WSL2 con una distro dedicada `Venim` (Ubuntu 24.04) — porque duplicar esos flujos en Windows nativo cuesta más que mantener una distro reproducible.
 *Descartado:* MSYS2 para esas herramientas — el flujo OpenLane no está soportado y rompe en cada actualización.
 
 **Decisión:** stack fijo: núcleo Python 3.12.x (asyncio, `pydantic` 2.8+, `structlog` 24.x, `pyserial` 3.5, `libusb1` 3.1.0, `playwright` 1.4x), GUI Tauri 2.x (Rust 1.79+) + React 18.3 + TypeScript 5.5, Monaco Editor 0.50+, xterm.js 5.5, uPlot 1.6, React Flow 12, Zustand 4.5, TanStack Virtual 3 — porque es exactamente el conjunto declarado como no negociable en el encargo y ya cubre editor, terminal, telemetría de alta frecuencia y grafos.
@@ -96,7 +96,7 @@ Interfaces de la HAL (exhaustivas, con su fichero):
 **Topología del puente GUI↔núcleo (justificación en una línea):** el núcleo Python corre como *sidecar* de Tauri y habla WebSocket local en `127.0.0.1` con mensajes JSON tipados, porque así el trabajo largo (impresión, decompilación, flasheo) vive en un proceso que sobrevive al cierre de la ventana y la GUI queda como cliente reemplazable.
 
 Ciclo de vida del sidecar (detallado en §0.4.4 y §0.2):
-1. Tauri arranca `vmagi-core` con `--port 0 --token <aleatorio-32B>`; el núcleo imprime en stdout una línea JSON `{"event":"ready","port":N,"token":"..."}`.
+1. Tauri arranca `venim-core` con `--port 0 --token <aleatorio-32B>`; el núcleo imprime en stdout una línea JSON `{"event":"ready","port":N,"token":"..."}`.
 2. Health check: `GET http://127.0.0.1:N/healthz` cada 2 s; tres fallos consecutivos ⇒ estado `DEGRADED` en la GUI.
 3. Reinicio: la GUI **no** mata el núcleo; si el núcleo muere, Tauri lo relanza con `--recover <ruta_proyecto>` y el núcleo reconstruye estado desde SQLite + WAL de trabajos.
 4. Apagado limpio: `POST /shutdown` ⇒ el núcleo rechaza si hay trabajos `non_cancellable` en curso (flasheo, impresión) y devuelve `409` con la lista; la GUI muestra el diálogo "hay trabajo físico en curso".
@@ -119,7 +119,7 @@ Se adoptan íntegramente los términos del encargo (Núcleo, Agente, Modelo, Ron
 
 ## I.3 Inferencia en la nube, sin clave de API y sin modelos locales
 
-*Decisión:* **las tres inteligencias son servicios de nube, gratuitos, sin clave de API y sin instalación en el equipo**; VeniceMAGI no descarga pesos, no ejecuta un servidor de inferencia local y no ocupa memoria de vídeo — porque es el requisito del encargo y porque elimina de un golpe los 12–35 GB de descarga, el requisito de GPU y la conmutación de modelos que lastraba el Perfil A.
+*Decisión:* **las tres inteligencias son servicios de nube, gratuitos, sin clave de API y sin instalación en el equipo**; Venim no descarga pesos, no ejecuta un servidor de inferencia local y no ocupa memoria de vídeo — porque es el requisito del encargo y porque elimina de un golpe los 12–35 GB de descarga, el requisito de GPU y la conmutación de modelos que lastraba el Perfil A.
 *Descartado:* la jerarquía de tres niveles de las revisiones anteriores, con `llama.cpp` local como suelo obligatorio. Queda **derogada por completo**. Lo que aquella arquitectura garantizaba —disponibilidad incondicional y funcionamiento sin conexión— **se pierde**, y el §I.3.4 dice exactamente qué se pierde y qué no.
 
 ### I.3.1 Qué significa «sin clave de API»
@@ -194,7 +194,7 @@ Todo el plan usa una numeración de construcción común, exigida por el encargo
 
 ## I.6 Identidad MAGI: los tres nodos, el núcleo ATLAS-FORGE y la nomenclatura
 
-**Decisión:** el producto se llama **VeniceMAGI**; su motor de ingeniería y síntesis se llama **ATLAS-FORGE**; y la deliberación la ejecutan tres nodos con nombre propio — **MELCHIOR • 1**, **BALTHASAR • 2** y **CASPER • 3** — porque un sistema que decide por confrontación necesita que cada voz tenga identidad estable, visible y auditable, no una etiqueta genérica intercambiable.
+**Decisión:** el producto se llama **Venim**; su motor de ingeniería y síntesis se llama **ATLAS-FORGE**; y la deliberación la ejecutan tres nodos con nombre propio — **MELCHIOR • 1**, **BALTHASAR • 2** y **CASPER • 3** — porque un sistema que decide por confrontación necesita que cada voz tenga identidad estable, visible y auditable, no una etiqueta genérica intercambiable.
 *Descartado:* mantener los nombres genéricos «A / B / C» — funcionan en un diagrama, pero en una interfaz donde el usuario arbitra disputas a las tres de la mañana, la identidad estable de cada nodo (su modelo, su historial de aciertos, su sesgo conocido) es información operativa.
 
 | Nodo | Rol funcional | Enfoque | Rol popperiano | Prompt |
@@ -208,7 +208,7 @@ Todo el plan usa una numeración de construcción común, exigida por el encargo
 - **BALTHASAR • 2** amplía su taxonomía con dos frentes obligatorios de auditoría en toda acción R2/R3: **límites del HAL** (¿esta acción asume una capacidad que la política no concede, o un comportamiento del SO que sólo se da en una de las dos plataformas?) y **límites legales** (¿esta acción viola CTL-1, CTL-2 o CTL-3, o los términos de un proveedor?). Ambos frentes producen refutaciones de tipo `suposicion` y `normativa` respectivamente, y su ausencia en un turno de BALTHASAR sobre una acción R2/R3 invalida el turno.
 - **CASPER • 3** emite **veredictos vinculantes**: su salida no es una opinión que el ejecutor pueda ignorar, sino la condición de entrada del Área 8. Se añade a su mandato el **arbitraje de concordia**: cuando MELCHIOR y BALTHASAR coinciden pero la evidencia no sostiene la coincidencia, CASPER debe declarar `undecided` con acción — la concordancia entre dos modelos **no** es evidencia, y confundirlas es el modo de fallo que más barato sale y más caro cuesta.
 
-**Nomenclatura de código (normativa).** Producto y binarios: `vmagi` (Linux), `VeniceMAGI` (directorios de datos), `vmagi-core` (núcleo Python), `vmagi-mcp` (servidor MCP), `magibroker.exe` (broker elevado en Windows), `vmagi-estop` (binario auxiliar de parada). Bus de eventos: `MagiBus`. Comandos Tauri: `magi_*`. El identificador de rol en todos los esquemas JSON, tablas y métricas es la cadena `MELCHIOR`, `BALTHASAR` o `CASPER` — nunca `A`, `B` ni `C`, para que un acta sea legible sin diccionario.
+**Nomenclatura de código (normativa).** Producto y binarios: `venim` (Linux), `Venim` (directorios de datos), `venim-core` (núcleo Python), `venim-mcp` (servidor MCP), `magibroker.exe` (broker elevado en Windows), `venim-estop` (binario auxiliar de parada). Bus de eventos: `MagiBus`. Comandos Tauri: `magi_*`. El identificador de rol en todos los esquemas JSON, tablas y métricas es la cadena `MELCHIOR`, `BALTHASAR` o `CASPER` — nunca `A`, `B` ni `C`, para que un acta sea legible sin diccionario.
 
 ## I.7 Integración de tecnologías externas: MAGI-MEM y MAGI-ROUTE
 
@@ -218,7 +218,7 @@ El plan incorpora dos proyectos libres analizados y adoptados como sustrato de d
 
 **MAGI-ROUTE ← `diegosouzapw/OmniRoute`** (pasarela de IA, licencia MIT, Node/Electron). Aporta un **endpoint único compatible con OpenAI** en `http://127.0.0.1:20128/v1` que agrega proveedores por sus **interfaces oficiales**, con múltiples estrategias de enrutado, tres capas independientes de resiliencia, compresión de prompts y telemetría de coste por petición. Sustituye en el Área 6 la implementación propia de registro de proveedores, cortacircuitos y cubo de fichas por un sustrato probado, dejando al Área 6 el papel de **contrato de política** (qué capacidad exige cada tarea, qué se degrada, cómo se marca el acta). Se desarrolla íntegramente en el **Área 14**.
 
-**Decisión:** ambos se adoptan **como procesos separados con interfaz declarada** (MCP por stdio en el caso de MAGI-MEM; HTTP compatible con OpenAI en el de MAGI-ROUTE), nunca como librerías enlazadas ni como forks — porque así el sistema conserva su capacidad de funcionar sin ellos (suelo local del §I.3 intacto), la actualización de cualquiera de los dos no obliga a recompilar VeniceMAGI, y las licencias de ambos quedan limpiamente aisladas de la del producto.
+**Decisión:** ambos se adoptan **como procesos separados con interfaz declarada** (MCP por stdio en el caso de MAGI-MEM; HTTP compatible con OpenAI en el de MAGI-ROUTE), nunca como librerías enlazadas ni como forks — porque así el sistema conserva su capacidad de funcionar sin ellos (suelo local del §I.3 intacto), la actualización de cualquiera de los dos no obliga a recompilar Venim, y las licencias de ambos quedan limpiamente aisladas de la del producto.
 *Descartado:* reimplementar sus funciones dentro del núcleo — habría costado meses y habría producido una versión peor de dos cosas que ya existen, probadas y libres.
 
 **Regla de honestidad sobre las cifras de ambos proyectos.** Sus README declaran métricas llamativas (indexar el núcleo de Linux en 3 minutos, 99,2 % de reducción de tokens, ~1,53 · 10⁹ tokens gratuitos mensuales agregados, 15–95 % de compresión de prompt). **Ninguna de esas cifras se da por buena en este plan**: cada una entra como **afirmación falsable** con su banco de medición propio en el Área 13 (§13.8) y el Área 14 (§14.8), y el plan fija umbrales de aceptación propios, más conservadores, por debajo de los cuales la integración se revierte al camino anterior. Las discrepancias detectadas entre distintas partes de su documentación (14 frente a 15 herramientas MCP; 155 frente a 158 lenguajes; 14 frente a 19 estrategias de enrutado; 37 frente a 104 herramientas MCP en la pasarela) se resuelven de una única manera: **se fija un commit concreto, se enumera lo que ese commit expone realmente con `list_projects`/`GET /v1/models` y la enumeración de herramientas MCP, y esa enumeración —no el README— es la que entra en el contrato del sistema** (PV-13.a.1 y PV-14.a.1).
@@ -238,7 +238,7 @@ El plan incorpora dos proyectos libres analizados y adoptados como sustrato de d
 | `params_b` | `7.6` | El tamaño explica la calidad esperable |
 | `quant` | `Q5_K_M` | Dos cuantizaciones del mismo modelo no son el mismo modelo |
 | `ctx` | `32768` | Determina qué se podó del contexto |
-| `provider` | `prov-a` \| `claude-code-cli` \| `vmagi-route:<id>` | Local o remoto, y cuál |
+| `provider` | `prov-a` \| `claude-code-cli` \| `venim-route:<id>` | Local o remoto, y cuál |
 | `endpoint` | `127.0.0.1:8081` | Prueba de que no salió del equipo |
 | `provider_model_version` | `2026-07-11` | **Sustituye al hash de pesos**, que en la nube no existe: es la versión que el proveedor declara, **observada y registrada**, con detección de cambio (§14.4b) |
 | `quota_left` | `31 de 50 · repone a las 19:40` | Cuánta cuota queda en la ventana actual y cuándo vuelve; sin esto no se puede planificar |
@@ -329,7 +329,7 @@ Diagrama maestro del sistema (flechas etiquetadas por tipo de dato):
 
 Puntos de decisión visibles en el diagrama: (a) el motor de política decide antes de cualquier efecto; (b) el planificador decide si hay presupuesto de RAM/VRAM antes de lanzar; (c) la verificación de postcondición decide si el resultado se convierte en artefacto o en refutación.
 
-**Topología de procesos (exacta).** Cinco clases: (1) `vmagi.exe`/`vmagi` — shell Tauri, 1 instancia; (2) `vmagi-core` — núcleo Python, 1 instancia, dueño del trabajo; (3) el proveedor de nube asignado — 0..2 instancias (una de texto, una de visión) gestionadas por el núcleo; (4) procesos efímeros de toolchain — 0..N, siempre hijos de `procman` dentro de un Job Object (Windows) o grupo de proceso (Linux); (5) `magibroker` — 0..1, proceso elevado de catálogo cerrado (§10.C).
+**Topología de procesos (exacta).** Cinco clases: (1) `venim.exe`/`venim` — shell Tauri, 1 instancia; (2) `venim-core` — núcleo Python, 1 instancia, dueño del trabajo; (3) el proveedor de nube asignado — 0..2 instancias (una de texto, una de visión) gestionadas por el núcleo; (4) procesos efímeros de toolchain — 0..N, siempre hijos de `procman` dentro de un Job Object (Windows) o grupo de proceso (Linux); (5) `magibroker` — 0..1, proceso elevado de catálogo cerrado (§10.C).
 
 **La GUI no es dueña del trabajo.** Si el usuario cierra la ventana con una impresión 3D en curso o un flasheo a medias: el núcleo sigue vivo (en Windows sobrevive porque no es hijo del Job Object de la GUI; en Linux porque se lanza con `setsid`), la impresión continúa, la GUI al reabrir se reconecta por WebSocket, lee `job.progress` y reconstruye la vista desde SQLite. Si el usuario intenta cerrar el núcleo, `POST /shutdown` devuelve `409` mientras existan trabajos `non_cancellable`. Procesos huérfanos: cada proceso hijo hereda `MAGI_PARENT_PID`; un barrido en el arranque mata los que apunten a un PID inexistente y registra `orphan.reaped`.
 
@@ -367,7 +367,7 @@ Endpoints IPC (WebSocket `ws://127.0.0.1:<port>/rpc`, autenticado por token de a
 Árbol en disco (rutas concretas):
 
 ```
-Windows: %LOCALAPPDATA%\VeniceMAGI\        Linux: ~/.local/share/vmagi/
+Windows: %LOCALAPPDATA%\Venim\        Linux: ~/.local/share/venim/
 ├── models/                 pesos GGUF y mmproj
 ├── tools/                  toolchains descargadas y verificadas
 ├── projects/<slug>/
@@ -427,13 +427,13 @@ Tabla de paridad para lo que toca el SO en esta área:
 
 | Elemento | Impl. Windows | Impl. Linux |
 |---|---|---|
-| Directorio de datos | `%LOCALAPPDATA%\VeniceMAGI` | `~/.local/share/vmagi` |
+| Directorio de datos | `%LOCALAPPDATA%\Venim` | `~/.local/share/venim` |
 | Supervivencia del núcleo al cerrar la GUI | proceso fuera del Job Object de la GUI + `CREATE_BREAKAWAY_FROM_JOB` | `setsid()` + `start_new_session=True` |
 | Matar árbol de procesos | `TerminateJobObject` | `killpg(pgid, SIGTERM)` → `SIGKILL` a 5 s |
-| Trabajo persistente en segundo plano | Tarea programada `VeniceMAGICore` | unidad `systemd --user` `vmagi-core.service` |
+| Trabajo persistente en segundo plano | Tarea programada `VenimCore` | unidad `systemd --user` `venim-core.service` |
 | Instantánea del espacio de trabajo | `git commit` embebido + copia dura | `git commit` embebido + `cp --reflink=auto` |
 | Notificación de eventos críticos | `ToastNotification` (WinRT) | `notify-send` / D-Bus `org.freedesktop.Notifications` |
-| Bloqueo de instancia única | mutex nombrado `Global\VeniceMAGI` | `flock` sobre `~/.local/state/vmagi/lock` |
+| Bloqueo de instancia única | mutex nombrado `Global\Venim` | `flock` sobre `~/.local/state/venim/lock` |
 
 ### 0.5 Algoritmos
 
@@ -672,7 +672,7 @@ Tabla de enrutado completa:
 | Plano CAD escaneado | densidad de líneas rectas (Hough) > umbral y texto < 5 % del área | Pipeline de líneas: vectorización con `cv2.HoughLinesP` + detección de cotas | VLM técnico + Área 2 |
 | Fotografía de PCB | detección de color verde/azul dominante + patrón de rejilla | Pipeline de inspección: segmentación de pistas y componentes | VLM + Área 9.D |
 
-Paridad Windows/Linux: el único elemento que toca el SO es la localización de binarios (`tesseract`, `exiftool`, el proveedor de nube asignado): en Windows se resuelven desde `%LOCALAPPDATA%\VeniceMAGI\tools\`; en Linux desde `~/.local/share/vmagi/tools/` con fallback a `PATH`. El resto es puro cómputo.
+Paridad Windows/Linux: el único elemento que toca el SO es la localización de binarios (`tesseract`, `exiftool`, el proveedor de nube asignado): en Windows se resuelven desde `%LOCALAPPDATA%\Venim\tools\`; en Linux desde `~/.local/share/venim/tools/` con fallback a `PATH`. El resto es puro cómputo.
 
 ### 1.5 Algoritmos
 
@@ -754,7 +754,7 @@ Cada detector emite una **Afirmación falsable** hacia el Área 3 con esta forma
 4.  criterio de aceptación del módulo: FPR ≤ 2 % y TPR ≥ 85 % en D1, D2, D5, D7 sobre 200 documentos sintéticos
 ```
 
-**Cadena de custodia.** Al ingerir: `sha256` del fichero original, copia inmutable al CAS, `custody_log` con `{ts, actor, action, params_hash, output_sha256}` por cada transformación (normalización, teselado, detección). El informe incluye un apéndice con la lista ordenada de transformaciones y el comando exacto para reproducirlas: `vmagi forensic replay --dossier <id> --out <dir>`, que debe regenerar bit a bit los mismos `page_features.json` (semilla fija, sin operaciones no deterministas).
+**Cadena de custodia.** Al ingerir: `sha256` del fichero original, copia inmutable al CAS, `custody_log` con `{ts, actor, action, params_hash, output_sha256}` por cada transformación (normalización, teselado, detección). El informe incluye un apéndice con la lista ordenada de transformaciones y el comando exacto para reproducirlas: `venim forensic replay --dossier <id> --out <dir>`, que debe regenerar bit a bit los mismos `page_features.json` (semilla fija, sin operaciones no deterministas).
 
 **Decisiones formalizadas adicionales de esta área.**
 **Decisión:** el sistema de coordenadas canónico es el milímetro sobre la página normalizada, con retroproyección por homografía inversa al píxel original — porque un rasgo medido en píxeles no es comparable entre escaneos de distinto DPI y el expediente es precisamente una comparación entre páginas.
@@ -1031,7 +1031,7 @@ Gestión de vigencia: cada `corpus_chunk` lleva `vigencia_desde`/`vigencia_hasta
       se resuelve por el modelo
 ```
 
-**Gestión del corpus.** El usuario carga documentos por arrastre en la GUI o `vmagi corpus add --kind legal --path <dir> --norma-id DL-1071 --vigencia-desde 2008-09-01`. Se versiona por `CorpusVersion(norma_id, sha256, fecha_ingesta, as_of)`. Aislamiento por proyecto: cada proyecto tiene su propio `vectors.db` y su propia tabla `corpus_doc`; un corpus puede **enlazarse** entre proyectos por referencia al CAS (sin duplicar bytes) pero nunca se comparte índice mutable.
+**Gestión del corpus.** El usuario carga documentos por arrastre en la GUI o `venim corpus add --kind legal --path <dir> --norma-id DL-1071 --vigencia-desde 2008-09-01`. Se versiona por `CorpusVersion(norma_id, sha256, fecha_ingesta, as_of)`. Aislamiento por proyecto: cada proyecto tiene su propio `vectors.db` y su propia tabla `corpus_doc`; un corpus puede **enlazarse** entre proyectos por referencia al CAS (sin duplicar bytes) pero nunca se comparte índice mutable.
 
 **Decisiones formalizadas adicionales de esta área.**
 **Decisión:** el `locator` de toda cita (por ejemplo "Artículo 13") se lee siempre del corpus indexado y nunca de la memoria del modelo — porque la numeración de artículos es exactamente el dato que un modelo alucina con más facilidad y con peores consecuencias.
@@ -1528,10 +1528,10 @@ def pull_files(sess: DeviceSession, remote: str, local: Path, *, filter: FileFil
 
 ### 4.4 Implementación
 
-**Enumeración e identificación.** Linux: `pyudev` 0.24 con `MonitorObserver` sobre el subsistema `usb` y `tty`; reglas udev escritas literalmente en `packaging/linux/udev/99-vmagi.rules`:
+**Enumeración e identificación.** Linux: `pyudev` 0.24 con `MonitorObserver` sobre el subsistema `usb` y `tty`; reglas udev escritas literalmente en `packaging/linux/udev/99-venim.rules`:
 
 ```
-# 99-vmagi.rules — acceso sin root para el grupo plugdev; instalar en /etc/udev/rules.d/
+# 99-venim.rules — acceso sin root para el grupo plugdev; instalar en /etc/udev/rules.d/
 # Sony (PSP, PS Vita, dispositivos DualShock)
 SUBSYSTEM=="usb", ATTR{idVendor}=="054c", MODE="0660", GROUP="plugdev", TAG+="uaccess"
 # Nintendo (consolas y accesorios)
@@ -1829,7 +1829,7 @@ Línea de comandos exacta:
 
 ```bash
 "$GHIDRA_HOME/support/analyzeHeadless" \
-  "$PROJDIR/ghidra" VeniceMAGI \
+  "$PROJDIR/ghidra" Venim \
   -import "$BIN" \
   -processor "MIPS:LE:32:default" \
   -scriptPath "$REPO/modules/re/ghidra_scripts" \
@@ -2973,7 +2973,7 @@ Eventos: `action.proposed`, `action.approved`, `action.executed`, `action.failed
 **Diario de transacciones:** cada ejecución escribe `execution_record` con `{action_id, snapshot_before, argv, env_hash, stdout_ref, stderr_ref, exit_code, duration_ms, artifacts[], telemetry_ref, postcondition_result, revert_cmd}`. **Mecanismo de instantánea:** *Decisión:* control de versiones interno con `git` embebido (`pygit2` 1.15 sobre un repositorio propio en `workspace/.magigit/`, separado del git del usuario) — porque da diffs, restauración selectiva y coste incremental, y no interfiere con el repositorio que el usuario pueda tener.
 *Descartado:* copia completa del directorio por acción — inviable con espacios de trabajo de decenas de GB.
 
-**Interruptor de parada (E-STOP).** Atajo global `Ctrl+Alt+Shift+K` (registrado a nivel de SO por la GUI) **y** botón siempre visible en la barra superior. Ruta de código: `gui/src/estop.ts` → canal Tauri dedicado → `core/rpc/estop_channel.py`, que es un **hilo separado con su propio socket y su propia cola**, no el bucle asyncio principal — de modo que no depende de que el núcleo esté sano. Secuencia: (1) enviar `M112` por el puerto serie de toda impresora activa (escritura directa al descriptor, sin pasar por la cola de G-Code) y cortar calentadores con `M104 S0`/`M140 S0`; (2) matar el árbol de procesos de toolchain; (3) liberar todos los handles USB (`libusb_release_interface` + `libusb_close`); (4) cancelar inferencias en curso; (5) escribir `estop.triggered` en la auditoría con el motivo; (6) dejar el sistema en estado `SAFE` que exige confirmación humana para reanudar. **Garantía adicional:** si el proceso del núcleo no responde en 1,5 s, la GUI ejecuta directamente el corte serie a través de un binario auxiliar mínimo (`vmagi-estop`) que sólo sabe abrir puertos y enviar `M112`.
+**Interruptor de parada (E-STOP).** Atajo global `Ctrl+Alt+Shift+K` (registrado a nivel de SO por la GUI) **y** botón siempre visible en la barra superior. Ruta de código: `gui/src/estop.ts` → canal Tauri dedicado → `core/rpc/estop_channel.py`, que es un **hilo separado con su propio socket y su propia cola**, no el bucle asyncio principal — de modo que no depende de que el núcleo esté sano. Secuencia: (1) enviar `M112` por el puerto serie de toda impresora activa (escritura directa al descriptor, sin pasar por la cola de G-Code) y cortar calentadores con `M104 S0`/`M140 S0`; (2) matar el árbol de procesos de toolchain; (3) liberar todos los handles USB (`libusb_release_interface` + `libusb_close`); (4) cancelar inferencias en curso; (5) escribir `estop.triggered` en la auditoría con el motivo; (6) dejar el sistema en estado `SAFE` que exige confirmación humana para reanudar. **Garantía adicional:** si el proceso del núcleo no responde en 1,5 s, la GUI ejecuta directamente el corte serie a través de un binario auxiliar mínimo (`venim-estop`) que sólo sabe abrir puertos y enviar `M112`.
 
 ### 8.8 Integración con el debate popperiano
 
@@ -2995,7 +2995,7 @@ Sobrecoste del preflight: 20–400 ms según tipo (el análisis estático de G-C
 | Bucle | Error idéntico 3 veces: escalada con informe, 0 reintentos adicionales, 10/10 |
 | Reversión | 20 acciones R1/R2 revertidas: estado idéntico al previo por hash de árbol, 20/20 |
 | E-STOP | Con impresión activa y 3 procesos pesados: todo detenido en ≤ 1,5 s; `M112` confirmado en el log serie, 10/10 |
-| E-STOP con núcleo colgado | Núcleo bloqueado artificialmente: `vmagi-estop` corta igualmente en ≤ 2,5 s |
+| E-STOP con núcleo colgado | Núcleo bloqueado artificialmente: `venim-estop` corta igualmente en ≤ 2,5 s |
 | Consenso/desacuerdo | Postcondición ambigua: C exige medición adicional (`undecided` + `required_action`), 10/10 |
 
 ### 8.11 Modos de fallo y degradación
@@ -3374,7 +3374,7 @@ Un flasheo "exitoso" cuyo MCU no responde **es un fallo**; una impresión "compl
 **Seguridad física.**
 - **Acciones que nunca se ejecutan sin humano presente y confirmando (lista cerrada):** primera puesta en marcha de una impresora recién perfilada; cualquier `printer.set_temp` por encima de 260 °C; `G29`/nivelado en una máquina sin `PROBE` verificado; escritura de fusibles de un MCU; carga de bitstream a una FPGA que controle potencia; cualquier acción sobre un circuito con tensión de red; `mcu.erase` sin dump previo; y la reanudación tras un `EMERGENCY`.
 - **Límites duros cableados en la configuración** (`config/safety.yaml`, no editables por el agente, sólo por el usuario y con confirmación): `max_hotend_c: 260`, `max_bed_c: 110`, `max_chamber_c: 60`, `max_current_a: 5.0`, `max_heater_on_without_progress_s: 300`, `max_print_hours: 24`, `max_jog_mm: 50`. El agente puede pedir menos, nunca más; una petición por encima se rechaza en preflight con `SAFETY_LIMIT`.
-- **Temporizador de hombre muerto:** el núcleo envía a la impresora un `M105` (o el auto-reporte) cada 2 s; el emisor mantiene además un vigilante independiente que, si no ve actividad del núcleo durante 20 s con calentadores encendidos, ejecuta directamente `M104 S0`/`M140 S0` y luego `M112`. Se implementa en el mismo binario auxiliar `vmagi-estop` del §8.7, que corre como proceso hermano y comparte sólo el descriptor del puerto y un latido por memoria compartida — de modo que **no depende de que el núcleo esté sano**.
+- **Temporizador de hombre muerto:** el núcleo envía a la impresora un `M105` (o el auto-reporte) cada 2 s; el emisor mantiene además un vigilante independiente que, si no ve actividad del núcleo durante 20 s con calentadores encendidos, ejecuta directamente `M104 S0`/`M140 S0` y luego `M112`. Se implementa en el mismo binario auxiliar `venim-estop` del §8.7, que corre como proceso hermano y comparte sólo el descriptor del puerto y un latido por memoria compartida — de modo que **no depende de que el núcleo esté sano**.
 
 ### 9.5 Algoritmos
 
@@ -3499,7 +3499,7 @@ Incendio o daño por descontrol térmico (baja/crítico → detectores, límites
 - **P9.b CAD y rebanado.** P9.b.1 plantillas paramétricas — **PV-9.b.1**: 10 plantillas generan STEP y STL válidos con parámetros aleatorios en rango, 100/100 sin excepción. P9.b.2 verificación geométrica — **PV-9.b.2**: 50/50 mallas defectuosas detectadas, 0 falsos positivos en 50 sanas. P9.b.3 rebanado y parseo — **PV-9.b.3**: informe extraído correctamente en 20/20 ficheros. P9.b.4 análisis estático — **PV-9.b.4**: 30/30 defectos bloqueados, 0 falsos bloqueos.
 - **P9.c HDL.** P9.c.1 lint y simulación — **PV-9.c.1**: `verilator --lint-only -Wall` sin advertencias en todo `rtl/`. P9.c.2 co-simulación — **PV-9.c.2**: 10⁶ instrucciones sin divergencia; bit sembrado detectado en la instrucción exacta. P9.c.3 formal — **PV-9.c.3**: las 3 clases de propiedad por módulo, con contraejemplo reproducible cuando se siembra un fallo. P9.c.4 síntesis y P&R — **PV-9.c.4**: bitstream generado y cargado; contadores leídos por UART coinciden con el modelo. P9.c.5 OpenLane — **PV-9.c.5**: WNS ≥ 0, 0 DRC, LVS limpio y GDSII reproducible.
 - **P9.d PCB y firmware.** P9.d.1 netlist por código — **PV-9.d.1**: ERC sin errores en 5 diseños de prueba. P9.d.2 paquete de fabricación — **PV-9.d.2**: las 6 salidas presentes y los Gerber renderizados sin capas vacías. P9.d.3 firmware y mapa de memoria — **PV-9.d.3**: margen ≥ 10 % en FLASH y RAM, verificado tras compilar. P9.d.4 dump→flash→verify — **PV-9.d.4**: 20/20 con hash idéntico y rescate probado.
-- **P9.e Medición y bucle.** P9.e.1 instrumentos — **PV-9.e.1**: 3 vías de medición producen `Measurement` con incertidumbre e instrumento en 100 % de las lecturas. P9.e.2 postcondiciones físicas — **PV-9.e.2**: 0 acciones marcadas exitosas sin su postcondición física verificada. P9.e.3 convergencia — **PV-9.e.3**: en 5 casos con desviación sembrada, el diagnóstico determinista acierta el patrón en ≥ 4 y converge en ≤ 3 iteraciones. P9.e.4 hombre muerto — **PV-9.e.4**: matando el núcleo con calentadores encendidos, `vmagi-estop` corta en ≤ 20 s, 10/10.
+- **P9.e Medición y bucle.** P9.e.1 instrumentos — **PV-9.e.1**: 3 vías de medición producen `Measurement` con incertidumbre e instrumento en 100 % de las lecturas. P9.e.2 postcondiciones físicas — **PV-9.e.2**: 0 acciones marcadas exitosas sin su postcondición física verificada. P9.e.3 convergencia — **PV-9.e.3**: en 5 casos con desviación sembrada, el diagnóstico determinista acierta el patrón en ≥ 4 y converge en ≤ 3 iteraciones. P9.e.4 hombre muerto — **PV-9.e.4**: matando el núcleo con calentadores encendidos, `venim-estop` corta en ≤ 20 s, 10/10.
 
 Métricas de salida: 0 impresiones iniciadas con G-Code que no pasó el análisis estático, `M112` en ≤ 2 s ante fallo térmico simulado, 0 divergencias en 10⁶ instrucciones, GDSII con LVS limpio, y 100 % de flasheos verificados por lectura de vuelta.
 
@@ -3527,7 +3527,7 @@ Queda fuera: la lógica de negocio (vive en el núcleo; la GUI es un cliente), l
               │ IPC Tauri                                     │ canal E-STOP
               ▼                                               ▼ (no pasa por React)
  ┌──────────────────────────────────────────────┐    ┌──────────────────────┐
- │ REACT 18 + TS 5                              │    │ vmagi-estop (binario aux)│
+ │ REACT 18 + TS 5                              │    │ venim-estop (binario aux)│
  │  ┌────────────┐  ┌───────────────┐           │    └──────────────────────┘
  │  │ WS CLIENT  │─►│ ZUSTAND STORE │──► paneles│
  │  │ (JSON tip.)│  │ (slices por   │           │
@@ -3601,7 +3601,7 @@ El lienzo se abre solo cuando hay algo que enseñar y **nunca roba el foco del c
 
 **Anatomía de un mensaje** (sin cambios respecto de la revisión anterior salvo el bloque de identidad, que ahora nombra proveedor y ventana de cuota): cabecera con nodo, función, ronda y versión; **bloque de identidad siempre visible** con proveedor, modelo, versión observada, contexto, temperatura, semilla y cuota restante; resumen en español llano entre comillas; secciones plegadas con el detalle técnico completo; y pie con tokens, tiempo y consumo de cuota.
 
-**Paleta normativa (`gui/src/theme/vmagi.css`):** `--vmagi-bg` `#000000` · `--vmagi-surface` `#0A0E0E` · `--vmagi-node` `#5BC5E0` · `--vmagi-node-dim` `#2E6D7D` · `--vmagi-accent` `#F08000` · `--vmagi-accent-hi` `#FFA733` · `--vmagi-ink` `#000000` · `--vmagi-text` `#F5A65B` · `--vmagi-ok` `#39FF7A` · `--vmagi-warn` `#FFC400` · `--vmagi-danger` `#FF2D2D` · `--vmagi-undecided` `#8A8F98` · `--vmagi-grid` `#1A2A2E`. Tipografía `Inter` para prosa, `JetBrains Mono` para código y registros. Alfabeto latino exclusivamente, verificado por test.
+**Paleta normativa (`gui/src/theme/venim.css`):** `--venim-bg` `#000000` · `--venim-surface` `#0A0E0E` · `--venim-node` `#5BC5E0` · `--venim-node-dim` `#2E6D7D` · `--venim-accent` `#F08000` · `--venim-accent-hi` `#FFA733` · `--venim-ink` `#000000` · `--venim-text` `#F5A65B` · `--venim-ok` `#39FF7A` · `--venim-warn` `#FFC400` · `--venim-danger` `#FF2D2D` · `--venim-undecided` `#8A8F98` · `--venim-grid` `#1A2A2E`. Tipografía `Inter` para prosa, `JetBrains Mono` para código y registros. Alfabeto latino exclusivamente, verificado por test.
 
 **La barra de instrucción.** Campo llamado **Instrucción** (`prompt`), anclado al fondo de la columna central, que crece hasta 5 renglones y **después desplaza internamente** en vez de empujar la conversación. `Enter` envía, `Mayús+Enter` salta línea, `↑` recupera la anterior. A la izquierda, el preajuste de deliberación (`Rápida 3 rondas` · `Estándar 5` · `Exhaustiva 7`); a la derecha, adjuntar y ejecutar. Debajo, la tira de adjuntos en una sola línea con desplazamiento propio. Adjuntos **sin filtro de formato**: toda la ventana es zona de arrastre y el Área 15 resuelve qué hacer con cada fichero.
 
@@ -3697,8 +3697,8 @@ overrides:
 ```
 
 **Elevación de privilegios.**
-- **Windows:** *Decisión:* patrón de **broker elevado** — un proceso auxiliar pequeño y auditado (`magibroker.exe`, con manifiesto `requireAdministrator`, firmado por el instalador) que corre elevado y ejecuta **sólo** operaciones de un catálogo cerrado, en lugar de correr toda la aplicación como administrador. Catálogo cerrado (lista exhaustiva): `install_driver_inf`, `create_service`, `delete_service`, `write_registry_key` (limitado a `HKLM\SOFTWARE\VeniceMAGI`), `set_firewall_rule` (limitado a `127.0.0.1`), `mount_vhd`, `read_smart_data`. Comunicación por tubería con nombre con descriptor de seguridad restringido al usuario que lanzó la aplicación, mensajes firmados con un secreto por sesión, y **todo** lo que pasa por el broker se escribe en la auditoría antes de ejecutarse.
-- **Linux:** *Decisión:* `polkit` con acciones y reglas propias, y **grupos (`dialout`, `plugdev`) como alternativa preferible** para USB/serie porque evita la elevación por completo. Fichero de acción `/usr/share/polkit-1/actions/org.magisystem.policy` con acciones `org.magisystem.install-udev-rules`, `org.magisystem.manage-service`, `org.magisystem.write-sysconf`, cada una con `<allow_active>auth_admin_keep</allow_active>`. `sudo` con `NOPASSWD` acotado a comandos concretos **sólo** cuando no hay otra vía, y siempre con la ruta absoluta del binario y argumentos fijos en `/etc/sudoers.d/vmagi`.
+- **Windows:** *Decisión:* patrón de **broker elevado** — un proceso auxiliar pequeño y auditado (`magibroker.exe`, con manifiesto `requireAdministrator`, firmado por el instalador) que corre elevado y ejecuta **sólo** operaciones de un catálogo cerrado, en lugar de correr toda la aplicación como administrador. Catálogo cerrado (lista exhaustiva): `install_driver_inf`, `create_service`, `delete_service`, `write_registry_key` (limitado a `HKLM\SOFTWARE\Venim`), `set_firewall_rule` (limitado a `127.0.0.1`), `mount_vhd`, `read_smart_data`. Comunicación por tubería con nombre con descriptor de seguridad restringido al usuario que lanzó la aplicación, mensajes firmados con un secreto por sesión, y **todo** lo que pasa por el broker se escribe en la auditoría antes de ejecutarse.
+- **Linux:** *Decisión:* `polkit` con acciones y reglas propias, y **grupos (`dialout`, `plugdev`) como alternativa preferible** para USB/serie porque evita la elevación por completo. Fichero de acción `/usr/share/polkit-1/actions/org.magisystem.policy` con acciones `org.magisystem.install-udev-rules`, `org.magisystem.manage-service`, `org.magisystem.write-sysconf`, cada una con `<allow_active>auth_admin_keep</allow_active>`. `sudo` con `NOPASSWD` acotado a comandos concretos **sólo** cuando no hay otra vía, y siempre con la ruta absoluta del binario y argumentos fijos en `/etc/sudoers.d/venim`.
 - **Por qué el broker es superior a "ejecutar todo como root":** reduce la superficie de ataque de "toda la aplicación, incluidos el intérprete de plantillas, el parser de PDF y el motor de inferencia" a "siete operaciones con parámetros validados"; hace la auditoría significativa (cada operación privilegiada tiene un nombre, no es "el proceso hizo algo"); permite denegar por política sin recompilar; y evita que un error del agente —o una entrada maliciosa en un PDF o en un binario analizado— se convierta en compromiso total de la máquina.
 
 **Alcance del control (API concreta por SO y capacidad que lo cubre):**
@@ -3743,7 +3743,7 @@ El núcleo lee el flujo línea a línea (JSON por línea), distingue los tipos d
 
 **Sesión por agente.** Tres sesiones persistentes e independientes (A, B, C), cada una con su `--session-id` propio (UUID estable guardado en `debate_session`), su propio prompt de sistema anexado (`--append-system-prompt` con el bloque de rol del Área 7) y su propio historial gestionado por la CLI. **Aislamiento:** el prompt de B se construye **desde el acta**, no desde la conversación de A; además, las tres sesiones son procesos distintos con directorios de trabajo distintos (`sessions/{melchior,balthasar,casper}/`), de modo que B no puede leer artefactos intermedios de A salvo los que el orquestador copie explícitamente (afirmaciones y evidencia). Se comprueba automáticamente (PV-3.b.2).
 
-**Exposición de las herramientas del sistema vía MCP — la decisión de diseño más potente del área.** *Decisión:* el núcleo levanta un **servidor MCP local por transporte stdio** (`modules/mcp/server.py`, lanzado como `vmagi-mcp` y declarado en la configuración de proyecto de Claude Code) que expone como herramientas las capacidades del laboratorio — porque así Claude Code no sólo conversa: **opera el laboratorio**, con el mismo control de radio y auditoría que cualquier otro actor.
+**Exposición de las herramientas del sistema vía MCP — la decisión de diseño más potente del área.** *Decisión:* el núcleo levanta un **servidor MCP local por transporte stdio** (`modules/mcp/server.py`, lanzado como `venim-mcp` y declarado en la configuración de proyecto de Claude Code) que expone como herramientas las capacidades del laboratorio — porque así Claude Code no sólo conversa: **opera el laboratorio**, con el mismo control de radio y auditoría que cualquier otro actor.
 *Descartado:* transporte HTTP/SSE — innecesario para un servidor local y añade superficie de red.
 
 Herramientas registradas, con su esquema de entrada resumido y su radio:
@@ -3813,7 +3813,7 @@ RAM de la GUI: ≤ 320 MB en reposo, ≤ 600 MB con 10 000 líneas de log y tres
 |---|---|---|---|---|
 | WebSocket caído | ping/pong | GUI sin datos | Reconexión con backoff; banner "reconectando"; el trabajo sigue | Núcleo operativo |
 | Fuga de memoria en la GUI | RSS creciente monótono | Congelación | Recorte forzado de búferes y aviso; recarga de la ventana sin matar el núcleo | Recuperado |
-| Atajo global no registrable | error de Tauri | Sin E-STOP por teclado | Botón visible + `vmagi-estop` como vía alternativa; aviso explícito al usuario | Degradado, explicado |
+| Atajo global no registrable | error de Tauri | Sin E-STOP por teclado | Botón visible + `venim-estop` como vía alternativa; aviso explícito al usuario | Degradado, explicado |
 | Broker no autorizado | rechazo en instalación | Sin operaciones elevadas | Funciones deshabilitadas y marcadas en la interfaz; nunca se intenta por otra vía | Consistente |
 | Fallo parcial: acción ejecutada sin entrada en auditoría | verificación de cadena | Trazabilidad rota | Marcar `audit_gap`, bloquear nuevas acciones R2+ hasta revisión humana | Seguro |
 | Claude Code devuelve JSON malformado | parser de flujo | Turno perdido | Reparación (§7.4) y luego reenrutado a local | Operativo |
@@ -4223,12 +4223,12 @@ Queda fuera: la interpretación semántica del código (Áreas 5 y 12), la decom
               │ rutas + .cbmignore
               ▼
  ┌───────────────────────────────────────────────────────────────────┐
- │ vmagi-mem (binario estático, proceso hijo supervisado)             │
+ │ venim-mem (binario estático, proceso hijo supervisado)             │
  │  discover → tree-sitter (155+ gramáticas) → LSP híbrido (12 leng.)│
  │  → pases: definiciones → llamadas → rutas HTTP → importaciones     │
  │  ⚠ punto de fallo: presupuesto de RAM (CBM_MEM_BUDGET_MB)         │
  └──────────┬────────────────────────────────────────────────────────┘
-            │ SQLite WAL comprimido  (~/.local/share/VeniceMAGI/memgraph/)
+            │ SQLite WAL comprimido  (~/.local/share/Venim/memgraph/)
             ▼
  ┌───────────────────────────────────────────────────────────────────┐
  │ GRAFO: nodos Project·Package·Folder·File·Module·Class·Function·    │
@@ -4241,7 +4241,7 @@ Queda fuera: la interpretación semántica del código (Áreas 5 y 12), la decom
       ▼                 ▼                  ▼                    ▼
  ┌──────────┐   ┌───────────────┐   ┌──────────────┐   ┌────────────────┐
  │ ADAPTADOR│   │ query_graph   │   │ nomic-embed- │   │ auto-sync      │
- │ vmagi-mem │   │ <1 ms         │   │ code 768 int8│   │ incremental    │
+ │ venim-mem │   │ <1 ms         │   │ code 768 int8│   │ incremental    │
  │ (núcleo) │   └───────────────┘   └──────────────┘   └────────────────┘
  └────┬─────┘
       │ EVIDENCIA estructural tipada (tier 3: análisis estático)
@@ -4249,7 +4249,7 @@ Queda fuera: la interpretación semántica del código (Áreas 5 y 12), la decom
    Área 3 (debate) · Área 5 (capas y libro mayor) · Área 8 (impacto) · GUI
 ```
 
-**Nodo `Knowledge` (extensión propia del plan).** El grafo del proyecto original describe código; VeniceMAGI añade una capa propia **en su propia base de datos**, no dentro del binario externo: la tabla `mem_knowledge` guarda los *deltas de conocimiento* que MELCHIOR • 1 emite al sobrevivir una afirmación (§I.6), enlazados por `qualified_name` a los nodos del grafo. Así el sistema recuerda no sólo *qué llama a qué*, sino *qué se estableció como cierto sobre esa función, con qué evidencia y cuándo caduca*.
+**Nodo `Knowledge` (extensión propia del plan).** El grafo del proyecto original describe código; Venim añade una capa propia **en su propia base de datos**, no dentro del binario externo: la tabla `mem_knowledge` guarda los *deltas de conocimiento* que MELCHIOR • 1 emite al sobrevivir una afirmación (§I.6), enlazados por `qualified_name` a los nodos del grafo. Así el sistema recuerda no sólo *qué llama a qué*, sino *qué se estableció como cierto sobre esa función, con qué evidencia y cuándo caduca*.
 
 ### 13.3 Contratos e interfaces
 
@@ -4298,7 +4298,7 @@ Eventos nuevos en el bus: `memgraph.indexed{project, nodes, edges, duration_s, l
 
 ### 13.4 Implementación
 
-Instalación: binario estático descargado de la publicación oficial del commit fijado, verificado por **SHA-256 publicado + firma Sigstore/cosign keyless + procedencia SLSA**, y colocado en `tools/vmagi-mem/<version>/`. **No se usa el instalador `curl | bash` del proyecto** — *Decisión:* la descarga y la verificación las hace el propio núcleo con `net.download{expected_sha256}` (acción R1 del Área 8) y la configuración de clientes MCP la escribe VeniceMAGI, porque un instalador que auto-detecta 43 superficies de cliente y edita sus configuraciones es exactamente el tipo de efecto lateral no auditado que el §10.6 prohíbe.
+Instalación: binario estático descargado de la publicación oficial del commit fijado, verificado por **SHA-256 publicado + firma Sigstore/cosign keyless + procedencia SLSA**, y colocado en `tools/venim-mem/<version>/`. **No se usa el instalador `curl | bash` del proyecto** — *Decisión:* la descarga y la verificación las hace el propio núcleo con `net.download{expected_sha256}` (acción R1 del Área 8) y la configuración de clientes MCP la escribe Venim, porque un instalador que auto-detecta 43 superficies de cliente y edita sus configuraciones es exactamente el tipo de efecto lateral no auditado que el §10.6 prohíbe.
 *Descartado:* `npm i -g` / Homebrew / Scoop — cómodos, pero el sistema perdería el control del hash exacto que ejecuta.
 
 Arranque: proceso hijo bajo `procman` (Área 0) con el entorno acotado:
@@ -4310,7 +4310,7 @@ CBM_WORKERS=6                               \
 CBM_MEM_BUDGET_MB=3072                      \
 CBM_LOG_LEVEL=warn                          \
 CBM_DIAGNOSTICS=false                       \
-  tools/vmagi-mem/<version>/codebase-memory-mcp
+  tools/venim-mem/<version>/codebase-memory-mcp
 ```
 
 `CBM_ALLOWED_ROOT` es **obligatorio** y se fija a la raíz del proyecto abierto: es el control que impide que el indexador recorra el disco del usuario, y su ausencia es motivo de rechazo en el preflight. Modo CLI para trabajos por lotes y comprobaciones desde `make gates`:
@@ -4331,8 +4331,8 @@ Tabla de paridad:
 
 | Elemento | Impl. Windows | Impl. Linux |
 |---|---|---|
-| Binario | `codebase-memory-mcp.exe` (amd64) en `tools\vmagi-mem\` | binario estático (amd64/arm64) en `tools/vmagi-mem/` |
-| Caché del grafo | `%LOCALAPPDATA%\VeniceMAGI\memgraph\` | `~/.local/share/VeniceMAGI/memgraph/` |
+| Binario | `codebase-memory-mcp.exe` (amd64) en `tools\venim-mem\` | binario estático (amd64/arm64) en `tools/venim-mem/` |
+| Caché del grafo | `%LOCALAPPDATA%\Venim\memgraph\` | `~/.local/share/Venim/memgraph/` |
 | Vigilancia de cambios | sondeo de `git status` cada 15 s (el vigilante propio del binario) | ídem |
 | Límite de raíz | `CBM_ALLOWED_ROOT` con ruta con letra de unidad | `CBM_ALLOWED_ROOT` con ruta POSIX |
 | Verificación de firma | `cosign verify-blob` (binario propio en `tools\`) | ídem |
@@ -4421,7 +4421,7 @@ Indexación (objetivo propio, más conservador que el declarado por el proyecto)
 
 | Caso | Criterio de éxito |
 |---|---|
-| Camino feliz | Indexar el propio repositorio de VeniceMAGI: `list_projects` reporta > 0 nodos y `get_graph_schema` devuelve las 13 etiquetas de nodo esperadas |
+| Camino feliz | Indexar el propio repositorio de Venim: `list_projects` reporta > 0 nodos y `get_graph_schema` devuelve las 13 etiquetas de nodo esperadas |
 | **Contrato real frente a README** | La enumeración efectiva de herramientas MCP del commit fijado se escribe en `config/externals.lock`; el sistema falla al arrancar si difiere de la esperada (defensa contra las discrepancias 14/15 herramientas y 155/158 lenguajes) |
 | Rendimiento de indexación | 3 repositorios de 20 k, 100 k y 500 k nodos: ≤ 45 s, ≤ 4 min y ≤ 20 min respectivamente; si no se cumple, se rebaja el objetivo publicado y se declara |
 | Latencia de consulta | 200 consultas Cypher representativas: p95 ≤ 5 ms, 0 timeouts |
@@ -4434,7 +4434,7 @@ Indexación (objetivo propio, más conservador que el declarado por el proyecto)
 | Consenso entre nodos | MELCHIOR afirma una etiqueta con respaldo de grafo, BALTHASAR consulta y confirma: CASPER ≥ 80 |
 | Desacuerdo total | BALTHASAR devuelve filas contradictorias: CASPER emite `falsified` **aunque MELCHIOR tenga alta confianza**, 20/20 |
 | Conocimiento | 50 deltas registrados; al modificar la firma de 20 símbolos, los 20 deltas correspondientes quedan invalidados automáticamente |
-| Binario ausente | Sin `vmagi-mem` instalado, el sistema arranca y el Área 5 usa el camino de reserva `ctags`+`networkx`, con aviso visible |
+| Binario ausente | Sin `venim-mem` instalado, el sistema arranca y el Área 5 usa el camino de reserva `ctags`+`networkx`, con aviso visible |
 | CTL-1 | Intento de empaquetar un grafo derivado de código propietario: rechazo 10/10 |
 
 ### 13.9 Modos de fallo y degradación
@@ -4492,8 +4492,8 @@ Queda fuera: la **política** de qué capacidad exige cada tarea y cómo se degr
 
 | Responsabilidad | Dueño | Nota |
 |---|---|---|
-| Registro de proveedores y sus credenciales | **MAGI-ROUTE** | El usuario las introduce en su panel o en el de VeniceMAGI, que las delega |
-| Estrategia de enrutado entre proveedores | **MAGI-ROUTE** | Configurada por VeniceMAGI según §14.4 |
+| Registro de proveedores y sus credenciales | **MAGI-ROUTE** | El usuario las introduce en su panel o en el de Venim, que las delega |
+| Estrategia de enrutado entre proveedores | **MAGI-ROUTE** | Configurada por Venim según §14.4 |
 | Cortacircuitos, cooldown por clave, bloqueo por modelo | **MAGI-ROUTE** | Tres capas independientes (§14.4) |
 | Compresión de prompt | **MAGI-ROUTE** | Desactivada por defecto en este plan; ver §14.5 |
 | **Capacidad exigida por la tarea** (visión, contexto, salida estructurada) | **Área 6** | Filtro duro previo; MAGI-ROUTE no sabe qué necesita un análisis forense |
@@ -4568,16 +4568,16 @@ Eventos nuevos: `route.selected{unit_id, provider, model, strategy, latency_ms, 
 
 ### 14.4 Implementación
 
-**Instalación y arranque.** Versión fijada en `config/externals.lock`, instalada en `tools/vmagi-route/<version>/` (NPM o contenedor; *Decisión:* **contenedor OCI cuando exista runtime disponible, e instalación NPM local en caso contrario** — porque el contenedor da un límite de memoria y una superficie de red controlada de forma trivial). Arranque con:
+**Instalación y arranque.** Versión fijada en `config/externals.lock`, instalada en `tools/venim-route/<version>/` (NPM o contenedor; *Decisión:* **contenedor OCI cuando exista runtime disponible, e instalación NPM local en caso contrario** — porque el contenedor da un límite de memoria y una superficie de red controlada de forma trivial). Arranque con:
 
 ```bash
 PORT=20128 HOST=127.0.0.1 REQUIRE_API_KEY=true DATA_DIR="${MAGI_DATA}/route" \
-  node tools/vmagi-route/<version>/server.js
+  node tools/venim-route/<version>/server.js
 ```
 
 `HOST=127.0.0.1` y `REQUIRE_API_KEY=true` son **obligatorios y verificados en el preflight**: el adaptador comprueba con un `connect()` desde otra interfaz que el puerto **no** responde fuera de loopback, y aborta el arranque si responde. Una pasarela de inferencia escuchando en `0.0.0.0` dentro de la red del usuario es un incidente de seguridad, no una comodidad.
 
-**Estrategias de enrutado: cuáles se usan y cuáles se prohíben.** El proyecto ofrece un catálogo amplio (prioridad, ponderada, rotación circular, coste mínimo, menos usado, potencia de dos opciones, último camino bueno conocido, puntuación automática multifactor, aleatoria, relevo de contexto, optimizada por caché, fusión de varios modelos con síntesis, encadenado en tubería, y otras). *Decisión:* VeniceMAGI fija la estrategia por rol y por clase de tarea, y **no** usa la selección automática global —
+**Estrategias de enrutado: cuáles se usan y cuáles se prohíben.** El proyecto ofrece un catálogo amplio (prioridad, ponderada, rotación circular, coste mínimo, menos usado, potencia de dos opciones, último camino bueno conocido, puntuación automática multifactor, aleatoria, relevo de contexto, optimizada por caché, fusión de varios modelos con síntesis, encadenado en tubería, y otras). *Decisión:* Venim fija la estrategia por rol y por clase de tarea, y **no** usa la selección automática global —
 
 | Rol / tarea | Estrategia | Motivo (una línea) |
 |---|---|---|
@@ -4591,9 +4591,9 @@ PORT=20128 HOST=127.0.0.1 REQUIRE_API_KEY=true DATA_DIR="${MAGI_DATA}/route" \
 
 **Resiliencia en tres capas (de la pasarela) y qué queda del Área 6.** La pasarela aporta: **L1** cortacircuitos por proveedor ante errores 408/5xx con ventanas de reapertura exponenciales; **L2** enfriamiento por credencial con retroceso exponencial y protección contra estampida; **L3** bloqueo del modelo concreto que falla sin arrastrar al resto de la conexión. El Área 6 conserva: la clasificación de «respuesta que no valida contra el esquema» como fallo (que una pasarela genérica no puede juzgar, porque no conoce nuestros esquemas), el WAL de unidades, la reconciliación entre tramos y el marcado del artefacto. *Decisión:* cuando una respuesta llega con HTTP 200 pero falla la validación pydantic/GBNF tras agotar reparaciones, el adaptador **informa el fallo a la pasarela** mediante una llamada explícita de marcado, para que su cortacircuitos lo contabilice; sin eso, un proveedor que devuelve basura sintácticamente válida nunca se abriría.
 
-**Niveles gratuitos oficiales.** La pasarela agrega niveles gratuitos documentados de decenas de proveedores y publica su propio panel de uso. Condiciones que VeniceMAGI impone para activar cualquiera de ellos: (1) la cuenta y el token son **del usuario**, obtenidos por la vía oficial del proveedor; (2) se respeta el límite declarado con el margen del 20 % del §6.3; (3) **no** se usan grupos de cuentas compartidas ni rotación de identidades; (4) toda petición que salga lleva `privacy_class: consented_remote` y su consentimiento vigente. Las cifras agregadas que el proyecto publica (del orden de 10⁹ tokens gratuitos mensuales) se tratan como **dato de terceros, no como promesa del plan**: el panel de §10.4 muestra la cuota **observada** por el propio sistema, y la declarada aparece en gris como referencia.
+**Niveles gratuitos oficiales.** La pasarela agrega niveles gratuitos documentados de decenas de proveedores y publica su propio panel de uso. Condiciones que Venim impone para activar cualquiera de ellos: (1) la cuenta y el token son **del usuario**, obtenidos por la vía oficial del proveedor; (2) se respeta el límite declarado con el margen del 20 % del §6.3; (3) **no** se usan grupos de cuentas compartidas ni rotación de identidades; (4) toda petición que salga lleva `privacy_class: consented_remote` y su consentimiento vigente. Las cifras agregadas que el proyecto publica (del orden de 10⁹ tokens gratuitos mensuales) se tratan como **dato de terceros, no como promesa del plan**: el panel de §10.4 muestra la cuota **observada** por el propio sistema, y la declarada aparece en gris como referencia.
 
-**Compresión de prompt.** El proyecto incluye motores de compresión que declaran ahorros del 15 % al 95 %. *Decisión:* **desactivada por defecto en todas las rutas de VeniceMAGI, y activable sólo para la clase de tarea `bulk_summarize`** — porque comprimir el prompt destruye la propiedad que sostiene la mitad de este sistema: que **toda cita debe existir literalmente en el contexto entregado** (§A2-3) y que el hash del prompt es parte de la procedencia. Un prompt comprimido rompe el validador de citas y hace irreproducible el artefacto.
+**Compresión de prompt.** El proyecto incluye motores de compresión que declaran ahorros del 15 % al 95 %. *Decisión:* **desactivada por defecto en todas las rutas de Venim, y activable sólo para la clase de tarea `bulk_summarize`** — porque comprimir el prompt destruye la propiedad que sostiene la mitad de este sistema: que **toda cita debe existir literalmente en el contexto entregado** (§A2-3) y que el hash del prompt es parte de la procedencia. Un prompt comprimido rompe el validador de citas y hace irreproducible el artefacto.
 *Descartado:* activarla globalmente por el ahorro — el ahorro real ya viene del grafo de MAGI-MEM (≥ 80 % de tokens de entrada, §13.7), que reduce el contexto **sin alterarlo**.
 
 Tabla de paridad:
@@ -4974,7 +4974,7 @@ Métricas de salida: cobertura ≥ 92 % sobre el corpus de época, 0 estados «n
 
 ### 16.1 Propósito y alcance
 
-Permite **construir un sistema operativo completo, empaquetarlo en un único ejecutable y abrirlo en una ventana dentro del ordenador donde está instalado VeniceMAGI**, sin instalar nada más, sin tocar el arranque de la máquina y sin privilegios de administrador. Ese mismo mecanismo da al sistema tres capacidades que hasta ahora le faltaban: un **entorno de época** para abrir con la aplicación original los ficheros que ninguna librería moderna lee (nivel 6 del Área 15), un **banco de pruebas desechable** donde ejecutar binarios de origen desconocido sin arriesgar la máquina (Área 5), y un **destino de despliegue** para el software que el propio sistema sintetiza.
+Permite **construir un sistema operativo completo, empaquetarlo en un único ejecutable y abrirlo en una ventana dentro del ordenador donde está instalado Venim**, sin instalar nada más, sin tocar el arranque de la máquina y sin privilegios de administrador. Ese mismo mecanismo da al sistema tres capacidades que hasta ahora le faltaban: un **entorno de época** para abrir con la aplicación original los ficheros que ninguna librería moderna lee (nivel 6 del Área 15), un **banco de pruebas desechable** donde ejecutar binarios de origen desconocido sin arriesgar la máquina (Área 5), y un **destino de despliegue** para el software que el propio sistema sintetiza.
 
 Queda fuera: la virtualización de servidores o de cargas de producción; el arranque del sistema construido en hardware real (se documenta cómo escribir la imagen a un USB, pero hacerlo es una acción del usuario, no del sistema); y la distribución de sistemas operativos propietarios, que está expresamente prohibida por **CTL-4**.
 
@@ -5003,7 +5003,7 @@ Queda fuera: la virtualización de servidores o de cargas de producción; el arr
  ┌──────────────────────────────────────────────────────────────────┐
  │ EJECUTOR EN VENTANA                                               │
  │  ruta A: QEMU 9.x + virtio-gpu, pantalla por SPICE local,         │
- │          cliente embebido en la ventana de VeniceMAGI        │
+ │          cliente embebido en la ventana de Venim        │
  │  ruta B: emulador x86 en WebAssembly dentro del propio panel      │
  │          (sistemas muy ligeros, sin ningún binario externo)       │
  │  ruta C: DOSBox-X para MS-DOS y compatibles                       │
@@ -5320,7 +5320,7 @@ Cada calibrador produce un informe con **valor actual, valor propuesto, evidenci
 
 **Configuración por turno.** Desde la barra de instrucción se pueden anular, sólo para ese turno, los parámetros más frecuentes: mínimo de rondas, modelos por nodo, presupuesto y si se permite salir a internet. La anulación se muestra como un distintivo en el turno y queda en el acta, de modo que dos turnos con resultados distintos siempre son comparables.
 
-**Paridad Windows/Linux:** rutas de los ficheros de configuración por `PathsHAL`; el resto es idéntico. Ficheros: `config/factory.yaml` (fábrica, sólo lectura), `config/machine.yaml` (calibrado), `~/.../VeniceMAGI/config/user.yaml`, `projects/<slug>/config.yaml`, y `config/presets/*.yaml`.
+**Paridad Windows/Linux:** rutas de los ficheros de configuración por `PathsHAL`; el resto es idéntico. Ficheros: `config/factory.yaml` (fábrica, sólo lectura), `config/machine.yaml` (calibrado), `~/.../Venim/config/user.yaml`, `projects/<slug>/config.yaml`, y `config/presets/*.yaml`.
 
 ### 17.5 Algoritmos
 
@@ -5745,7 +5745,7 @@ Y una constatación que el plan asume: los tres primeros controles son código, 
  └───────┬──────────────────────────────────────────────────────────────┘
          ▼
  ┌──────────────────────────────────────────────────────────────────────┐
- │ vmagi-web (servidor local en 127.0.0.1:9377, proceso hijo supervisado) │
+ │ venim-web (servidor local en 127.0.0.1:9377, proceso hijo supervisado) │
  │  instantánea de accesibilidad · referencias estables · extracción de  │
  │  enlaces e imágenes · captura de pantalla · descargas · sesiones      │
  └───────┬──────────────────────────────────────────────────────────────┘
@@ -5782,7 +5782,7 @@ Paquete de evidencia web (lo que hace citable una página en un dictamen):
   "text_ref":"cas://…", "trace_ref":"cas://…",
   "purpose":"norma", "robots_allowed":true, "session":null,
   "engine":{"name":"camofox-browser","version":"…","fingerprint_profile":"estable-declarado"},
-  "reproduce_cmd":"vmagi web capture --url … --profile estable-declarado" }
+  "reproduce_cmd":"venim web capture --url … --profile estable-declarado" }
 ```
 
 Eventos: `web.opened`, `web.snapshot{tokens_saved}`, `web.evidence{evidence_id}`, `web.blocked{reason:"policy"|"robots"|"blacklist"}` (**crítico**), `web.session_used{name}`. Tablas: `web_evidence`, `web_session`, `web_policy_log` (DDL en §T16).
@@ -5797,10 +5797,10 @@ CAMOFOX_CRASH_REPORT_ENABLED=false          # telemetría APAGADA: requisito del
 CAMOFOX_API_KEY=""                          # importación de cookies DESACTIVADA por defecto
 PROXY_STRATEGY=""                           # rotación de salidas DESACTIVADA (cadena vacía)
 MAX_SESSIONS=8  SESSION_TIMEOUT_MS=900000  BROWSER_IDLE_TIMEOUT_MS=300000 \
-  node tools/vmagi-web/<version>/server.js
+  node tools/venim-web/<version>/server.js
 ```
 
-| Función del componente | Estado en VeniceMAGI | Motivo |
+| Función del componente | Estado en Venim | Motivo |
 |---|---|---|
 | Instantánea de accesibilidad con referencias estables | **Activada** | Es el motivo de adoptarlo: ≈ 90 % menos tokens y selectores que no se rompen |
 | Extracción de enlaces, imágenes, texto y descargas | **Activada** | Alimenta las Áreas 2, 11 y 15 |
@@ -5829,10 +5829,10 @@ Tabla de paridad:
 
 | Elemento | Impl. Windows | Impl. Linux |
 |---|---|---|
-| Servidor | Node 20 en `tools\vmagi-web\`, o contenedor OCI | ídem |
+| Servidor | Node 20 en `tools\venim-web\`, o contenedor OCI | ídem |
 | Motor | Descarga verificada por hash (~300 MB) en primer uso | ídem |
 | Verificación de no exposición | `Test-NetConnection` desde la IP de la interfaz activa | `ss -ltnp` + `connect()` externo |
-| Perfiles y sesiones | `%LOCALAPPDATA%\VeniceMAGI\web\profiles\` | `~/.local/share/VeniceMAGI/web/profiles/` |
+| Perfiles y sesiones | `%LOCALAPPDATA%\Venim\web\profiles\` | `~/.local/share/Venim/web/profiles/` |
 | Aislamiento | Job Object con límite de memoria | cgroup v2 + `seccomp` |
 
 ### 19.5 Algoritmos
@@ -6168,12 +6168,12 @@ Queda fuera: la navegación gobernada del propio sistema (Área 19, que es un na
 
 ### 21.2 Arquitectura: tres piezas y ningún servidor web
 
-*Decisión:* VeniceMAGI es **una aplicación de escritorio nativa** —`VeniceMAGI.exe` en Windows y un binario o AppImage en Linux— cuya interfaz se dibuja en un componente de vista web **embebido en el proceso**, sin servir ninguna página, sin escuchar en ningún puerto para la interfaz y sin que exista una dirección que se pueda abrir en un navegador; el canal entre la interfaz y el núcleo pasa a ser **una tubería con nombre en Windows y un socket de dominio Unix en Linux**, no un WebSocket sobre TCP — porque «no se abre por la web» sólo es cierto si **no hay nada que abrir**, y el diseño anterior, con el núcleo escuchando en `127.0.0.1`, dejaba exactamente eso.
+*Decisión:* Venim es **una aplicación de escritorio nativa** —`Venim.exe` en Windows y un binario o AppImage en Linux— cuya interfaz se dibuja en un componente de vista web **embebido en el proceso**, sin servir ninguna página, sin escuchar en ningún puerto para la interfaz y sin que exista una dirección que se pueda abrir en un navegador; el canal entre la interfaz y el núcleo pasa a ser **una tubería con nombre en Windows y un socket de dominio Unix en Linux**, no un WebSocket sobre TCP — porque «no se abre por la web» sólo es cierto si **no hay nada que abrir**, y el diseño anterior, con el núcleo escuchando en `127.0.0.1`, dejaba exactamente eso.
 *Descartado:* el WebSocket local de las revisiones anteriores, que era cómodo y depurable pero contradecía el requisito y ampliaba la superficie.
 
 ```
  ┌───────────────────────────────────────────────────────────────────────────┐
- │  VeniceMAGI.exe   (proceso único, ventana nativa, sin puerto de interfaz)  │
+ │  Venim.exe   (proceso único, ventana nativa, sin puerto de interfaz)  │
  │  ┌──────────────────────┐   tubería con nombre / socket Unix              │
  │  │ INTERFAZ (vista web  │◄──────────────────────────────┐                 │
  │  │ embebida, sin URL)   │   marcos con longitud + CBOR   │                 │
@@ -6220,7 +6220,7 @@ Eventos: `app.started`, `app.ipc_ready`, `ext.paired{browser}`, `ext.page_sent`,
 
 #### 21.4.a El ejecutable
 
-Windows: `VeniceMAGI.exe` producido por `tauri build --target nsis` y también en variante **portátil de un solo fichero** que no requiere instalación ni privilegios (usa `%LOCALAPPDATA%` para datos). Linux: AppImage y `.deb`. Instancia única mediante mutex nombrado o `flock`; al lanzar una segunda copia, se enfoca la ventana existente y se le pasa el argumento (por ejemplo, la carpeta de proyecto). Canal de interfaz: tubería `\\.\pipe\VeniceMAGI.<sid>` con descriptor de seguridad restringido al usuario, o socket `~/.local/state/VeniceMAGI/ipc.sock` con permisos `0600`; marcos con longitud prefijada y carga en CBOR. **La navegación externa de la vista embebida está deshabilitada**: cualquier enlace se abre en el navegador del sistema, nunca dentro.
+Windows: `Venim.exe` producido por `tauri build --target nsis` y también en variante **portátil de un solo fichero** que no requiere instalación ni privilegios (usa `%LOCALAPPDATA%` para datos). Linux: AppImage y `.deb`. Instancia única mediante mutex nombrado o `flock`; al lanzar una segunda copia, se enfoca la ventana existente y se le pasa el argumento (por ejemplo, la carpeta de proyecto). Canal de interfaz: tubería `\\.\pipe\Venim.<sid>` con descriptor de seguridad restringido al usuario, o socket `~/.local/state/Venim/ipc.sock` con permisos `0600`; marcos con longitud prefijada y carga en CBOR. **La navegación externa de la vista embebida está deshabilitada**: cualquier enlace se abre en el navegador del sistema, nunca dentro.
 
 #### 21.4.b La extensión de navegador
 
@@ -6246,7 +6246,7 @@ Manifiesto V3 con permisos mínimos: `activeTab`, `scripting` bajo acción del u
 
 ```
 <carpeta del proyecto>/
-├── .vmagi/
+├── .venim/
 │   ├── project.yaml          nombre, plantilla, versión de esquema, áreas activas
 │   ├── project.db            estado (SQLite): hilos, deliberaciones, acciones, artefactos
 │   ├── memory/               registro íntegro del Área 18 (texto literal, comprimido)
@@ -6278,7 +6278,7 @@ Tabla de paridad:
 
 | Elemento | Impl. Windows | Impl. Linux |
 |---|---|---|
-| Ejecutable | `VeniceMAGI.exe` (instalador y portátil) | AppImage y `.deb` |
+| Ejecutable | `Venim.exe` (instalador y portátil) | AppImage y `.deb` |
 | Canal de interfaz | Tubería con nombre, descriptor restringido al usuario | Socket Unix `0600` |
 | Instancia única | Mutex nombrado | `flock` |
 | Mensajería nativa | Manifiesto en el registro (`HKCU`) apuntando al ejecutable | Manifiesto en `~/.mozilla/native-messaging-hosts/` y `~/.config/google-chrome/NativeMessagingHosts/` |
@@ -6327,7 +6327,7 @@ Afirmaciones: «el ejecutable no expone ningún puerto de interfaz», «este pro
 
 ### 21.7 Costos, latencia y recursos
 
-Arranque en frío hasta ventana usable ≤ 4,0 s (objetivo heredado del §0.3, ahora sin carga de modelos, lo que lo hace holgado). Canal de interfaz: latencia ≤ 1,5 ms por mensaje, muy por debajo del WebSocket que sustituye. Extensión: ≤ 12 MB de memoria, sin actividad hasta que el usuario pulsa. Instalador ≤ 120 MB. Proyecto en disco: `.vmagi/` ronda 5–40 MB sin blobs; el `cas/` es lo que crece y por eso se excluye del remoto. Barrido de secretos: ≈ 0,9 s por cada 100 MB. **Salto del debate:** las operaciones de proyecto son R1 salvo el `push`, que es **R2** (efecto fuera del equipo, reversible con esfuerzo) y por tanto exige veredicto y confirmación. **Caché:** el barrido de secretos por hash de fichero.
+Arranque en frío hasta ventana usable ≤ 4,0 s (objetivo heredado del §0.3, ahora sin carga de modelos, lo que lo hace holgado). Canal de interfaz: latencia ≤ 1,5 ms por mensaje, muy por debajo del WebSocket que sustituye. Extensión: ≤ 12 MB de memoria, sin actividad hasta que el usuario pulsa. Instalador ≤ 120 MB. Proyecto en disco: `.venim/` ronda 5–40 MB sin blobs; el `cas/` es lo que crece y por eso se excluye del remoto. Barrido de secretos: ≈ 0,9 s por cada 100 MB. **Salto del debate:** las operaciones de proyecto son R1 salvo el `push`, que es **R2** (efecto fuera del equipo, reversible con esfuerzo) y por tanto exige veredicto y confirmación. **Caché:** el barrido de secretos por hash de fichero.
 
 ### 21.8 Calidad y pruebas
 
@@ -6386,7 +6386,7 @@ Métricas de salida: 0 puertos de interfaz, 0 secretos publicados, 0 publicacion
 ## T1 Árbol de directorios completo
 
 ```
-vmagi/
+venim/
 ├── core/                          núcleo Python: único dueño del estado
 │   ├── kernel.py                  bucle principal, supervisión, API pública
 │   ├── bus.py                     bus de eventos tipado (MagiBus)
@@ -6447,7 +6447,7 @@ vmagi/
 ├── data/                          matriz TRIZ, banco de conceptos, analogías, referencias
 ├── scripts/                       generadores (tipos, gramáticas), utilidades, mantenimiento
 ├── packaging/                     instaladores, reglas udev, manifiestos, unidades systemd
-│   ├── linux/udev/                99-vmagi.rules (§4.4)
+│   ├── linux/udev/                99-venim.rules (§4.4)
 │   ├── linux/polkit/              acciones y reglas de polkit
 │   └── windows/                   manifiesto del broker, plantilla NSIS
 ├── tests/                         pruebas
@@ -6493,7 +6493,7 @@ vmagi/
 | `invention.derived` | modules/invention | GUI, store | `{invention_id, parent_id, operator, novelty, niche}` | 12/ronda | Media |
 | `capability.requested` | cualquier módulo | policy, GUI, audit | `{module, capability, scope, purpose}` | Esporádica | Alta |
 | `snapshot.created` | modules/executor | GUI, store | `{snapshot_id, action_id, tree_hash, size_bytes}` | Por acción R1/R2 | Alta |
-| `estop.triggered` | gui / core/rpc / vmagi-estop | todos | `{source, reason, ts, actions_aborted[]}` | Rara | **Crítica (nunca se descarta)** |
+| `estop.triggered` | gui / core/rpc / venim-estop | todos | `{source, reason, ts, actions_aborted[]}` | Rara | **Crítica (nunca se descarta)** |
 
 ## T3 Esquema completo de la base de datos
 
@@ -7046,7 +7046,7 @@ Este artefacto reúne, en el orden topológico de §T5, todos los pasos `Pn.x` y
 
 Fuente única de verdad de la apariencia y del vocabulario. Vive en `gui/src/theme/` y `gui/src/help/`; el CI falla si un componente usa un color literal en vez de un token **o si introduce una sigla que no esté en el glosario**.
 
-**Ficheros:** `vmagi.css` (variables), `vmagi.tokens.json` (los mismos valores para tests y capturas), `components/` (los 12 componentes propios), `help/glossary.es.json` (términos con definición de dos frases y ejemplo), `help/wording.es.json` (catálogo cerrado de rótulos y mensajes), `a11y.test.tsx` y `wording.test.ts`.
+**Ficheros:** `venim.css` (variables), `venim.tokens.json` (los mismos valores para tests y capturas), `components/` (los 12 componentes propios), `help/glossary.es.json` (términos con definición de dos frases y ejemplo), `help/wording.es.json` (catálogo cerrado de rótulos y mensajes), `a11y.test.tsx` y `wording.test.ts`.
 
 **Componentes propios, con su contrato:**
 
@@ -7079,14 +7079,14 @@ Fuente única de verdad de la apariencia y del vocabulario. Vive en `gui/src/the
 6. **`plain_summary` obligatorio** en todo turno de un nodo MAGI: máximo 140 caracteres, sin jerga, sin siglas y sin cifras sin unidad; su ausencia es defecto de prompt y se cuenta en §7.8.
 
 **Reglas de accesibilidad (verificadas en `a11y.test.tsx`):**
-1. Contraste ≥ 4,5:1 en todo texto; `--vmagi-ink` sobre `--vmagi-node` alcanza 8,9:1 y `--vmagi-text` sobre negro 7,1:1.
+1. Contraste ≥ 4,5:1 en todo texto; `--venim-ink` sobre `--venim-node` alcanza 8,9:1 y `--venim-text` sobre negro 7,1:1.
 2. **Ningún estado se comunica sólo por color**: el rombo lleva forma (círculo, triángulo, aspa, guion) y palabra; los trapecios llevan etiqueta de estado.
-3. Foco de teclado visible en `--vmagi-accent-hi`, 2 px, nunca suprimido; toda la interfaz recorrible con tabulador en orden lógico.
+3. Foco de teclado visible en `--venim-accent-hi`, 2 px, nunca suprimido; toda la interfaz recorrible con tabulador en orden lógico.
 4. Animaciones desactivadas con `prefers-reduced-motion`, sustituidas por indicador estático.
 5. Tamaño de fuente escalable de 12 a 20 px sin romper la cabecera (probado al 200 % de zoom).
 6. Toda imagen y todo icono con texto alternativo; los distintivos de adjunto se leen como frase completa.
 
-**Modos de tema:** `vmagi-dark` (por defecto), `vmagi-high-contrast`, `vmagi-colorblind` (azul/amarillo más formas) y `sobrio` (los trapecios pasan a barras horizontales y la saturación baja al 40 %, conservando toda la información). Se cambia con `Ctrl+Mayús+T` y se persiste por proyecto.
+**Modos de tema:** `venim-dark` (por defecto), `venim-high-contrast`, `venim-colorblind` (azul/amarillo más formas) y `sobrio` (los trapecios pasan a barras horizontales y la saturación baja al 40 %, conservando toda la información). Se cambia con `Ctrl+Mayús+T` y se persiste por proyecto.
 
 **Regresión visual y de lenguaje:** `tests/gui/visual/` guarda una captura por componente y tema; un cambio superior al 2 % en un componente no tocado por el commit bloquea la promoción. `tests/gui/wording/` guarda el `wording.es.json` aprobado; cualquier rótulo nuevo exige revisión explícita. Es lo que impide que, a lo largo de cuatro fases, la interfaz vuelva a llenarse de siglas.
 
@@ -7099,8 +7099,8 @@ Este artefacto no sustituye a T1–T11: los **enmienda de forma explícita y loc
 ```
 modules/memgraph/          Área 13: adaptador de MAGI-MEM, validador Cypher, deltas de conocimiento
 modules/route/             Área 14: adaptador de MAGI-ROUTE, RouteDirective, conciliación de telemetría
-tools/vmagi-mem/<version>/  binario estático verificado por hash y firma
-tools/vmagi-route/<version>/ pasarela (NPM o imagen OCI) en la versión fijada
+tools/venim-mem/<version>/  binario estático verificado por hash y firma
+tools/venim-route/<version>/ pasarela (NPM o imagen OCI) en la versión fijada
 config/externals.lock      commit/versión, hashes y ENUMERACIÓN EFECTIVA de capacidades de ambos externos
 config/memgraph.yaml       perfiles de consulta por nodo MAGI, raíz permitida, presupuesto de RAM
 config/route.yaml          estrategias por rol y por clase de tarea, enumeración cerrada, clases de privacidad
@@ -7198,7 +7198,7 @@ Consulta de control nueva, que se ejecuta en `PV-X-SEG`: `SELECT COUNT(*) FROM r
 | 2-bis | **Superficie de red nueva por la pasarela** (puerto de inferencia alcanzable en la red del usuario) | Media | **Crítico** | Loopback obligatorio, clave requerida, verificación activa A14-2 cada 10 min, contenedor con red acotada | Cualquier `route.blocked{reason:"policy"}` |
 | 4-bis | **Falso vacío del grafo** (el índice no cubre un lenguaje y «no hay llamadores» se lee como «código muerto») | Alta | Alto | Cobertura por lenguaje obligatoria; afirmación de ausencia inadmisible bajo cobertura < 95 % | `coverage_pct` < 95 en cualquier proyecto activo |
 
-**Enmienda a T10 (glosario).** Se añaden: **VeniceMAGI** — nombre del producto. · **MELCHIOR • 1 / BALTHASAR • 2 / CASPER • 3** — los tres nodos deliberativos. · **ATLAS-FORGE** — núcleo de ingeniería y síntesis gobernado por VeniceMAGI. · **MAGI-MEM** — grafo de memoria de código (Área 13). · **MAGI-ROUTE** — pasarela de inferencia (Área 14). · **Cypher** — lenguaje de consulta de grafos; aquí, subconjunto de sólo lectura. · **tree-sitter** — generador de analizadores sintácticos incrementales. · **LSP híbrido** — resolución de tipos ligera, no un servidor de lenguaje completo. · **`qualified_name`** — identificador de un símbolo en el grafo, con formato `<proyecto>.<ruta>.<nombre>`. · **Delta de conocimiento** — hecho establecido por un veredicto, con evidencia y caducidad. · **`privacy_class`** — clasificación que decide si una petición puede salir del equipo. · **`RouteDirective`** — orden de la política al enrutador, no sobrescribible. · **lkgp** — último camino bueno conocido, estrategia de enrutado. · **Sigstore / cosign / SLSA** — firma y procedencia de artefactos de terceros.
+**Enmienda a T10 (glosario).** Se añaden: **Venim** — nombre del producto. · **MELCHIOR • 1 / BALTHASAR • 2 / CASPER • 3** — los tres nodos deliberativos. · **ATLAS-FORGE** — núcleo de ingeniería y síntesis gobernado por Venim. · **MAGI-MEM** — grafo de memoria de código (Área 13). · **MAGI-ROUTE** — pasarela de inferencia (Área 14). · **Cypher** — lenguaje de consulta de grafos; aquí, subconjunto de sólo lectura. · **tree-sitter** — generador de analizadores sintácticos incrementales. · **LSP híbrido** — resolución de tipos ligera, no un servidor de lenguaje completo. · **`qualified_name`** — identificador de un símbolo en el grafo, con formato `<proyecto>.<ruta>.<nombre>`. · **Delta de conocimiento** — hecho establecido por un veredicto, con evidencia y caducidad. · **`privacy_class`** — clasificación que decide si una petición puede salir del equipo. · **`RouteDirective`** — orden de la política al enrutador, no sobrescribible. · **lkgp** — último camino bueno conocido, estrategia de enrutado. · **Sigstore / cosign / SLSA** — firma y procedencia de artefactos de terceros.
 
 **Enmienda a T11 (plan maestro de pasos).** Se insertan dos filas y una puerta transversal:
 
@@ -7451,7 +7451,7 @@ modules/memory/            Área 18: registro íntegro, estado acumulado, compos
 modules/memory/nosummary.py   assert_verbatim: prohibición mecánica del resumen
 modules/web/               Área 19: adaptador, puerta de política, empaquetador de evidencia
 modules/web/policy.py      CTL-5 propósito · CTL-6 rotación imposible · CTL-7 lista negra
-tools/vmagi-web/<version>/  servidor de navegación en la versión fijada
+tools/venim-web/<version>/  servidor de navegación en la versión fijada
 config/web_allowlist.yaml  dominios permitidos por proyecto, con su propósito
 config/factory.yaml        (ampliado) lista negra permanente de CTL-7, sólo lectura
 tests/memory/handover/     50 escenarios de traspaso con verificación de no pérdida
