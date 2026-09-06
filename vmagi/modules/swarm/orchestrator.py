@@ -127,6 +127,17 @@ class SwarmOrchestrator:
                     "rebuilds": int(st.rebuilds or 0),
                     "inicio_pared": time.monotonic(),
                     "approval_event": asyncio.Event(),
+                    # UN EVENTO REHIDRATADO NO LO ESPERA NADIE.
+                    #
+                    # Medido el 2026-09-05: tras reiniciar con una tarea en
+                    # WAITING_USER_APPROVAL, todos los mensajes de esa
+                    # conversación desaparecían sin error ni aviso. La rama de
+                    # desacuerdo preguntaba «¿existe approval_event?» y aquí se
+                    # creaba uno nuevo: existía, se marcaba, y el bucle que
+                    # debía despertarse había muerto con el proceso anterior.
+                    # Existir no es que alguien lo espere.
+                    # Ver tests/test_tarea_rehidratada.py.
+                    "sin_bucle": True,
                 }
                 self.latest_task_id = st.task_id
             if self.active_tasks:
@@ -837,7 +848,12 @@ class SwarmOrchestrator:
                             # deshacerla. Antes no había forma de revertir nada.
                             from vmagi.core.tools.journal import WriteJournal
                             journal = WriteJournal(task_id=task_id)
-                            scratch_dir = workspace_dir()
+                            # LOS BORRADORES NO VAN EN LA RAÍZ DEL
+                            # PROYECTO. Esto era `workspace_dir()` a secas, y
+                            # con la caja de arena daba igual; apuntando a un
+                            # repositorio de verdad dejó un `auto_script_0.ps1`
+                            # en la raíz de David, que entró en un commit.
+                            scratch_dir = workspace_dir() / ".magi-borradores"
                             os.makedirs(scratch_dir, exist_ok=True)
 
                             for i, (lang, code) in enumerate(blocks):
@@ -851,16 +867,23 @@ class SwarmOrchestrator:
                                     temp_file = scratch_dir / f"auto_script_{i}.py"
                                     journal.record(temp_file, "create", tool="auto_exec")
                                     temp_file.write_text(code, encoding="utf-8")
-                                    cmd = f"python {temp_file.name}"
+                                    cmd = f'python "{temp_file}"'
                                 else:
                                     temp_file = scratch_dir / f"auto_script_{i}.ps1"
                                     journal.record(temp_file, "create", tool="auto_exec")
                                     temp_file.write_text(code, encoding="utf-8")
-                                    cmd = f"powershell -ExecutionPolicy Bypass -File {temp_file.name}"
+                                    cmd = ('powershell -ExecutionPolicy Bypass '
+                                           f'-File "{temp_file}"')
 
                                 process = await asyncio.create_subprocess_shell(
                                     cmd,
-                                    cwd=str(scratch_dir),
+                                    # El script VIVE en la subcarpeta de
+                                    # borradores pero CORRE en el proyecto: si
+                                    # corriera donde vive, todo lo que
+                                    # produjera acabaría escondido ahí dentro,
+                                    # y el usuario buscaría su resultado en la
+                                    # carpeta que sí conoce.
+                                    cwd=str(workspace_dir()),
                                     stdout=asyncio.subprocess.PIPE,
                                     stderr=asyncio.subprocess.PIPE
                                 )
@@ -921,10 +944,13 @@ class SwarmOrchestrator:
                         topic="TERMINAL_OUT",
                         payload={"content": f"[SWARM] Feedback del usuario recibido. Reanudando debate (Ronda {state['round']}): Melchior parte de la síntesis previa + tus observaciones."}
                     ))
-                    if "approval_event" in state:
-                        state["approval_event"].set()
-                    else:
+                    # Se pregunta por el BUCLE, no por el evento. Un evento
+                    # rehidratado existe y no lo espera nadie; marcarlo era
+                    # tirar el mensaje a un buzón sin cartero.
+                    if state.get("sin_bucle") or "approval_event" not in state:
                         self._spawn_loop(task_id)
+                    else:
+                        state["approval_event"].set()
                 return task_id
             elif state["status"] in ("in_progress", INTERRUMPIDA):
                 # AQUÍ ESTABA EL FALLO QUE BLOQUEABA EL SISTEMA
@@ -1513,6 +1539,13 @@ class SwarmOrchestrator:
         objeto al que pedirle que parase — y por eso el botón de parada de
         emergencia no tenía nada que cancelar aunque hubiera querido.
         """
+        # Desde aquí SÍ hay bucle. La bandera se limpia en el único sitio
+        # donde el bucle nace, y no en los tres o cuatro que lo lanzan: una
+        # bandera que hay que acordarse de bajar en varios sitios acaba
+        # mintiendo en el que se olvide.
+        estado = self.active_tasks.get(task_id)
+        if estado is not None:
+            estado["sin_bucle"] = False
         self._spawn_tracked(task_id, self._orchestrate_loop(task_id))
 
     async def _trigger_emergency_stop(self, task_id: str, state: dict):

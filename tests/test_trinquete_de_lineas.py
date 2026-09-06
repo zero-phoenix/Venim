@@ -119,7 +119,18 @@ TECHOS: dict[str, int] = {
     #
     # La lógica pesada vive en `aceptacion.py` y `caja_de_herramientas.py`,
     # que son módulos nuevos; lo que se queda aquí es el cableado y el porqué.
-    "vmagi/modules/swarm/orchestrator.py": 1550,
+    # +40 el 2026-09-05: los dos fallos que salieron de pilotar la aplicación
+    # con el workspace apuntando ya a un repositorio de verdad.
+    #   · `sin_bucle`: una tarea recuperada tras reinicio estrenaba un
+    #     approval_event que no esperaba nadie, y desde ese momento TODOS los
+    #     mensajes de esa conversación desaparecían sin error ni aviso.
+    #   · los borradores de la auto-ejecución dejaron un `auto_script_0.ps1`
+    #     en la raíz del proyecto, y entró en un commit.
+    # Los dos son tres líneas de código cada uno; lo que ocupa es el porqué, y
+    # ese porqué es la diferencia entre arreglarlo y volver a cometerlo. Van
+    # aquí y no en un módulo aparte porque los dos viven dentro del mismo
+    # `handle_command`, que es donde el estado de la tarea se decide.
+    "vmagi/modules/swarm/orchestrator.py": 1590,
 }
 
 #: Para todo lo demás. 800 líneas es mucho para un módulo de Python, y ninguno

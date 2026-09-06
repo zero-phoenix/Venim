@@ -20,6 +20,7 @@ import ConfigPanel from './components/ConfigPanel';
 import PreviewPanel from './components/PreviewPanel';
 import TrazaHerramientas from './components/TrazaHerramientas';
 import Pulso from './components/Pulso';
+import Decision from './components/Decision';
 import ProveedoresEnCabecera from './components/ProveedoresEnCabecera';
 import type { Command } from './lib/commands';
 import { tail } from './lib/history';
@@ -40,7 +41,7 @@ export default function App() {
     naokoMessages, naokoStatus,
     ritsukoMessages, ritsukoStatus, ritsukoInformes,
     sysCommand, conversations, streaming, toolTrace, pulso, route, alerts, dismissAlert,
-    approval, setApproval, awaitingApproval, setAwaitingApproval,
+    approval, setApproval, awaitingApproval,
     taskTitles  // v5.3.0 — títulos IA de cada conversación
   } = useMagiStore();
 
@@ -541,49 +542,27 @@ export default function App() {
 
           {/* BANNER PERSISTENTE DE APROBACIÓN CON BOTONES RÁPIDOS */}
           {(pendingApproval || awaitingApproval) && (
-            <div className="approval-banner" style={{ background: "rgba(0, 30, 40, 0.95)", borderTop: "2px solid var(--acc)", borderBottom: "1px solid var(--dim)", padding: "10px 14px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px", zIndex: 11 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <span style={{ fontSize: "18px", color: "var(--acc)" }}>⚡</span>
-                <div>
-                  <div style={{ fontSize: "12px", fontWeight: "bold", color: "#fff" }}>PROPUESTA LISTA PARA EJECUCIÓN NATIVA</div>
-                  <div style={{ fontSize: "10px", color: "var(--dim)" }}>El Enjambre completó la deliberación. Haz clic en una acción rápida:</div>
-                </div>
-              </div>
-              <div style={{ display: "flex", gap: "8px" }}>
-                <button 
-                  className="bt go" 
-                  style={{ padding: "5px 12px", fontWeight: "bold", background: "var(--acc)", color: "#000", cursor: "pointer" }}
-                  onClick={() => {
-                    sysCommand("sí");
-                    sendCommand("sí", activeConversationId, engine, narrativeStyle);
-                    addMessage({ id: Math.random().toString(36), agent: "USER", role: "comando", provider: "local", content: "sí", changes: 0, stats: "", task_id: activeConversationId });
-                    setPendingApproval(null);
-                  }}
-                >
-                  ✅ Apruebo (Ejecutar)
-                </button>
-                <button 
-                  className="bt" 
-                  style={{ padding: "5px 10px", background: "#222", color: "#fff", border: "1px solid var(--dim)", cursor: "pointer" }}
-                  onClick={() => {
-                    setInputVal("Modificar: ");
-                  }}
-                >
-                  ✏️ Modificar
-                </button>
-                <button 
-                  className="bt stop" 
-                  style={{ padding: "5px 10px", background: "var(--dang)", color: "#000", fontWeight: "bold", cursor: "pointer" }}
-                  onClick={() => {
-                    sysCommand("cancelar");
-                    sendCommand("cancelar", activeConversationId, engine, narrativeStyle);
-                    setPendingApproval(null);
-                  }}
-                >
-                  🛑 Cancelar
-                </button>
-              </div>
-            </div>
+            <Decision
+              approval={approval}
+              onApprove={() => {
+                sysCommand("sí");
+                sendCommand("sí", activeConversationId, engine, narrativeStyle);
+                addMessage({ id: Math.random().toString(36), agent: "USER",
+                             role: "comando", provider: "local", content: "sí",
+                             changes: 0, stats: "", task_id: activeConversationId });
+                // Se cierra la puerta AL DECIDIR. Antes se quedaba abierta y
+                // pulsar dos veces ejecutaba la resolución final dos veces.
+                setPendingApproval(null);
+                setApproval(null);
+              }}
+              onModify={() => setInputVal("Cambia esto: ")}
+              onCancel={() => {
+                sysCommand("cancelar");
+                sendCommand("cancelar", activeConversationId, engine, narrativeStyle);
+                setPendingApproval(null);
+                setApproval(null);
+              }}
+            />
           )}
 
           <div className="comp">
@@ -827,22 +806,6 @@ export default function App() {
                <DiffViewer
                  approval={approval}
                  fallbackText={pendingApproval || undefined}
-                 onApprove={() => {
-                   sysCommand("SI");
-                   sendCommand("SI", activeConversationId, engine, narrativeStyle);
-                   setPendingApproval(null);
-                   setApproval(null);
-                   setAwaitingApproval(false);
-                   setActiveTab("Terminal");
-                 }}
-                 onReject={() => {
-                   sysCommand("NO");
-                   sendCommand("NO", activeConversationId, engine, narrativeStyle);
-                   setPendingApproval(null);
-                   setApproval(null);
-                   setAwaitingApproval(false);
-                   setActiveTab("Terminal");
-                 }}
                />
             )}
 

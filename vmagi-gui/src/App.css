@@ -1380,3 +1380,45 @@ body {
 .pulso-mal { color: var(--dang); }
 .pulso-mal .pulso-punto { background: var(--dang); }
 .pulso-bien .pulso-punto { background: var(--ok); }
+
+/* ---------------------------------------------------------------------
+   LA DECISIÓN
+   Había tres controles para lo mismo en tres sitios, y el panel de diff
+   decía «Aprobación requerida» y «no hay cambio que aprobar» una línea
+   debajo de la otra. Ahora es uno, y los hechos van pegados al botón:
+   decidir sin ver qué se decide era lo que la barra vieja invitaba a hacer.
+   --------------------------------------------------------------------- */
+.decision {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--e3, 14px); flex-wrap: wrap;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--acc) 10%, var(--sf));
+  border-top: 2px solid var(--acc);
+  border-bottom: 1px solid var(--gr);
+  z-index: 11;
+}
+/* Tests en rojo no es un aviso más con el mismo peso que «reversible»: es el
+   motivo por el que uno diría que no. Se ve antes de leer nada. */
+.decision-rojo {
+  background: color-mix(in srgb, var(--dang) 12%, var(--sf));
+  border-top-color: var(--dang);
+}
+.decision-que { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.decision-titulo { font-size: 12.5px; color: var(--txt); letter-spacing: .01em; }
+.decision-hechos { font-size: 11px; color: var(--dim); }
+.decision-grave { color: var(--dang); font-weight: 600; }
+.decision-botones { display: flex; gap: 8px; flex-shrink: 0; }
+.decision-botones button {
+  font: inherit; font-size: 11.5px; padding: 5px 12px;
+  border-radius: 3px; cursor: pointer; border: 1px solid transparent;
+}
+.decision-botones button:focus-visible { outline: 2px solid var(--txt); outline-offset: 1px; }
+.decision-si { background: var(--acc); color: #000; font-weight: 600; }
+.decision-no { background: transparent; color: var(--txt); border-color: var(--gr); }
+.decision-alto { background: transparent; color: var(--dang); border-color: var(--dang); }
+.decision-no:hover { border-color: var(--acc); }
+.decision-alto:hover { background: color-mix(in srgb, var(--dang) 18%, transparent); }
+@media (max-width: 640px) {
+  .decision { flex-direction: column; align-items: stretch; }
+  .decision-botones { justify-content: flex-end; }
+}

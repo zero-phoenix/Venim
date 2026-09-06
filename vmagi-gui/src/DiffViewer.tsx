@@ -54,11 +54,11 @@ interface Props {
   approval: ApprovalRequest | null;
   /** Texto suelto, para cuando el backend aún no manda el evento con datos. */
   fallbackText?: string;
-  onApprove: () => void;
-  onReject: () => void;
+  // `onApprove`/`onReject` se quitaron: este panel ENSEÑA el cambio, no
+  // lo decide. Ver el comentario de la cabecera y Decision.tsx.
 }
 
-export default function DiffViewer({ approval, fallbackText, onApprove, onReject }: Props) {
+export default function DiffViewer({ approval, fallbackText }: Props) {
   const [activo, setActivo] = useState(0);
 
   const cambios = approval?.changes ?? [];
@@ -76,7 +76,7 @@ export default function DiffViewer({ approval, fallbackText, onApprove, onReject
       <div style={{ padding: 10, background: "rgba(10, 20, 25, 0.9)", borderBottom: "1px solid var(--dim)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
         <div style={{ minWidth: 0 }}>
           <h3 style={{ margin: 0, color: "var(--acc)", fontSize: 14 }}>
-            Aprobación requerida
+            Lo que va a cambiar
           </h3>
           <div style={{ fontSize: 11, color: "var(--dim)", marginTop: 3 }}>
             {approval
@@ -88,14 +88,16 @@ export default function DiffViewer({ approval, fallbackText, onApprove, onReject
               : "sin detalle del cambio: el backend no envió el contexto"}
           </div>
         </div>
-        <div style={{ display: "flex", gap: 10, flexShrink: 0 }}>
-          <button className="bt go" style={{ background: "rgba(0, 255, 100, 0.2)", color: "#0f0" }} onClick={onApprove}>
-            Apruebo
-          </button>
-          <button className="bt go" style={{ background: "rgba(255, 50, 50, 0.2)", color: "#f55" }} onClick={onReject}>
-            Rechazo
-          </button>
-        </div>
+        {/* AQUÍ NO SE DECIDE, AQUÍ SE MIRA.
+            Había un «Apruebo» y un «Rechazo» duplicados de la barra de la
+            conversación. Con eso eran TRES controles para la misma decisión
+            en tres sitios distintos, y pulsar dos de ellos ejecutó la
+            resolución final dos veces. La decisión vive en `Decision.tsx`,
+            que la enseña con los hechos al lado. */}
+        <span style={{ fontSize: 10, color: "var(--dim)", flexShrink: 0,
+                       textTransform: "uppercase", letterSpacing: ".08em" }}>
+          se decide abajo, en la conversación
+        </span>
       </div>
 
       {/* ----------------------------------------- avisos que deciden */}
