@@ -1,4 +1,4 @@
-const NATIVE_HOST = "com.vmagi.ide";
+const NATIVE_HOST = "com.venim.ide";
 
 // P21.b.2: Cuatro flujos (Enviar a MAGI, Selección, Captura, Continuar aquí)
 

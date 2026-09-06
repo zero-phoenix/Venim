@@ -1,4 +1,4 @@
-/* VeniceMAGI GUI — polling local: simple a propósito. */
+/* Venim GUI — polling local: simple a propósito. */
 "use strict";
 
 let ultimoEvento = 0;

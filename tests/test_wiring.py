@@ -596,7 +596,10 @@ KNOWN_ORPHANS = {
     "venim.core.agent", "venim.core.evolution", "venim.core.hive",
     "venim.core.membrane", "venim.core.octopus",
     "venim.core.providers.wal",
-    "venim.gui.server",
+    # `venim.gui.server` estaba aquí y se ha ido del árbol entero. Era el
+    # servidor de una SEGUNDA interfaz —la heredada de MAGI System— que nadie
+    # importaba y que viajaba dentro de cada release esperando a que algo la
+    # sirviera. Ver tests/test_frontera_con_magi.py.
     "venim.modules.memgraph.knowledge_store",
     "venim.modules.memory.compression", "venim.modules.memory.handover",
     "venim.modules.memory.hyperdimensional", "venim.modules.memory.semantic",

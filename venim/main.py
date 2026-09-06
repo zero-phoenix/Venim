@@ -187,8 +187,16 @@ def main():
     venim = Venim(host=args.host, port=args.port, debug=args.debug)
 
     # 1. Iniciar Servidor GUI Estático
+    #
+    # `start()` DEVUELVE EL PUERTO, y hay que usar ese y no el pedido.
+    #
+    # El 2026-09-06 la ventana de Venim mostró la interfaz de MAGI System IDE
+    # porque `MAGI-IDE-v5.exe` ya tenía el 1420: el servidor de Venim falló al
+    # tomarlo, se tragó el error en un log, y esta función siguió adelante
+    # abriendo la ventana sobre lo que respondiera ahí. Con el puerto
+    # conseguido —no el deseado— esa confusión deja de ser posible.
     gui = GUIServer(port=args.gui_port)
-    gui.start()
+    puerto_gui = gui.start()
 
     # 2. Iniciar el Kernel MAGI en un Hilo Secundario
     magi_loop = asyncio.new_event_loop()
@@ -207,10 +215,20 @@ def main():
             base_path = os.path.abspath(".")
         return os.path.join(base_path, relative_path)
 
-    logger.info("Iniciando ventana nativa de MAGI...")
+    # La última comprobación antes de mirar: que quien contesta ahí somos
+    # nosotros. `start()` ya lo garantiza, pero esto es lo que convierte la
+    # garantía en algo que se puede ver fallar en vez de suponer.
+    from venim.gui_server import es_de_venim
+    if not es_de_venim(puerto_gui):
+        raise RuntimeError(
+            f"en el puerto {puerto_gui} contesta algo que no es Venim. No se "
+            f"abre la ventana: mostrarla sobre la interfaz de otro programa "
+            f"es peor que no abrirla, porque parece que funciona.")
+
+    logger.info("Abriendo la ventana de Venim en el puerto %d", puerto_gui)
     webview.create_window(
         title="Venim",
-        url=f"http://127.0.0.1:{args.gui_port}",
+        url=f"http://127.0.0.1:{puerto_gui}",
         width=1280,
         height=800,
         frameless=False,

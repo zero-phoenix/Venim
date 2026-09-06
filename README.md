@@ -12,7 +12,7 @@ entonces te lo enseña.
 
 Sin cuenta. Sin clave. Sin instalador. Sin telemetría.
 
-[**⬇ Descargar para Windows**](https://github.com/zero-phoenix/VeniceMAGI/releases/latest) · [Cómo lo mide](#lo-que-separa-venim-de-pedirle-una-imagen-a-un-modelo) · [Lo que sabe que no sabe](#lo-que-venim-sabe-que-no-sabe-hacer)
+[**⬇ Descargar para Windows**](https://github.com/zero-phoenix/Venim/releases/latest) · [Cómo lo mide](#lo-que-separa-venim-de-pedirle-una-imagen-a-un-modelo) · [Lo que sabe que no sabe](#lo-que-venim-sabe-que-no-sabe-hacer)
 
 </div>
 
@@ -265,7 +265,7 @@ flowchart LR
 ```
 
 1. Descarga **`Venim-<versión>.zip`** de
-   [Releases](https://github.com/zero-phoenix/VeniceMAGI/releases/latest).
+   [Releases](https://github.com/zero-phoenix/Venim/releases/latest).
 2. Verifica (opcional): `certutil -hashfile Venim-<versión>.zip SHA256` contra
    **`CHECKSUMS.txt`**.
 3. Descomprime. Dentro hay **un solo fichero**: `Venim.exe`.
@@ -274,7 +274,7 @@ SmartScreen avisará porque el binario no está firmado. El `.exe` es **onefile 
 lleva su propio Python 3.10 dentro**. **Hace falta Microsoft Edge** para el
 camino guest (medido: Chromium headless recibe 403; el Edge real, 200).
 
-> **Si vienes de VeniceMAGI**, tu historial, tu carpeta de trabajo y tus
+> **Si vienes de Venim**, tu historial, tu carpeta de trabajo y tus
 > artefactos se mudan solos la primera vez que abras Venim. Si la mudanza no
 > puede hacerse, se te dice y tus datos siguen intactos donde estaban.
 

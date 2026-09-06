@@ -18,11 +18,31 @@ a = Analysis(
     ['venim\\main.py'],
     pathex=[],
     binaries=_pw_bins,
-    # `venim/data` lleva el catálogo de proveedores. Sin esta línea el .exe
-    # arrancaría con el respaldo de las constantes —funciona, pero se pierde
-    # justo lo que se buscaba: poder arreglar un proveedor sin recompilar.
-    datas=_pw_datas + [('assets', 'assets'), ('assets/python-embed/extracted', 'assets/python-embed/extracted'), ('venim-gui/dist', 'venim-gui/dist'),
-           ('venim/data', 'venim/data')],
+    # LO QUE VIAJA DENTRO SE ENUMERA. NO SE METE UNA CARPETA A BULTO.
+    #
+    # Esta línea decía `('assets', 'assets')`, y esa comodidad tuvo un precio
+    # concreto: dentro de `assets/` había una maqueta HTML COMPLETA de la
+    # interfaz del proyecto del que salió este —«MAGI SYSTEM IDE»,
+    # `modelo-interfaz/magi-interfaz-v6.html`— y se empaquetaba en cada
+    # release. Nadie la importaba; no hacía falta. Un fichero que viaja dentro
+    # del binario solo espera a que algo lo sirva.
+    #
+    # Enumerar es más largo de escribir y es la diferencia entre «creo que no
+    # hay nada de más» y saberlo. Lo que se añada a `assets/` a partir de
+    # ahora no entra en el .exe salvo que alguien lo ponga aquí, a mano, y
+    # entonces la decisión tiene autor.
+    #
+    # `venim/data` lleva el catálogo de proveedores: sin él, el .exe arrancaría
+    # con el respaldo de las constantes —funciona, pero se pierde justo lo que
+    # se buscaba: poder arreglar un proveedor caído sin recompilar 143 MB.
+    datas=_pw_datas + [
+        ('assets/icon.ico', 'assets'),
+        ('assets/icon.png', 'assets'),
+        ('assets/sonido-icono', 'assets/sonido-icono'),
+        ('assets/python-embed/extracted', 'assets/python-embed/extracted'),
+        ('venim-gui/dist', 'venim-gui/dist'),
+        ('venim/data', 'venim/data'),
+    ],
     hiddenimports=_pw_hidden,
     hookspath=[],
     hooksconfig={},
