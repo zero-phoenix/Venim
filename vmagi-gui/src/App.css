@@ -1255,6 +1255,9 @@ body {
 .traza-cabeza:disabled { cursor: default; }
 .traza-cabeza:hover:not(:disabled) { background: color-mix(in srgb, var(--acc) 8%, transparent); }
 /* El foco se VE. Sin esto el teclado no sirve para nada. */
+/* LA ÚNICA EXCEPCIÓN, y por un motivo mecánico: `.traza` lleva
+   `overflow: hidden` para redondear sus esquinas, así que el anillo de
+   `box-shadow` del tema se recorta y no se ve. Un `outline` no se recorta. */
 .traza-cabeza:focus-visible { outline: 2px solid var(--acc); outline-offset: -2px; }
 
 .traza-punto {
@@ -1412,7 +1415,6 @@ body {
   font: inherit; font-size: 11.5px; padding: 5px 12px;
   border-radius: 3px; cursor: pointer; border: 1px solid transparent;
 }
-.decision-botones button:focus-visible { outline: 2px solid var(--txt); outline-offset: 1px; }
 .decision-si { background: var(--acc); color: #000; font-weight: 600; }
 .decision-no { background: transparent; color: var(--txt); border-color: var(--gr); }
 .decision-alto { background: transparent; color: var(--dang); border-color: var(--dang); }
@@ -1422,3 +1424,64 @@ body {
   .decision { flex-direction: column; align-items: stretch; }
   .decision-botones { justify-content: flex-end; }
 }
+
+/* ---------------------------------------------------------------------
+   QUE SE PUEDA PILOTAR SIN RATÓN
+   Doce pestañas eran `<div onClick>` y los dos botones de parada eran
+   `<span>`: sin foco, sin teclado, sin rol y sin nombre. No existían para
+   `Tab` ni para quien no ve la pantalla — y a mí me obligaban a pulsar por
+   coordenadas y adivinar cuál había tocado.
+   Ahora son botones. Estas reglas les devuelven el aspecto que tenían y les
+   dan lo que les faltaba: un foco que se ve.
+   --------------------------------------------------------------------- */
+.tabs .tab {
+  background: none; border: 0; font: inherit; color: inherit;
+  cursor: pointer;
+}
+/* EL FOCO NO SE REDEFINE AQUÍ, Y ESO ES EL ARREGLO.
+ *
+ * La primera versión de estos controles traía su propio `outline: 2px solid`
+ * para cada uno. Funcionaba, y estaba mal: `theme/magi.css` YA define
+ *
+ *     :focus-visible { outline: none; box-shadow: var(--foco); }
+ *
+ * con `--foco: 0 0 0 2px <fondo>, 0 0 0 4px <acento>` — un anillo doble que
+ * se ve sobre cualquier superficie. Mis reglas eran más específicas, así que
+ * lo pisaban con algo peor y creaban un segundo sistema de foco encima del
+ * que ya había.
+ *
+ * Es el mismo error que el propio `App.css` avisa arriba sobre los colores:
+ * dos definiciones del mismo nombre en dos ficheros es exactamente cómo un
+ * tema se desincroniza del otro sin que nadie lo note. Un solo sitio decide.
+ */
+
+.ico, .parar-esta {
+  background: none; border: 0; font: inherit; cursor: pointer;
+}
+.ico { color: var(--dim); padding: 0 4px; }
+.ico:hover { color: var(--txt); }
+.parar-esta { color: var(--acc); margin-right: 10px; }
+.parar-esta:hover { text-decoration: underline; }
+button.stop { cursor: pointer; font: inherit; }
+
+/* Las conversaciones también eran divs. Son la navegación principal. */
+.conv {
+  display: flex; align-items: center; width: 100%;
+  background: none; border: 0; font: inherit; color: inherit;
+  text-align: left; cursor: pointer;
+}
+.conv-ico {
+  background: none; border: 0; font: inherit; cursor: pointer;
+  color: var(--dim); padding: 0 2px;
+}
+.conv-ico:hover { color: var(--txt); }
+
+/* El pulso por conversación: se podía dejar una trabajando, irse a otra y no
+   tener forma de saber que seguía viva. */
+.conv-vivo {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--acc); flex-shrink: 0; margin-right: 6px;
+  animation: conv-latido 1.3s ease-in-out infinite;
+}
+@keyframes conv-latido { 0%,100% { opacity: 1 } 50% { opacity: .25 } }
+@media (prefers-reduced-motion: reduce) { .conv-vivo { animation: none; } }

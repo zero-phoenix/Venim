@@ -75,13 +75,19 @@ export default function CommandPalette({ commands, onRun }: Props) {
 
   return (
     <div
-      onClick={() => setAbierta(false)}
+      // El velo. `onMouseDown` y no `onClick`: cerrar al pulsar FUERA es un
+      // gesto de ratón, no un control — y como control sería un botón sin
+      // nombre del tamaño de la pantalla, que es peor que no tenerlo. Para el
+      // teclado ya está `Esc`, que es el camino que corresponde.
+      onMouseDown={(e) => { if (e.target === e.currentTarget) setAbierta(false); }}
       style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)",
                zIndex: 999, display: "flex", justifyContent: "center",
                alignItems: "flex-start", paddingTop: "12vh" }}
     >
       <div
-        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Buscador de acciones"
         style={{ width: "min(620px, 92vw)", background: "#0a1013",
                  border: "1px solid var(--acc)", borderRadius: 5,
                  boxShadow: "0 10px 40px rgba(0,0,0,0.6)", overflow: "hidden" }}
@@ -116,11 +122,18 @@ export default function CommandPalette({ commands, onRun }: Props) {
             </div>
           )}
           {resultados.map((r, i) => (
-            <div
+            <button
+              type="button"
               key={r.command.id}
               onMouseEnter={() => setSel(i)}
               onClick={() => ejecutar(i)}
-              style={{ padding: "8px 14px", cursor: "pointer", fontSize: 13,
+              // La lista se recorre con flechas desde el campo de texto, así
+              // que cada fila sale del recorrido de Tab: si no, tabular
+              // atravesaría los veinte resultados uno a uno.
+              tabIndex={-1}
+              style={{ width: "100%", border: 0,
+                       color: "inherit", font: "inherit", textAlign: "left",
+                       padding: "8px 14px", cursor: "pointer", fontSize: 13,
                        display: "flex", justifyContent: "space-between",
                        gap: 12, alignItems: "center",
                        background: i === sel ? "rgba(0,200,255,0.12)" : "transparent" }}
@@ -131,7 +144,7 @@ export default function CommandPalette({ commands, onRun }: Props) {
               <span style={{ color: "var(--dim)", fontSize: 11, flexShrink: 0 }}>
                 {r.command.group}
               </span>
-            </div>
+            </button>
           ))}
         </div>
 

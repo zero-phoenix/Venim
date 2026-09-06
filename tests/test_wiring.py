@@ -736,7 +736,14 @@ def test_la_paleta_alcanza_todas_las_pestañas():
     assert "CommandPalette" in app
     assert "PESTAÑAS.map" in app, "el catálogo no se deriva de las pestañas"
     # La barra tiene que usar la misma constante, no una lista repetida.
-    assert '{[...PESTAÑAS,' in app, "la barra de pestañas duplica la lista"
+    #
+    # Se comprueba el DESPLIEGUE y no el deletreo exacto que había antes
+    # (`{[...PESTAÑAS,`): al convertir las pestañas en botones con el patrón
+    # de ARIA, la lista pasó a una variable para poder calcular el índice del
+    # vecino con las flechas. El requisito —una sola lista— no cambió; lo que
+    # cambió fue la sintaxis, y un test que fija la sintaxis en vez del
+    # requisito se rompe cada vez que alguien mejora el código.
+    assert "[...PESTAÑAS," in app, "la barra de pestañas duplica la lista"
 
 
 def test_las_acciones_de_la_paleta_existen():

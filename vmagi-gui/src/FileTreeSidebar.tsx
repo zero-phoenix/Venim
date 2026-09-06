@@ -7,9 +7,18 @@ const FileTreeNode = ({ node, level, onFileClick }: { node: any, level: number, 
 
   return (
     <div>
-      <div 
-        style={{ 
-          paddingLeft: `${level * 10}px`, 
+      {/* Un nodo del árbol es un control: abre una carpeta o un fichero.
+          Era un `<div onClick>`, así que el árbol entero —que puede tener
+          cientos de entradas— no existía para el teclado. */}
+      <button
+        type="button"
+        style={{
+          paddingLeft: `${level * 10}px`,
+          width: '100%',
+          border: 0,
+          background: 'none',
+          textAlign: 'left',
+          font: 'inherit',
           cursor: 'pointer',
           color: isFolder ? 'var(--node)' : '#cfe0e4',
           display: 'flex',
@@ -17,6 +26,7 @@ const FileTreeNode = ({ node, level, onFileClick }: { node: any, level: number, 
           padding: '2px 0',
           fontSize: '12px'
         }}
+        aria-expanded={isFolder ? isOpen : undefined}
         onClick={() => {
           if (isFolder) {
             setIsOpen(!isOpen);
@@ -26,11 +36,11 @@ const FileTreeNode = ({ node, level, onFileClick }: { node: any, level: number, 
         }}
         className="file-node-hover"
       >
-        <span style={{ width: '16px', display: 'inline-block', marginRight: '4px', textAlign: 'center' }}>
+        <span aria-hidden="true" style={{ width: '16px', display: 'inline-block', marginRight: '4px', textAlign: 'center' }}>
           {isFolder ? (isOpen ? '📂' : '📁') : '📄'}
         </span>
         {node.name}
-      </div>
+      </button>
       {isFolder && isOpen && node.children && (
         <div>
           {node.children.map((child: any, idx: number) => (

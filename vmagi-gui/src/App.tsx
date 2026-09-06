@@ -340,12 +340,21 @@ export default function App() {
               proveedor correspondía cada letra. Ahora se nombra la familia
               real que atiende a cada nodo, con su latencia medida. */}
           <ProveedoresEnCabecera fetchConfig={fetchConfig} />
-          <span style={{cursor: "pointer"}} title="Abrir Configuración"
-                onClick={() => setActiveTab("Configuración")}>⚙</span>
-          <span style={{cursor: "pointer", color: "var(--acc)", marginRight: 10}}
-                title="Para solo esta conversación; las demás siguen"
-                onClick={handleCancelTask}>PARAR ESTA</span>
-          <span className="stop" style={{cursor: "pointer"}} onClick={handleStopAll}>PARAR TODO</span>
+          {/* LOS DOS CONTROLES MÁS CONSECUENTES DE LA APLICACIÓN ERAN SPANS.
+              Parar el enjambre no se podía hacer con el teclado, no tenía
+              nombre accesible y no se podía enfocar. Un botón de emergencia al
+              que solo se llega con el ratón es medio botón de emergencia. */}
+          <button type="button" className="ico" title="Abrir Configuración"
+                  aria-label="Abrir configuración"
+                  onClick={() => setActiveTab("Configuración")}>⚙</button>
+          <button type="button" className="parar-esta"
+                  title="Para solo esta conversación; las demás siguen"
+                  aria-label="Parar esta conversación"
+                  onClick={handleCancelTask}>PARAR ESTA</button>
+          <button type="button" className="stop"
+                  title="Para el sistema entero"
+                  aria-label="Parar todo el sistema"
+                  onClick={handleStopAll}>PARAR TODO</button>
         </div>
       </div>
 
@@ -360,43 +369,66 @@ export default function App() {
           />
           <div className="sc">
             <div className="sect">Conversaciones Activas</div>
-            {conversationKeys.length > 0 ? conversationKeys.map((taskId, idx) => (
-              <div
-                key={idx}
-                className={`th ${activeConversationId === taskId ? 'on' : ''}`}
-                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
-                onClick={() => setActiveConversationId(taskId)}
-                title={taskId}
-              >
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
-                  {/* v5.3.0 — título IA si lo hay; si no, el task_id */}
-                  {taskTitles[taskId] || taskId}
-                </span>
-                <small style={{ flexShrink: 0, marginLeft: '4px' }}>{conversations[taskId]?.length || 0}m</small>
-                {/* v5.3.0 — archivar y borrar. No son mutuamente excluyentes con
-                    abrir la conversación: el click del botón se frena aquí. */}
+            {/* LA NAVEGACIÓN PRINCIPAL TAMBIÉN ERA UN DIV.
+                Cambiar de conversación —lo que más se hace en toda la
+                aplicación— no se podía hacer con el teclado. Y los iconos de
+                archivar y borrar eran spans anidados dentro de otro span, con
+                `stopPropagation` para que no se abriera la conversación al
+                pulsarlos: un botón dentro de otro botón, resuelto a mano.
+                Ahora son hermanos, y cada uno dice su nombre. */}
+            {conversationKeys.length > 0 ? conversationKeys.map((taskId, idx) => {
+              const nombre = taskTitles[taskId] || taskId;
+              const trabajando = Object.keys(streaming).some(
+                (k) => k.startsWith(`${taskId}:`));
+              return (
+              <div key={idx}
+                   className={`th ${activeConversationId === taskId ? 'on' : ''}`}
+                   style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <button
+                  type="button"
+                  className="conv"
+                  aria-current={activeConversationId === taskId ? "true" : undefined}
+                  onClick={() => setActiveConversationId(taskId)}
+                  title={taskId}
+                >
+                  {/* EL PULSO POR CONVERSACIÓN.
+                      Se podía dejar una trabajando, irse a otra y no tener
+                      forma de saber que seguía viva. */}
+                  {trabajando && <span className="conv-vivo" aria-hidden="true" />}
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis',
+                                 whiteSpace: 'nowrap', flex: 1 }}>{nombre}</span>
+                  <small style={{ flexShrink: 0, marginLeft: 4 }}>
+                    {conversations[taskId]?.length || 0}m
+                  </small>
+                </button>
                 {confirmDelete === taskId ? (
-                  <span style={{ marginLeft: '4px', fontSize: '9px', whiteSpace: 'nowrap' }}
-                        onClick={(e) => e.stopPropagation()}>
-                    <span style={{ cursor: 'pointer', color: '#f44' }}
-                          title="Confirmar borrado"
-                          onClick={() => { deleteTask(taskId); setConfirmDelete(null); }}>¿borrar?</span>{' '}
-                    <span style={{ cursor: 'pointer', color: '#888' }}
-                          title="Cancelar"
-                          onClick={() => setConfirmDelete(null)}>no</span>
+                  <span style={{ fontSize: 9, whiteSpace: 'nowrap' }}>
+                    <button type="button" className="conv-ico"
+                            style={{ color: '#f44' }}
+                            aria-label={`Confirmar borrado de ${nombre}`}
+                            onClick={() => { deleteTask(taskId); setConfirmDelete(null); }}>
+                      ¿borrar?
+                    </button>
+                    <button type="button" className="conv-ico"
+                            aria-label="Cancelar el borrado"
+                            onClick={() => setConfirmDelete(null)}>no</button>
                   </span>
                 ) : (
-                  <span style={{ marginLeft: '4px', fontSize: '12px', flexShrink: 0 }} onClick={(e) => e.stopPropagation()}>
-                    <span style={{ cursor: 'pointer', marginRight: '4px' }}
-                          title="Archivar conversación"
-                          onClick={() => archiveTask(taskId)}>📦</span>
-                    <span style={{ cursor: 'pointer', color: '#f66' }}
-                          title="Borrar conversación"
-                          onClick={() => setConfirmDelete(taskId)}>🗑</span>
-                  </span>
+                  <>
+                    <button type="button" className="conv-ico"
+                            title="Archivar conversación"
+                            aria-label={`Archivar ${nombre}`}
+                            onClick={() => archiveTask(taskId)}>📦</button>
+                    <button type="button" className="conv-ico"
+                            style={{ color: '#f66' }}
+                            title="Borrar conversación"
+                            aria-label={`Borrar ${nombre}`}
+                            onClick={() => setConfirmDelete(taskId)}>🗑</button>
+                  </>
                 )}
               </div>
-            )) : (
+              );
+            }) : (
               <div style={{ padding: "10px", fontSize: "10px", color: "#5f7378" }}>
                 Sin conversaciones.
               </div>
@@ -601,16 +633,47 @@ export default function App() {
 
         {/* COLUMNA DERECHA: LIENZO (CANVAS) */}
         <div className="col canvas">
-          <div className="tabs">
-            {[...PESTAÑAS, ...((pendingApproval || approval) ? ["Diff (Aprobación)"] : [])].map((tab) => (
-              <div
-                key={tab}
-                className={`tab ${activeTab === tab ? "on" : ""}`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab === "Diff (Aprobación)" ? "⚠️ " + tab : tab}
-              </div>
-            ))}
+          {/* PESTAÑAS DE VERDAD, NO DIVS QUE REACCIONAN AL RATÓN.
+              Eran doce `<div onClick>`: sin foco, sin teclado, sin rol y sin
+              nombre. Doce controles que no existían para `Tab` ni para nadie
+              que no viera la pantalla — y que a mí me obligaban a pulsar por
+              coordenadas y adivinar cuál había tocado.
+              Con el patrón de pestañas de ARIA: flechas para moverse, Inicio y
+              Fin para los extremos, y `aria-selected` diciendo cuál está. */}
+          <div className="tabs" role="tablist" aria-label="Paneles">
+            {(() => {
+              const lista = [...PESTAÑAS,
+                             ...((pendingApproval || approval) ? ["Diff (Aprobación)"] : [])];
+              return lista.map((tab, i) => (
+                <button
+                  key={tab}
+                  type="button"
+                  role="tab"
+                  id={`pestana-${i}`}
+                  aria-selected={activeTab === tab}
+                  // Solo la activa entra en el recorrido de Tab; dentro se
+                  // navega con flechas. Doce paradas de tabulador para llegar
+                  // al campo de texto es lo que hace que nadie use el teclado.
+                  tabIndex={activeTab === tab ? 0 : -1}
+                  className={`tab ${activeTab === tab ? "on" : ""}`}
+                  onClick={() => setActiveTab(tab)}
+                  onKeyDown={(e) => {
+                    const salto = e.key === "ArrowRight" ? 1
+                                : e.key === "ArrowLeft" ? -1 : 0;
+                    let destino = -1;
+                    if (salto) destino = (i + salto + lista.length) % lista.length;
+                    else if (e.key === "Home") destino = 0;
+                    else if (e.key === "End") destino = lista.length - 1;
+                    if (destino < 0) return;
+                    e.preventDefault();
+                    setActiveTab(lista[destino]);
+                    document.getElementById(`pestana-${destino}`)?.focus();
+                  }}
+                >
+                  {tab === "Diff (Aprobación)" ? "⚠️ " + tab : tab}
+                </button>
+              ));
+            })()}
           </div>
           <div className="cbody" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
             
