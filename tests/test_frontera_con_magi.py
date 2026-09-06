@@ -79,13 +79,33 @@ def test_EL_CENTRAL_no_queda_ninguna_maqueta_de_magi():
     este. No hacía falta que nadie la importara para que apareciera: bastaba
     con que algo la sirviera.
     """
-    sobras = list((RAIZ / "assets").rglob("*interfaz*")) if (RAIZ / "assets").is_dir() else []
-    sobras += list((RAIZ / "assets").rglob("*magi*")) if (RAIZ / "assets").is_dir() else []
+    activos = RAIZ / "assets"
+    if not activos.is_dir():
+        pytest.skip("no hay carpeta de activos en este árbol")
+
+    # `assets/python-embed/` es el intérprete de Python que viaja dentro del
+    # .exe, no contenido nuestro: mirar ahí no dice nada de Venim.
+    #
+    # Y no es teórico. La primera versión de este test barría `assets/` entera
+    # buscando cualquier nombre con «magi» dentro, se puso VERDE en mi caja de
+    # arena y ROJA en el CI — porque mi copia excluía `python-embed` y la del
+    # CI no. Dentro hay `hook-magic.py`, `hook-puremagic.py` y una docena de
+    # `vtkImagingCore.py` de PyInstaller: diecisiete falsos positivos.
+    #
+    # Dos lecciones, y la segunda es la cara: un patrón que casa por subcadena
+    # encuentra lo que no busca, y **una caja de pruebas que no es igual que
+    # el CI no prueba lo que el CI va a probar**.
+    def _nuestro(p) -> bool:
+        return "python-embed" not in str(p).replace("\\", "/")
+
+    # Lo que se busca es una MAQUETA: una página servible de otro programa.
+    sobras = [p for p in activos.rglob("*.html") if _nuestro(p)]
+    sobras += [p for p in activos.rglob("*interfaz*") if _nuestro(p)]
     assert not sobras, (
         f"vuelve a haber una maqueta ajena empaquetada: "
-        f"{[str(s.relative_to(RAIZ)) for s in sobras]}. El `.spec` mete "
-        f"`assets/` ENTERA en el .exe, así que todo lo que dejes ahí se "
-        f"publica.")
+        f"{sorted(str(s.relative_to(RAIZ)) for s in sobras)}. Un HTML aquí "
+        f"dentro se publica con cada release y solo espera a que algo lo "
+        f"sirva — así fue como la interfaz de MAGI acabó dentro de Venim.")
 
 
 def test_hay_UNA_interfaz_y_no_dos():
