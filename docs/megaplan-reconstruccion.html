@@ -1,0 +1,634 @@
+<title>Demoler para oír</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+  :root{
+    --fondo:#F3F1EC; --panel:#FBFAF7; --hundido:#E6E3DA; --realce:#FFFFFF;
+    --tinta:#1B1A17; --tinta-2:#4C493F; --apagado:#7B7669;
+    --linea:#D4D0C4; --linea-2:#ADA898;
+    /* La paleta de roles del propio sistema, haciendo de semántica. */
+    --naoko:#4B4A8C; --melchior:#1F6E68; --balthasar:#A6402F;
+    --casper:#7A4270; --ritsuko:#8A6410;
+    --acento:var(--naoko); --bien:var(--melchior);
+    --mal:var(--balthasar); --ojo:var(--ritsuko);
+    --display:"Bricolage Grotesque",-apple-system,"Segoe UI",sans-serif;
+    --cuerpo:"Newsreader",Georgia,"Times New Roman",serif;
+    --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+    --medida:63ch;
+    --e1:.4rem; --e2:.8rem; --e3:1.3rem; --e4:2rem; --e5:3.2rem; --e6:5rem;
+  }
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+    --fondo:#1F1E1C; --panel:#292724; --hundido:#171614; --realce:#332F2B;
+    --tinta:#EDE9E1; --tinta-2:#C9C4B9; --apagado:#918C82;
+    --linea:#38352F; --linea-2:#4E4A42;
+    --naoko:#A6A2F0; --melchior:#5FC2B6; --balthasar:#E8927A;
+    --casper:#CC93C0; --ritsuko:#DDB65C;
+  }}
+  :root[data-theme="dark"]{
+    --fondo:#1F1E1C; --panel:#292724; --hundido:#171614; --realce:#332F2B;
+    --tinta:#EDE9E1; --tinta-2:#C9C4B9; --apagado:#918C82;
+    --linea:#38352F; --linea-2:#4E4A42;
+    --naoko:#A6A2F0; --melchior:#5FC2B6; --balthasar:#E8927A;
+    --casper:#CC93C0; --ritsuko:#DDB65C;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--fondo);color:var(--tinta);
+       font-family:var(--cuerpo);font-size:17px;line-height:1.62;
+       -webkit-font-smoothing:antialiased}
+  .env{max-width:1060px;margin:0 auto;padding:var(--e5) var(--e3) var(--e6)}
+
+  .claqueta{border-top:4px solid var(--tinta);padding-top:var(--e2);margin-bottom:var(--e5)}
+  .tira{display:flex;flex-wrap:wrap;gap:var(--e1) var(--e3);font-family:var(--mono);
+        font-size:11px;letter-spacing:.11em;text-transform:uppercase;
+        color:var(--apagado);margin-bottom:var(--e3)}
+  .tira b{color:var(--tinta);font-weight:600}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,7vw,4.6rem);
+     line-height:.92;letter-spacing:-.035em;margin:0 0 var(--e2);text-wrap:balance}
+  .entradilla{max-width:var(--medida);font-size:1.16rem;color:var(--tinta-2);margin:0}
+  .entradilla strong{color:var(--tinta);font-weight:600}
+
+  section{margin-top:var(--e6)}
+  .titulo{display:grid;grid-template-columns:7rem 1fr;gap:var(--e3);
+          align-items:baseline;border-top:2px solid var(--tinta);
+          padding-top:var(--e2);margin-bottom:var(--e4)}
+  .rotulo{font-family:var(--mono);font-size:11px;letter-spacing:.13em;
+          text-transform:uppercase;color:var(--acento);font-weight:600;padding-top:.4rem}
+  h2{font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.6vw,2.4rem);
+     line-height:1.05;letter-spacing:-.025em;margin:0;text-wrap:balance}
+  .cuerpo{display:grid;grid-template-columns:7rem minmax(0,1fr);gap:var(--e3)}
+  .carril{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
+          text-transform:uppercase;color:var(--apagado);line-height:1.55}
+  .col{min-width:0;display:flex;flex-direction:column;gap:var(--e3)}
+  .col>*{margin:0}
+  p{max-width:var(--medida)}
+  h3{font-family:var(--display);font-size:1.08rem;font-weight:600;margin:0;letter-spacing:-.015em}
+
+  /* --- la cifra que abre un hallazgo --- */
+  .cifrota{display:flex;align-items:baseline;gap:var(--e3);flex-wrap:wrap;
+           border-top:1px solid var(--linea);padding-top:var(--e2)}
+  .cifrota b{font-family:var(--display);font-weight:800;
+             font-size:clamp(2.6rem,7vw,4.2rem);line-height:.9;letter-spacing:-.04em;
+             color:var(--mal);font-variant-numeric:tabular-nums}
+  .cifrota span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+                text-transform:uppercase;color:var(--apagado);max-width:26ch;line-height:1.5}
+
+  /* --- inventario --- */
+  .scroll{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;min-width:580px;font-size:.9rem}
+  th,td{text-align:left;padding:.55rem .85rem .55rem 0;
+        border-bottom:1px solid var(--linea);vertical-align:top}
+  th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+     color:var(--apagado);font-weight:400;border-bottom-color:var(--linea-2)}
+  td.n{font-family:var(--mono);font-size:.82rem;text-align:right;white-space:nowrap;
+       font-variant-numeric:tabular-nums;color:var(--tinta-2)}
+  td.k{font-family:var(--mono);font-size:.8rem;white-space:nowrap}
+
+  /* El veredicto de cada pieza: es información, no adorno. */
+  .v{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+     padding:.15em .5em;border-radius:2px;white-space:nowrap;border:1px solid}
+  .v.queda{color:var(--bien);border-color:var(--bien)}
+  .v.rehace{color:var(--acento);border-color:var(--acento);font-weight:600}
+  .v.contrato{color:var(--ojo);border-color:var(--ojo)}
+
+  .prueba{font-family:var(--mono);font-size:12px;line-height:1.7;
+          background:var(--hundido);border-left:3px solid var(--linea-2);
+          padding:.75rem 1rem;overflow-x:auto;color:var(--tinta-2);
+          white-space:pre;border-radius:0 2px 2px 0}
+  .prueba .m{color:var(--mal)} .prueba .b{color:var(--bien)} .prueba .a{color:var(--ojo)}
+
+  .regla{border-left:4px solid var(--acento);background:var(--panel);
+         padding:var(--e2) var(--e3);display:flex;flex-direction:column;gap:.5rem}
+  .regla h3{color:var(--acento)}
+  .regla p{font-size:.97rem;margin:0}
+  .contra{border-left-color:var(--mal)}
+  .contra h3{color:var(--mal)}
+
+  /* --- fases --- */
+  .fase{border-top:1px solid var(--linea);padding-top:var(--e2);
+        display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 var(--e3)}
+  .num{font-family:var(--display);font-weight:800;font-size:2.1rem;line-height:1;
+       color:var(--acento);min-width:2.6rem;font-variant-numeric:tabular-nums}
+  .fase .txt{display:flex;flex-direction:column;gap:.6rem}
+  .fase p{margin:0;font-size:.97rem}
+  .refuta{font-family:var(--mono);font-size:11px;line-height:1.6;
+          color:var(--mal);border-top:1px dashed var(--linea-2);padding-top:.5rem}
+  .refuta b{color:var(--mal);letter-spacing:.08em;text-transform:uppercase;font-size:10px}
+
+  ul{margin:0;padding-left:1.15rem;max-width:var(--medida)}
+  li{margin-bottom:.45rem}
+  li::marker{color:var(--linea-2)}
+  code{font-family:var(--mono);font-size:.83em;background:var(--hundido);
+       padding:.1em .35em;border-radius:2px}
+  .pie{margin-top:var(--e6);border-top:2px solid var(--linea);padding-top:var(--e2);
+       font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--apagado);
+       max-width:var(--medida);line-height:1.7}
+  @media (max-width:760px){
+    .titulo,.cuerpo{grid-template-columns:1fr;gap:var(--e1)}
+    .carril{border-bottom:1px solid var(--linea);padding-bottom:.35rem}
+    .fase{grid-template-columns:1fr;gap:.6rem}
+  }
+</style>
+
+<div class="env">
+
+  <div class="claqueta">
+    <div class="tira">
+      <span>VeniceMAGI</span>
+      <span><b>megaplan de reconstrucción</b></span>
+      <span>5 sep 2026</span>
+      <span>medido, no opinado</span>
+    </div>
+    <h1>Demoler para oír</h1>
+    <p class="entradilla">Insististe, y al ir a medir el sistema entero para
+    darte la razón o quitártela, salió un número que me obliga a corregirme.
+    <strong>Tenía razón en que el motor funciona y me equivoqué en la
+    conclusión.</strong> El motor no solo funciona: además habla. Lo que está
+    roto no es la mano que pinta — es el oído.</p>
+  </div>
+
+  <!-- ================= LA CIFRA ================= -->
+  <section>
+    <div class="titulo">
+      <div class="rotulo">La cifra</div>
+      <h2>Veinte de cuarenta y tres</h2>
+    </div>
+    <div class="cuerpo">
+      <div class="carril">contado<br>sobre el<br>código,<br>hoy</div>
+      <div class="col">
+
+        <div class="cifrota">
+          <b>25/50</b>
+          <span>cosas que el sistema cuenta de sí mismo y que la ventana
+          nunca escuchaba</span>
+        </div>
+
+        <p>El núcleo publica 50 clases de suceso en su bus. La interfaz atendía
+        25. Las otras 25 se emitían, viajaban por el socket y se tiraban. La primera versión de este documento decía «20 de 43»: la corrección
+        está en la autocrítica de abajo, y es el fallo más grave que encontré.
+        Éstas:</p>
+
+        <div class="prueba"><span class="m">swarm.budget_exhausted</span>       se acabó el presupuesto de la tarea
+<span class="m">swarm.entrega_incompleta</span>     lo entregado no cubre lo que pediste
+<span class="m">swarm.verificacion_agotada</span>   no se pudo verificar y se dejó de intentar
+<span class="m">error.critical</span>               error crítico
+<span class="m">ritsuko.veto_de_deriva</span>       Ritsuko ha vetado: el sistema se está desviando
+<span class="m">naoko.diagnostico</span>            el diagnóstico de la supervisora
+<span class="m">swarm.task_completed</span>         la tarea terminó
+<span class="a">sonda.actualizada</span>            hay medidas nuevas de proveedores
+<span class="a">swarm.artefacto_listo</span>        hay un artefacto construido
+<span class="m">agent.thought</span>                lo que el nodo está razonando ahora mismo
+<span class="a">knowledge.recorded</span>           se aprendió algo y se guardó
+     … y catorce más</div>
+
+        <p>Léelo otra vez despacio. <strong>«Se acabó el presupuesto», «la
+        entrega está incompleta», «Ritsuko ha vetado», «error crítico» y «la
+        tarea terminó» son cinco de las cosas que la ventana decide no
+        contarte.</strong> No es que el sistema no lo sepa. Lo sabe, lo dice, y
+        nadie lo recoge al otro lado del cable.</p>
+
+        <div class="regla contra">
+          <h3>Dónde estuve mal</h3>
+          <p>Te dije: «el motor funciona, lo roto es cómo se pinta». La primera
+          mitad es cierta y la segunda se queda corta de una forma que importa.
+          «Pintar mal» suena a tipografía y colores — a algo que se arregla con
+          CSS. Esto no es eso. Es que <strong>el contrato entre el núcleo y la
+          interfaz está a medio conectar</strong>, y llevaba así el tiempo
+          suficiente para que nadie recuerde cuál de los dos lados falta.
+          Reconstruir la ventana sin rehacer ese contrato sería repintar una
+          casa a la que no llegan la mitad de los cables.</p>
+        </div>
+
+        <p>Así que sí: de cero. Pero de cero <em>hasta el contrato</em>, no de
+        cero hasta el silicio. Lo que sigue dice exactamente dónde está esa
+        línea y por qué está ahí.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= POPPER ================= -->
+  <section>
+    <div class="titulo">
+      <div class="rotulo">Autocrítica</div>
+      <h2>Siete fallas de este megaplan</h2>
+    </div>
+    <div class="cuerpo">
+      <div class="carril">buscando<br>refutar,<br>no<br>confirmar</div>
+      <div class="col">
+
+        <p>Popper: una teoría vale por lo que <em>prohíbe</em>, y el trabajo
+        del autor es intentar tumbarla, no acumular ejemplos a favor. Me puse a
+        ello con el plan de arriba y encontré siete cosas. La primera es la
+        peor.</p>
+
+        <div class="regla contra">
+          <h3>1 · La cifra de portada la midió un instrumento sin auditar</h3>
+          <p>El 20/43 salió de cruzar dos <em>greps</em>: <code>topic="…"</code>
+          en Python contra <code>topic === '…'</code> en TypeScript. Es una
+          medida sintáctica, no de comportamiento — y estaba mal.</p>
+          <p>El bucle de agente no publica con <code>topic=</code>: llama a
+          <code>emit(…)</code> y otro módulo reenvía al bus lo que reciba. Se
+          me escaparon <strong>siete sucesos enteros</strong>, entre ellos
+          <code>agent.thought</code>, que es el razonamiento del nodo mientras
+          piensa. El número real es <strong>50 publicados y 25 atendidos</strong>.</p>
+          <p>Y hay una señal de que iba mal que tenía delante y no leí: la
+          ventana atendía <code>agent.tool_use</code>, que no aparecía en mi
+          lista de publicados. Un tópico atendido y «no publicado» es una
+          contradicción, y las contradicciones son justo lo que hay que
+          perseguir. Lo dejé pasar.</p>
+          <p>Lo grave no es el patrón olvidado. Es que <strong>medí con un
+          instrumento que no había auditado, en un repositorio que tiene un
+          módulo entero dedicado a auditar instrumentos</strong> —el adversario
+          del taller de cine— y no se me ocurrió aplicármelo. Y el error iba en
+          la dirección que me hacía quedar mejor.</p>
+        </div>
+
+        <div class="regla contra">
+          <h3>2 · Yo era juez y parte del banco de pruebas</h3>
+          <p>Propuse comparar VeniceMAGI conmigo en un conjunto de encargos…
+          escrito por mí. Es exactamente el fallo del «jurado de tres IAs» que
+          este proyecto ya cazó una vez y anotó como refutado, reintroducido
+          sin darme cuenta. Un banco cuyo autor es uno de los dos concursantes
+          no mide: confirma.</p>
+          <p><b>Corrección:</b> los encargos salen del historial real de la
+          aplicación y del repositorio —cosas que David ya pidió—, no de mi
+          imaginación. Y el corrector es el propio medidor del proyecto, no yo.</p>
+        </div>
+
+        <div class="regla contra">
+          <h3>3 · Los criterios de refutación no prohibían casi nada</h3>
+          <p>«Se refuta si pasan dos segundos sin que la pantalla diga qué está
+          pasando» lo satisface una ruedecita que ponga «trabajando». Eso no es
+          un criterio, es un trámite.</p>
+          <p><b>Corrección:</b> la pantalla tiene que <em>nombrar la acción
+          concreta</em>, y ese nombre tiene que coincidir con lo que el
+          registro dice que ocurría en ese instante. Eso prohíbe las
+          ruedecitas.</p>
+        </div>
+
+        <div class="regla contra">
+          <h3>4 · «Se queda» sin haberlo pilotado es fe, no medida</h3>
+          <p>En el censo marqué media docena de subsistemas como supervivientes
+          porque no les había medido ningún fallo. Pero no haberlo probado no
+          es haberlo aprobado — es la quinta regla de este propio proyecto, y
+          la rompí en mi propia tabla. Piloté la ventana; no piloté
+          <code>modules/world</code>, ni <code>reverse</code>, ni
+          <code>memory</code>.</p>
+          <p><b>Corrección:</b> abajo van marcados como <em>sin pilotar</em>,
+          que es lo que son.</p>
+        </div>
+
+        <div class="regla contra">
+          <h3>5 · La regla del superviviente se podía cumplir a posteriori</h3>
+          <p>Dije que una pieza vieja solo sobrevive si pasa una prueba que le
+          pone el sistema nuevo. Pero cualquier pieza aprueba si escribes el
+          examen después de mirarla. Eso es buscar confirmación.</p>
+          <p><b>Corrección:</b> la prueba se escribe desde el requisito y
+          <em>antes</em> de abrir la implementación vieja.</p>
+        </div>
+
+        <div class="regla contra">
+          <h3>6 · «Tan preciso como tú» no estaba operacionalizado</h3>
+          <p>«Menos de dos segundos» ¿medidos desde qué suceso, con qué red, en
+          qué máquina? «Todas las acciones por teclado» ¿cuáles son todas? Sin
+          definición operativa son consignas, no medidas.</p>
+        </div>
+
+        <div class="regla contra">
+          <h3>7 · No dije qué refutaría el megaplan entero</h3>
+          <p>Cada fase tenía su criterio; el plan no tenía ninguno. Es la
+          omisión más popperiana de todas.</p>
+          <p><b>Corrección:</b> este plan queda refutado si, cerrado el
+          contrato y rehecha la ventana, el banco no mejora en los encargos que
+          VeniceMAGI <em>no</em> sabía hacer antes. Si eso pasa, el cuello de
+          botella no era el contrato y el diagnóstico entero estaba mal.</p>
+        </div>
+
+        <p>Las siete están corregidas en lo que sigue. La primera ya está
+        además arreglada en el código: <code>vmagi/core/contrato.py</code>
+        declara los 50 sucesos y un test recorre las <strong>dos</strong>
+        formas de publicar, no una.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LA DECONSTRUCCIÓN ================= -->
+  <section>
+    <div class="titulo">
+      <div class="rotulo">Deconstrucción</div>
+      <h2>De qué está hecho lo que hay</h2>
+    </div>
+    <div class="cuerpo">
+      <div class="carril">55 mil<br>líneas,<br>una por<br>una</div>
+      <div class="col">
+
+        <p>Antes de decidir qué se demuele hay que saber qué hay. Esto es el
+        censo, contado hoy sobre el repositorio:</p>
+
+        <div class="scroll">
+        <table>
+          <thead><tr><th>Pieza</th><th>Ficheros</th><th>Líneas</th><th>Qué es</th><th>Veredicto</th></tr></thead>
+          <tbody>
+            <tr><td class="k">vmagi/core</td><td class="n">59</td><td class="n">14 733</td>
+                <td>kernel, bus, proveedores, RPC, rutas, herramientas</td>
+                <td><span class="v queda">se queda</span></td></tr>
+            <tr><td class="k">modules/swarm</td><td class="n">14</td><td class="n">4 806</td>
+                <td>los tres nodos y el orquestador dialéctico</td>
+                <td><span class="v queda">se queda</span></td></tr>
+            <tr><td class="k">modules/infrastructure</td><td class="n">8</td><td class="n">4 833</td>
+                <td>Naoko y Ritsuko: supervisión y auditoría</td>
+                <td><span class="v queda">se queda</span></td></tr>
+            <tr><td class="k">modules/studio</td><td class="n">23</td><td class="n">8 431</td>
+                <td>el taller de cine: medir, juzgar, buscar</td>
+                <td><span class="v queda">se queda</span></td></tr>
+            <tr><td class="k">modules/reverse</td><td class="n">7</td><td class="n">1 859</td>
+                <td>desensamblado, emulación, comparación de binarios</td>
+                <td><span class="v contrato">sin pilotar</span></td></tr>
+            <tr><td class="k">modules/world</td><td class="n">8</td><td class="n">2 012</td>
+                <td>macro, finanzas y actualidad sin clave</td>
+                <td><span class="v contrato">sin pilotar</span></td></tr>
+            <tr><td class="k">el resto de modules</td><td class="n">77</td><td class="n">4 663</td>
+                <td>memoria, rutas, percepción, ingesta, proyecto…</td>
+                <td><span class="v contrato">sin pilotar</span></td></tr>
+            <tr><td class="k">tests/</td><td class="n">121</td><td class="n">25 883</td>
+                <td>la red que impide que esto se rompa en silencio</td>
+                <td><span class="v queda">se queda</span></td></tr>
+            <tr><td class="k">el bus (50 tópicos)</td><td class="n">—</td><td class="n">—</td>
+                <td>lo que el sistema cuenta de sí mismo</td>
+                <td><span class="v contrato">se cierra</span></td></tr>
+            <tr><td class="k">RPC (31 métodos)</td><td class="n">—</td><td class="n">—</td>
+                <td>lo que la ventana puede pedirle</td>
+                <td><span class="v contrato">se cierra</span></td></tr>
+            <tr><td class="k">vmagi-gui/src</td><td class="n">43</td><td class="n">8 198</td>
+                <td>la ventana</td>
+                <td><span class="v rehace">de cero</span></td></tr>
+          </tbody>
+        </table>
+        </div>
+
+        <p>Cuarenta y siete mil líneas de núcleo con veinticinco mil de tests
+        encima, sesenta y seis herramientas registradas y una autoauditoría de
+        39 afirmaciones —<strong>diez de ellas marcadas como refutadas por su
+        propia ejecución</strong>— no son un sistema que haya que tirar. Son un
+        sistema que se sabe medir.</p>
+
+        <p>Ocho mil líneas de ventana que escucha el 58% de lo que se le dice,
+        recorta la traza a seis líneas y tiene tres botones para una sola
+        decisión, sí.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= QUÉ SIGNIFICA DE CERO ================= -->
+  <section>
+    <div class="titulo">
+      <div class="rotulo">Método</div>
+      <h2>Qué significa «de cero» aquí</h2>
+    </div>
+    <div class="cuerpo">
+      <div class="carril">y por qué<br>no es una<br>rebaja de<br>tu encargo</div>
+      <div class="col">
+
+        <p>Hay dos maneras de rehacer algo desde cero. Una es borrar y volver a
+        escribir de golpe: seis semanas sin nada que funcione y, al final, un
+        sistema nuevo con los bugs viejos que no recordabas y sin las
+        soluciones que no sabías que estaban ahí.</p>
+
+        <p>La otra es <strong>construir el sistema nuevo al lado del viejo, con
+        el contrato entre ambos escrito y comprobado, y trasplantar pieza a
+        pieza</strong>. Cada línea es nueva. Nada se conserva por inercia: se
+        conserva lo que pasa una prueba que el sistema nuevo le pone. Y en todo
+        momento hay algo que arranca y algo con lo que comparar.</p>
+
+        <div class="regla">
+          <h3>La regla que hace esto honesto</h3>
+          <p>Una pieza vieja solo sobrevive si el sistema nuevo la somete a una
+          prueba que ella pasa y su sustituta no mejora. Si no hay prueba, se
+          reescribe. «Funciona, no lo toques» no es un argumento: es lo que
+          decían las seis líneas de traza y los tres botones de aprobación.</p>
+        </div>
+
+        <p>Es más radical que borrarlo todo, no menos: obliga a justificar cada
+        superviviente con una medición, mientras que un borrado a lo bruto no
+        obliga a justificar nada.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LOS INVARIANTES ================= -->
+  <section>
+    <div class="titulo">
+      <div class="rotulo">El listón</div>
+      <h2>Qué hace que mi interfaz funcione</h2>
+    </div>
+    <div class="cuerpo">
+      <div class="carril">seis reglas,<br>ningún<br>color entre<br>ellas</div>
+      <div class="col">
+
+        <p>Me pediste que sea tan eficiente y preciso como yo. Lo que hace que
+        lo que uso funcione no es el aspecto. Son seis invariantes que no se
+        rompen nunca. Ésta es la lista, y va a ser el contrato del sistema
+        nuevo:</p>
+
+        <div class="regla">
+          <h3>1 · Nada ocurre sin verse mientras ocurre</h3>
+          <p>Si el sistema está trabajando, se ve qué está haciendo ahora
+          mismo. No un giro de rueda: la acción concreta, con su argumento.</p>
+        </div>
+        <div class="regla">
+          <h3>2 · Toda afirmación viaja con su prueba</h3>
+          <p>«He leído el fichero» va con la ruta. «Falló» va con el motivo.
+          «Tardó» va con los segundos. Una afirmación sin prueba al lado es una
+          opinión con formato de dato.</p>
+        </div>
+        <div class="regla">
+          <h3>3 · Nada se entrega sin comprobarse</h3>
+          <p>Ya está puesto para el texto —lo que cerró el <code>tud.</code>—
+          y falta ponerlo para el resto: un fichero que se dice escrito se lee
+          de vuelta; un comando que se dice ejecutado enseña su código de
+          salida.</p>
+        </div>
+        <div class="regla">
+          <h3>4 · Una decisión, un sitio</h3>
+          <p>Una aprobación, un panel, dos botones, y el texto dice qué va a
+          pasar y sobre qué ficheros. Si no hay nada que aprobar, no se pide
+          aprobación. Y una vez decidido, se cierra.</p>
+        </div>
+        <div class="regla">
+          <h3>5 · Todo se puede nombrar y alcanzar con el teclado</h3>
+          <p>Cada control con su nombre y su rol, para poder decir «pulsa
+          Aprobar» en vez de «pulsa en 641, 719». Es lo que convierte la
+          ventana en algo automatizable, comprobable y pilotable sin mirar.</p>
+        </div>
+        <div class="regla">
+          <h3>6 · Los errores dicen qué pasó y qué hacer</h3>
+          <p>Sin disculpas y sin vaguedad. «No se pudo medir» no vale; «no hay
+          detector de rostros: pon este fichero de 230 KB en esta carpeta» sí
+          — y ese ya existe en el sistema, lo cual demuestra que sabe hacerlo
+          cuando alguien se lo pide.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LAS FASES ================= -->
+  <section>
+    <div class="titulo">
+      <div class="rotulo">Ejecución</div>
+      <h2>Seis fases, cada una refutable</h2>
+    </div>
+    <div class="cuerpo">
+      <div class="carril">en este<br>orden,<br>y por un<br>motivo</div>
+      <div class="col">
+
+        <div class="fase">
+          <div class="num">1</div>
+          <div class="txt">
+            <h3>Cerrar el contrato: los 50 tópicos, uno por uno</h3>
+            <p>Un fichero que declara los 50 sucesos con su forma. Un test que
+            recorre el código, encuentra cada <code>topic=</code> y exige que
+            esté declarado y atendido. A partir de ahí, publicar algo que la
+            ventana no escucha deja de compilar mentalmente: rompe el test.</p>
+            <p>Es la pieza que faltaba y la que hace imposible que esto vuelva a
+            pasar. Va primero porque todo lo demás se apoya en ella.</p>
+            <p class="refuta"><b>Se refuta si</b> queda un tópico publicado que
+            ninguna vista atienda, y el test pasa igual.</p>
+          </div>
+        </div>
+
+        <div class="fase">
+          <div class="num">2</div>
+          <div class="txt">
+            <h3>La ventana nueva, escrita contra ese contrato</h3>
+            <p>Desde cero, sobre los 50. Conversación con la traza completa
+            —ya puesta—, aprobación única, estado del panel por conversación,
+            conversaciones con nombre y pulso, y el aviso de carpeta de trabajo
+            visible desde el primer segundo.</p>
+            <p class="refuta"><b>Se refuta si</b> tras pulsar Ejecutar pasan
+            más de dos segundos sin que la pantalla diga qué está pasando.</p>
+          </div>
+        </div>
+
+        <div class="fase">
+          <div class="num">3</div>
+          <div class="txt">
+            <h3>Teclado y nombres</h3>
+            <p>Cada control con rol y nombre accesible. <code>Tab</code> llega a
+            todo, <code>Esc</code> cierra, <code>Ctrl+K</code> abre el buscador
+            de acciones, y hay atajo para lo que se repite. El foco se ve
+            siempre.</p>
+            <p class="refuta"><b>Se refuta si</b> queda un control cuyo nombre
+            no se pueda decir en voz alta, o al que no se llegue con
+            <code>Tab</code>.</p>
+          </div>
+        </div>
+
+        <div class="fase">
+          <div class="num">4</div>
+          <div class="txt">
+            <h3>El invariante 3 para todo lo demás</h3>
+            <p>Lo que se dice hecho se comprueba: fichero escrito se relee,
+            comando ejecutado enseña su código de salida, artefacto construido
+            se abre y se mira. El sistema ya tiene el <code>observe_artifact</code>
+            que hace esto; lo que falta es que sea obligatorio en vez de
+            opcional.</p>
+            <p class="refuta"><b>Se refuta si</b> una tarea se cierra como
+            completada sin que exista la evidencia de lo que dice haber hecho.</p>
+          </div>
+        </div>
+
+        <div class="fase">
+          <div class="num">5</div>
+          <div class="txt">
+            <h3>El banco de pruebas</h3>
+            <p>«Tan preciso como tú» no es una sensación: es un marcador. Un
+            conjunto fijo de encargos comprobables sobre este mismo repositorio
+            —leer una constante, encontrar dónde se define algo, añadir un test
+            que falle y arreglarlo— y una tabla con los números de las dos
+            partes. Se corre sola y queda por escrito.</p>
+            <p class="refuta"><b>Se refuta si</b> el banco solo mide encargos
+            que VeniceMAGI ya sabía hacer.</p>
+          </div>
+        </div>
+
+        <div class="fase">
+          <div class="num">6</div>
+          <div class="txt">
+            <h3>Cerrar el lazo: que se arregle sola</h3>
+            <p>Con el banco puesto, Naoko puede correr el marcador, ver qué eje
+            va peor y proponer el cambio. Es lo que el sistema ya hace con su
+            propio AUTOMODELO, aplicado a su rendimiento. Va la última porque
+            sin las cinco anteriores estaría optimizando a ciegas.</p>
+            <p class="refuta"><b>Se refuta si</b> el ciclo propone cambios que
+            no mueven ningún número del banco.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= EL MARCADOR ================= -->
+  <section>
+    <div class="titulo">
+      <div class="rotulo">El marcador</div>
+      <h2>Cómo sabremos que llegó</h2>
+    </div>
+    <div class="cuerpo">
+      <div class="carril">números,<br>no<br>sensación</div>
+      <div class="col">
+        <p>Esto es lo que se mide, con lo medido hoy en la primera columna.
+        Ninguna casilla admite «parece que mejor».</p>
+
+        <div class="scroll">
+        <table>
+          <thead><tr><th>Eje</th><th>Hoy</th><th>Objetivo</th><th>Cómo se mide</th></tr></thead>
+          <tbody>
+            <tr><td>Lo que el sistema dice y llega a pantalla</td>
+                <td class="n">25/50</td><td class="n">50/50</td>
+                <td class="k">test de contrato</td></tr>
+            <tr><td>Segundos hasta la primera señal en pantalla</td>
+                <td class="n">20 s</td><td class="n">&lt; 2 s</td>
+                <td class="k">cronómetro sobre la ventana</td></tr>
+            <tr><td>Llamadas a herramienta con su argumento visible</td>
+                <td class="n">0 %</td><td class="n">100 %</td>
+                <td class="k">inspección de la traza</td></tr>
+            <tr><td>Traza visible de una tarea de 30 llamadas</td>
+                <td class="n">6</td><td class="n">30</td>
+                <td class="k">contar filas</td></tr>
+            <tr><td>Controles para una misma decisión</td>
+                <td class="n">3</td><td class="n">1</td>
+                <td class="k">contar botones</td></tr>
+            <tr><td>Fallos de <code>read_file</code> por tarea</td>
+                <td class="n">8/8</td><td class="n">0</td>
+                <td class="k">ya corregido; se vigila</td></tr>
+            <tr><td>Respuestas entregadas sin comprobar</td>
+                <td class="n">sí</td><td class="n">no</td>
+                <td class="k">ya corregido; se vigila</td></tr>
+            <tr><td>Ancho mínimo en el que la ventana sirve</td>
+                <td class="n">1060 px</td><td class="n">≤ 853 px</td>
+                <td class="k">ya corregido; se vigila</td></tr>
+            <tr><td>Acciones alcanzables solo con teclado</td>
+                <td class="n">sin medir</td><td class="n">todas</td>
+                <td class="k">recorrido con Tab</td></tr>
+          </tbody>
+        </table>
+        </div>
+
+        <p>Tres de las nueve filas ya están en verde y llegaron ahí en dos
+        sesiones. Eso es lo que me hace pensar que las otras seis son alcanzables
+        y no una carta a los Reyes.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="pie">
+    Los números de este documento se contaron el 5 de septiembre de 2026 sobre
+    el repositorio y pilotando la aplicación en la máquina de David, con
+    capturas y registro. El 25/50 sale de cruzar las dos formas de publicar
+    del núcleo —<code>topic=</code> y <code>emit(…)</code>— con los
+    <code>topic ===</code> de la ventana; la primera versión de este documento
+    solo miraba la primera y decía 20/43, y ese error está contado arriba.
+    Lo que no pude comprobar no está aquí.
+  </div>
+
+</div>

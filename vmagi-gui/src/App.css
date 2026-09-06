@@ -1339,3 +1339,44 @@ body {
   .traza-cabeza { grid-template-columns: 10px 104px minmax(0, 1fr) 56px; }
   .traza-agente, .traza-ms { display: none; }
 }
+
+/* ---------------------------------------------------------------------
+   EL PULSO
+   Los veinte segundos de pantalla en blanco que se midieron no eran falta
+   de información: el núcleo publicaba la ronda con su contador de llamadas,
+   el razonamiento del nodo y los timeouts de proveedor, y la ventana los
+   tiraba al llegar. Aquí es donde aterrizan.
+   Se pinta discreto a propósito: es contexto, no contenido. Lo que se lee
+   son las tarjetas de los nodos; esto es para saber que sigue vivo.
+   --------------------------------------------------------------------- */
+.pulso {
+  display: flex; flex-direction: column; gap: 1px;
+  margin: var(--e2, 10px) 0;
+  padding-left: 2px;
+  border-left: 2px solid var(--gr);
+}
+.pulso-linea {
+  display: grid; grid-template-columns: 14px minmax(0, 1fr);
+  align-items: baseline; gap: 6px;
+  padding: 2px 0 2px 8px;
+  font-size: 11.5px; line-height: 1.5; color: var(--dim);
+}
+.pulso-punto {
+  width: 5px; height: 5px; border-radius: 50%; align-self: center;
+  background: var(--gr); justify-self: center;
+}
+.pulso-texto { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* El último, mientras algo corre, es el único que se destaca. Si se
+   destacaran todos no se destacaría ninguno. */
+.pulso-ahora { color: var(--txt); }
+.pulso-ahora .pulso-punto {
+  background: var(--acc);
+  animation: pulso-latido 1.3s ease-in-out infinite;
+}
+@keyframes pulso-latido { 0%,100% { opacity: 1 } 50% { opacity: .3 } }
+@media (prefers-reduced-motion: reduce) { .pulso-ahora .pulso-punto { animation: none; } }
+.pulso-aviso { color: var(--warn); }
+.pulso-aviso .pulso-punto { background: var(--warn); }
+.pulso-mal { color: var(--dang); }
+.pulso-mal .pulso-punto { background: var(--dang); }
+.pulso-bien .pulso-punto { background: var(--ok); }

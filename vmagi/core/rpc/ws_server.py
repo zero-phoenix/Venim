@@ -16,6 +16,7 @@ import websockets
 from websockets.exceptions import ConnectionClosed
 
 from vmagi.core.bus import BusEvent, MagiBus  # type: ignore
+from vmagi.core.contrato import SUCESOS, internos, visibles
 from vmagi.core.paths import db_path, project_root
 from vmagi.core.store.database import MagiDatabase
 
@@ -33,6 +34,10 @@ class WSServer:
         self.clients: set[Any] = set()
         self.server = None
         self.db = MagiDatabase(str(db_path()))
+        #: Tópicos sin declarar ya cantados. Se avisa UNA vez por
+        #: tópico: repetirlo en cada evento ahogaría el registro y
+        #: enseñaría a saltárselo, que es lo contrario de avisar.
+        self._no_declarados: set[str] = set()
 
         # Registramos endpoints internos
         self.register_handler("GET_TELEMETRY", self._handle_get_telemetry)
@@ -46,6 +51,11 @@ class WSServer:
 
     async def start(self):
         logger.info(f"Servidor RPC iniciando en ws://{self.host}:{self.port}")
+        # El estado del contrato, en el arranque y en una línea. Una cifra que
+        # se mira todos los días no se deja caer hasta 25 de 50 sin que nadie
+        # lo note, que es exactamente lo que pasó.
+        logger.info("[contrato] %d sucesos declarados: %d se ven, %d internos",
+                    len(SUCESOS), len(visibles()), len(internos()))
         self.bus.subscribe("*", self._handle_bus_event)
         self.server = await websockets.serve(self._handler, self.host, self.port)
 
@@ -111,6 +121,27 @@ class WSServer:
            terminal— antes que lo que el usuario necesita ver. Perder una
            línea de log es un inconveniente; perder la respuesta de Naoko no.
         """
+        # EL CONTRATO, COMPROBADO EN CALIENTE.
+        #
+        # `tests/test_contrato_del_bus.py` cruza el código estáticamente, pero
+        # un tópico compuesto en tiempo de ejecución —`bus_log_handler` los
+        # arma a partir del nombre del logger— no lo ve ningún grep. Y de eso
+        # justo venía el fallo: mi propio recuento se dejó siete sucesos fuera
+        # por mirar solo una de las dos formas de publicar.
+        #
+        # Aquí pasa TODO lo que sale hacia la ventana, así que es el único
+        # sitio donde la comprobación es completa. No se bloquea el envío —un
+        # aviso sin declarar sigue siendo mejor que ninguno— pero se canta,
+        # una vez por tópico, para que no se acumulen veinticinco en silencio
+        # como pasó.
+        if event.topic not in SUCESOS and event.topic not in self._no_declarados:
+            self._no_declarados.add(event.topic)
+            logger.warning(
+                "[contrato] '%s' se publica y no está declarado en "
+                "vmagi/core/contrato.py: la ventana no sabe qué hacer con él "
+                "y se va a perder. Decláralo con lo que significa.",
+                event.topic)
+
         if not self.clients:
             return
 

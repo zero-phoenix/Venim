@@ -148,6 +148,101 @@ export function useMagiSocket(port: number = 20128) {
                 ws.current?.send(JSON.stringify({ type: 'ritsuko.informes', id: 'req_ritsuko_informes' }));
               } else if (topic === 'system.project_created') {
                 ws.current?.send(JSON.stringify({ type: 'rpc.state.sync', id: 'sync_0' }));
+
+              // ============================================================
+              // LOS 23 QUE SE TIRABAN.
+              //
+              // Contado sobre el código el 2026-09-05: el núcleo publica 50
+              // clases de suceso y esta función atendía 25. Las otras se
+              // recibían por el socket y se descartaban en el `else` de
+              // abajo, en silencio.
+              //
+              // No eran menores: «se acabó el presupuesto», «la entrega está
+              // incompleta», «Ritsuko ha vetado», «error crítico». Y las tres
+              // que explican los veinte segundos de pantalla en blanco que se
+              // midieron pilotando la aplicación: la ronda con su contador de
+              // llamadas, la cola de entrada, y el razonamiento del nodo.
+              //
+              // `vmagi/core/contrato.py` declara los 50 con lo que significan
+              // y `tests/test_contrato_del_bus.py` exige que cada uno visible
+              // esté aquí. Añadir un tópico nuevo y olvidarse de este lado ya
+              // no compila: rompe el test.
+              // ============================================================
+
+              // ---- el progreso, que es lo que llena el silencio ----
+              } else if (topic === 'swarm.entrada_encolada') {
+                const n = payload.pendientes ?? 0;
+                useMagiStore.getState().anota(payload.task_id,
+                      n > 0 ? `En cola: ${n} por delante` : 'En cola');
+              } else if (topic === 'swarm.ronda') {
+                const techo = payload.techo ? ` · ${payload.calls_used}/${payload.techo} llamadas` : '';
+                useMagiStore.getState().anota(payload.task_id,
+                      `Ronda ${payload.round} · ${payload.count} ${payload.type || 'variantes'}${techo}`);
+              } else if (topic === 'agent.thought') {
+                // El razonamiento del nodo, recortado: es un pulso, no un
+                // ensayo. El texto completo llega por agent.delta.
+                const t = String(payload.text || '').replace(/\s+/g, ' ').trim();
+                if (t) useMagiStore.getState().anota(payload.task_id, `Pensando: ${t.slice(0, 120)}`);
+              } else if (topic === 'agent.slow_iteration') {
+                useMagiStore.getState().anota(payload.task_id, 'Esta iteración va lenta; sigue viva', 'aviso');
+              } else if (topic === 'agent.timeout') {
+                useMagiStore.getState().anota(payload.task_id,
+                      `${payload.provider || 'Un proveedor'} tardó demasiado; probando otro`, 'aviso');
+              } else if (topic === 'agent.done' || topic === 'agent.turn_done') {
+                useMagiStore.getState().anota(payload.task_id,
+                      `${payload.agent || 'Nodo'} terminó su turno`
+                      + (payload.iterations ? ` · ${payload.iterations} iteraciones` : ''));
+              } else if (topic === 'swarm.task_completed') {
+                useMagiStore.getState().anota(payload.task_id, 'Tarea terminada', 'bien');
+              } else if (topic === 'sonda.actualizada') {
+                useMagiStore.getState().anota(payload.task_id || 'default', 'Medidas nuevas de proveedores');
+              } else if (topic === 'swarm.artefacto_listo') {
+                useMagiStore.getState().anota(payload.task_id, `Artefacto listo: ${payload.path || payload.nombre || ''}`, 'bien');
+              } else if (topic === 'knowledge.recorded') {
+                useMagiStore.getState().anota(payload.task_id || 'default', 'Aprendido y guardado');
+              } else if (topic === 'system.started') {
+                appendTerminal('[SISTEMA] arrancado');
+              } else if (topic === 'memgraph.status') {
+                useMagiStore.getState().anota(payload.task_id || 'default', `Memoria: ${payload.estado || payload.status || 'actualizada'}`);
+
+              // ---- lo que va mal. Esto NO puede quedarse en un pulso ----
+              } else if (topic === 'error.critical') {
+                useMagiStore.getState().addAlert({ kind: 'error', subject: payload.subject || 'error crítico',
+                           detail: payload.message || payload.detail || '',
+                           severity: 'critical' });
+              } else if (topic === 'swarm.budget_exhausted') {
+                useMagiStore.getState().addAlert({ kind: 'presupuesto', subject: 'se acabó el presupuesto',
+                           detail: `La tarea se quedó sin llamadas antes de terminar`
+                                   + (payload.techo ? ` (techo ${payload.techo}).` : '.'),
+                           severity: 'warning' });
+                useMagiStore.getState().anota(payload.task_id, 'Sin presupuesto', 'mal');
+              } else if (topic === 'swarm.entrega_incompleta') {
+                useMagiStore.getState().addAlert({ kind: 'entrega', subject: 'la entrega está incompleta',
+                           detail: payload.motivo || payload.detail
+                                   || 'Lo entregado no cubre todo lo que pediste.',
+                           severity: 'warning' });
+                useMagiStore.getState().anota(payload.task_id, 'Entrega incompleta', 'mal');
+              } else if (topic === 'swarm.verificacion_agotada') {
+                useMagiStore.getState().addAlert({ kind: 'verificación', subject: 'no se pudo verificar',
+                           detail: payload.motivo || 'Se agotaron los intentos de verificación.',
+                           severity: 'warning' });
+                useMagiStore.getState().anota(payload.task_id, 'Sin verificar', 'mal');
+              } else if (topic === 'ritsuko.veto_de_deriva') {
+                useMagiStore.getState().addAlert({ kind: 'ritsuko', subject: 'Ritsuko ha vetado',
+                           detail: payload.motivo || 'El sistema se está desviando.',
+                           severity: 'critical' });
+
+              // ---- el eco de lo que acabas de decir ----
+              } else if (topic === 'naoko.user_message') {
+                useMagiStore.getState().addNaokoMessage({ id: Math.random().toString(36), agent: 'TÚ', role: 'usuario', provider: 'local', content: payload.text || payload.message || '', changes: 0, stats: '' });
+              } else if (topic === 'ritsuko.user_message') {
+                useMagiStore.getState().addRitsukoMessage({ id: Math.random().toString(36), agent: 'TÚ', role: 'usuario', provider: 'local', content: payload.text || payload.message || '', changes: 0, stats: '' });
+              } else if (topic === 'naoko.trace') {
+                useMagiStore.getState().addNaokoMessage({ id: Math.random().toString(36), agent: 'NAOKO', role: 'traza', provider: 'local', content: payload.text || payload.detail || '', changes: 0, stats: '' });
+              } else if (topic === 'naoko.diagnostico') {
+                useMagiStore.getState().addAlert({ kind: 'naoko', subject: 'diagnóstico de Naoko',
+                           detail: payload.message || payload.detail || '',
+                           severity: payload.severity || 'info' });
               }
             } else if (data.ok !== undefined) {
                // Es una respuesta directa RPC

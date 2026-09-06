@@ -19,6 +19,7 @@ import ImprovementPanel from './components/ImprovementPanel';
 import ConfigPanel from './components/ConfigPanel';
 import PreviewPanel from './components/PreviewPanel';
 import TrazaHerramientas from './components/TrazaHerramientas';
+import Pulso from './components/Pulso';
 import ProveedoresEnCabecera from './components/ProveedoresEnCabecera';
 import type { Command } from './lib/commands';
 import { tail } from './lib/history';
@@ -38,7 +39,7 @@ export default function App() {
     activeFileContent, activeFilePath,
     naokoMessages, naokoStatus,
     ritsukoMessages, ritsukoStatus, ritsukoInformes,
-    sysCommand, conversations, streaming, toolTrace, route, alerts, dismissAlert,
+    sysCommand, conversations, streaming, toolTrace, pulso, route, alerts, dismissAlert,
     approval, setApproval, awaitingApproval, setAwaitingApproval,
     taskTitles  // v5.3.0 — títulos IA de cada conversación
   } = useMagiStore();
@@ -505,6 +506,12 @@ export default function App() {
             {/* §2.2 — la traza. Ya no se recorta a seis ni se pinta en gris
                 de siete píxeles: ver TrazaHerramientas.tsx, que lleva escrito
                 por qué. */}
+            <Pulso
+              latidos={(pulso[activeConversationId] || []) as any}
+              activo={Object.keys(streaming).some(
+                (k) => k.startsWith(`${activeConversationId}:`))}
+            />
+
             <TrazaHerramientas
               llamadas={toolTrace.filter(
                 (t: any) => t.task_id === activeConversationId)}

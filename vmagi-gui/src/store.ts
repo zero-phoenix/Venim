@@ -41,6 +41,22 @@ interface MagiState {
   appendDelta: (d: { task_id: string; agent: string; text: string; provider?: string; family?: string }) => void;
   endDelta: (d: { task_id: string; agent: string }) => void;
   // §2.2 — traza de herramientas: convierte una caja negra en un colaborador
+  // EL PULSO: lo que el sistema dice que está haciendo, ahora mismo.
+  //
+  // POR QUÉ ESTO NO EXISTÍA, CONTADO SOBRE EL CÓDIGO
+  // ================================================
+  // El núcleo publica 50 clases de suceso. La ventana atendía 25. Entre las
+  // 25 tiradas estaban `swarm.ronda` —que lleva `{round, count, calls_used,
+  // techo}`, o sea una barra de progreso con contador de presupuesto ya
+  // calculada— y `swarm.entrada_encolada`, que lleva cuántos mensajes hay
+  // por delante del tuyo. Y `agent.thought`, que es el razonamiento del nodo
+  // mientras piensa.
+  //
+  // Los veinte segundos de pantalla en blanco que se midieron pilotando la
+  // aplicación no eran falta de información: eran esta información, tirada al
+  // llegar. El pulso es donde aterriza.
+  pulso: Record<string, Array<{ id: string; texto: string; tono: string }>>;
+  anota: (task_id: string, texto: string, tono?: string) => void;
   toolTrace: Array<{ id: string; task_id: string; agent: string; tool: string;
                      ok?: boolean; error?: string | null;
                      args?: any; resumen?: string;
@@ -221,6 +237,23 @@ export const useMagiStore = create<MagiState>((set) => ({
   //
   // Un enjambre que trabaja tres minutos y solo te enseña la palabra «ok» es
   // una caja negra por decisión de la interfaz, no por naturaleza.
+  pulso: {},
+  anota: (task_id, texto, tono = "info") => set((state) => {
+    const previo = state.pulso[task_id] || [];
+    // Se descarta el repetido consecutivo: «ronda 2» tres veces seguidas es
+    // ruido, y el ruido en el sitio donde se mira el progreso es peor que el
+    // silencio — enseña a no mirar.
+    if (previo.length && previo[previo.length - 1].texto === texto) return {};
+    return {
+      pulso: {
+        ...state.pulso,
+        // Techo de 60: esto se pinta entero y crece durante toda la tarea.
+        [task_id]: [...previo.slice(-59),
+                    { id: Math.random().toString(36), texto, tono }],
+      },
+    };
+  }),
+
   addToolUse: (d) => set((state) => ({
     toolTrace: [
       ...state.toolTrace.slice(-200),
