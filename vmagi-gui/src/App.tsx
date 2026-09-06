@@ -18,6 +18,7 @@ import GraficoRondas from './components/GraficoRondas';
 import ImprovementPanel from './components/ImprovementPanel';
 import ConfigPanel from './components/ConfigPanel';
 import PreviewPanel from './components/PreviewPanel';
+import TrazaHerramientas from './components/TrazaHerramientas';
 import ProveedoresEnCabecera from './components/ProveedoresEnCabecera';
 import type { Command } from './lib/commands';
 import { tail } from './lib/history';
@@ -123,18 +124,20 @@ export default function App() {
 
   // §7.4 — el evento estructurado manda. El raspado de texto de abajo queda
   // como respaldo para backends antiguos, pero ya no es la vía principal.
-  useEffect(() => {
-    if (approval) setActiveTab("Diff (Aprobación)");
-  }, [approval]);
-
+  // LA VENTANA YA NO TE MUEVE LA SILLA.
+  //
+  // Medido pilotando la aplicación el 2026-09-05: estaba mirando la pestaña
+  // «Nodos», llegó una aprobación y me encontré en «Diff» sin haber pedido
+  // nada. Después creé una conversación y acabé en «Ritsuko». Cambiar de
+  // vista a alguien que está leyendo es peor que no avisarle: pierde lo que
+  // tenía delante y encima no sabe por qué se movió.
+  //
+  // El aviso vive ahora donde el usuario ya está mirando —la conversación—,
+  // y la pestaña se abre cuando él la abre.
   useEffect(() => {
     if (awaitingApproval && !pendingApproval) {
-      // Find the last proposal by Melchior or Balthasar
       const props = [...messages].reverse().find(m => m.role === 'propone' || m.role === 'critica');
-      if (props) {
-        setPendingApproval(props.content);
-        setActiveTab("Diff (Aprobación)");
-      }
+      if (props) setPendingApproval(props.content);
     }
   }, [awaitingApproval, messages, pendingApproval]);
 
@@ -348,7 +351,7 @@ export default function App() {
       <div className="app" style={{ display: "flex", width: "100%", overflow: "hidden" }}>
         
         {/* COLUMNA 1: GESTOR DE PROYECTOS / ESTADO */}
-        <div className="col rail" style={{ width: "260px", minWidth: "260px" }}>
+        <div className="col rail">
           <input
             style={{ width: "100%", background: "#050a0b", border: "1px solid var(--gr)", color: "#cfe0e4", padding: "4px 6px", font: "inherit", fontSize: "11px", marginBottom: "8px" }}
             placeholder="Buscar proyectos…"
@@ -424,7 +427,7 @@ export default function App() {
         </div>
 
         {/* COLUMNA CENTRAL: ENJAMBRE Y CONVERSACIÓN */}
-        <div className="col" style={{ flex: 1, minWidth: "400px", borderRight: "1px solid var(--gr)", display: "flex", flexDirection: "column" }}>
+        <div className="col charla">
           
           <div style={{ background: "#050809", padding: "5px 10px", borderBottom: "1px solid var(--gr)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ fontSize: "11px", color: "var(--dim)" }}>
@@ -499,23 +502,13 @@ export default function App() {
               </div>
             )}
 
-            {/* MAGI 9.0 §2.2 — traza de herramientas del turno en curso */}
-            {toolTrace.filter((t: any) => t.task_id === activeConversationId)
-                      .slice(-6).length > 0 && (
-              <div className="tool-trace">
-                {toolTrace.filter((t: any) => t.task_id === activeConversationId)
-                          .slice(-6).map((t: any) => (
-                  <div key={t.id} className="tool-line">
-                    <span className="tool-agent">{t.agent}</span>
-                    <span className="tool-name">{t.tool}</span>
-                    <span className={t.ok === undefined ? "tool-run"
-                                     : t.ok ? "tool-ok" : "tool-err"}>
-                      {t.ok === undefined ? "ejecutando…" : t.ok ? "ok" : (t.error || "falló")}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
+            {/* §2.2 — la traza. Ya no se recorta a seis ni se pinta en gris
+                de siete píxeles: ver TrazaHerramientas.tsx, que lleva escrito
+                por qué. */}
+            <TrazaHerramientas
+              llamadas={toolTrace.filter(
+                (t: any) => t.task_id === activeConversationId)}
+            />
 
             {/* MAGI 9.0 §1.2 — tarjeta en vivo mientras el agente escribe.
                 Antes la pantalla se quedaba quieta 30-90 s por turno. */}
@@ -621,7 +614,7 @@ export default function App() {
         </div>
 
         {/* COLUMNA DERECHA: LIENZO (CANVAS) */}
-        <div className="col canvas" style={{ flex: 1, minWidth: "400px" }}>
+        <div className="col canvas">
           <div className="tabs">
             {[...PESTAÑAS, ...((pendingApproval || approval) ? ["Diff (Aprobación)"] : [])].map((tab) => (
               <div

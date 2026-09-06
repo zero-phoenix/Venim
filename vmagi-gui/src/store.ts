@@ -41,7 +41,10 @@ interface MagiState {
   appendDelta: (d: { task_id: string; agent: string; text: string; provider?: string; family?: string }) => void;
   endDelta: (d: { task_id: string; agent: string }) => void;
   // §2.2 — traza de herramientas: convierte una caja negra en un colaborador
-  toolTrace: Array<{ id: string; task_id: string; agent: string; tool: string; ok?: boolean; error?: string | null }>;
+  toolTrace: Array<{ id: string; task_id: string; agent: string; tool: string;
+                     ok?: boolean; error?: string | null;
+                     args?: any; resumen?: string;
+                     inicio?: number; ms?: number }>;
   addToolUse: (d: { task_id: string; agent: string; calls: any[] }) => void;
   addToolResult: (d: { task_id: string; agent: string; results: any[] }) => void;
   // §7.4 — aprobación CON CONTEXTO. Antes el estado de aprobación se deducía
@@ -202,12 +205,30 @@ export const useMagiStore = create<MagiState>((set) => ({
   }),
 
   toolTrace: [],
+  // LO QUE ESTA TRAZA TIRABA, Y POR QUÉ IMPORTA
+  // ===========================================
+  // Pilotando la ventana el 2026-09-05: durante veinte segundos la
+  // conversación estuvo vacía mientras el registro contaba iteraciones,
+  // herramientas y latencias. Cuando por fin apareció algo, era esto:
+  //
+  //     MELCHIOR  glob  ok
+  //     MELCHIOR  glob  ok
+  //
+  // Cuatro líneas grises de siete píxeles. Sin argumentos, sin resultado, sin
+  // tiempo — y sin las anteriores, porque la vista solo pintaba las últimas
+  // seis. El evento del bus SÍ traía los argumentos y el contenido devuelto:
+  // se descartaban aquí, en `c.tool`, antes de llegar a la pantalla.
+  //
+  // Un enjambre que trabaja tres minutos y solo te enseña la palabra «ok» es
+  // una caja negra por decisión de la interfaz, no por naturaleza.
   addToolUse: (d) => set((state) => ({
     toolTrace: [
-      ...state.toolTrace.slice(-80),
+      ...state.toolTrace.slice(-200),
       ...d.calls.map((c: any) => ({
         id: Math.random().toString(36),
         task_id: d.task_id, agent: d.agent, tool: c.tool,
+        args: c.args ?? c.arguments ?? null,
+        inicio: Date.now(),
       })),
     ],
   })),
@@ -218,7 +239,17 @@ export const useMagiStore = create<MagiState>((set) => ({
       for (let i = trace.length - 1; i >= 0; i--) {
         if (trace[i].agent === d.agent && trace[i].tool === r.tool
             && trace[i].ok === undefined) {
-          trace[i] = { ...trace[i], ok: r.ok, error: r.error };
+          const bruto = r.content ?? r.result ?? r.output ?? "";
+          trace[i] = {
+            ...trace[i], ok: r.ok, error: r.error,
+            // Se recorta AQUÍ y no al pintar: una salida de cien mil
+            // caracteres en el estado repinta toda la lista cada vez que
+            // llega otra. Lo que se guarda es lo que se enseña plegado; lo
+            // largo vive en el terminal, que es su sitio.
+            resumen: typeof bruto === "string" ? bruto.slice(0, 600)
+                     : JSON.stringify(bruto ?? "").slice(0, 600),
+            ms: trace[i].inicio ? Date.now() - (trace[i].inicio as number) : undefined,
+          };
           break;
         }
       }

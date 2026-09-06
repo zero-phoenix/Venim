@@ -1193,3 +1193,149 @@ body {
 }
 .nd .md { font-size: var(--t-micro) !important; font-family: var(--mono); }
 .rh .lg { font-size: var(--t-menor); }
+
+/* =====================================================================
+   RECONSTRUCCIÓN DEL 2026-09-05
+   Todo lo de aquí abajo sale de pilotar la ventana, no de leerla. Cada
+   bloque dice qué se midió y qué cierra.
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   LA TRAZA DE HERRAMIENTAS
+   Lo que había: gris oscuro sobre gris oscuro, 10px de monoespaciado, sin
+   argumento, sin resultado y sin tiempo. Cuatro líneas idénticas que decían
+   «MELCHIOR glob ok» y no permitían distinguir una llamada de la siguiente.
+   Lo que se lee ahora: quién, qué, SOBRE QUÉ, cómo acabó y cuánto tardó.
+   --------------------------------------------------------------------- */
+.traza {
+  margin: var(--e2, 10px) 0;
+  border: 1px solid var(--gr);
+  border-left: 3px solid var(--acc);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--sf) 70%, transparent);
+  overflow: hidden;
+}
+.traza-resumen {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--gr);
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--dim);
+}
+.traza-cuenta { color: var(--txt); font-weight: 600; }
+.traza-fallos { color: var(--dang); font-weight: 600; }
+/* «trabajando…» parpadea despacio. Es el único indicio de vida que la
+   conversación tenía que haber tenido durante aquellos veinte segundos. */
+.traza-vivo { color: var(--acc); animation: traza-latido 1.6s ease-in-out infinite; }
+@keyframes traza-latido { 0%,100% { opacity: 1 } 50% { opacity: .35 } }
+@media (prefers-reduced-motion: reduce) {
+  .traza-vivo { animation: none; }
+}
+.traza-mas {
+  margin-left: auto;
+  background: none; border: 1px solid var(--gr); color: var(--dim);
+  font: inherit; font-size: 10px; padding: 2px 8px; border-radius: 2px;
+  cursor: pointer;
+}
+.traza-mas:hover { color: var(--txt); border-color: var(--acc); }
+
+.traza-lista { list-style: none; margin: 0; padding: 0; }
+.traza-fila + .traza-fila { border-top: 1px solid color-mix(in srgb, var(--gr) 55%, transparent); }
+
+.traza-cabeza {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 10px 88px 132px minmax(0, 1fr) 76px 52px;
+  gap: 10px; align-items: baseline;
+  padding: 5px 10px;
+  background: none; border: 0; color: inherit;
+  font: inherit; font-size: 12px; text-align: left;
+  cursor: pointer;
+}
+.traza-cabeza:disabled { cursor: default; }
+.traza-cabeza:hover:not(:disabled) { background: color-mix(in srgb, var(--acc) 8%, transparent); }
+/* El foco se VE. Sin esto el teclado no sirve para nada. */
+.traza-cabeza:focus-visible { outline: 2px solid var(--acc); outline-offset: -2px; }
+
+.traza-punto {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--dim); align-self: center;
+}
+.traza-ok .traza-punto { background: var(--ok); }
+.traza-falla .traza-punto { background: var(--dang); }
+.traza-corriendo .traza-punto {
+  background: var(--acc);
+  animation: traza-latido 1.2s ease-in-out infinite;
+}
+
+.traza-agente { color: var(--dim); font-size: 10.5px; letter-spacing: .06em; }
+.traza-util { color: var(--acc); font-weight: 600; }
+/* El argumento es lo que distingue una llamada de otra, así que se le da el
+   espacio elástico y se recorta con puntos en vez de desbordar. */
+.traza-arg {
+  color: var(--txt); font-family: ui-monospace, Consolas, monospace;
+  font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  direction: rtl; text-align: left;      /* recorta por delante: la cola de una ruta informa más */
+}
+.traza-estado { font-size: 10.5px; color: var(--dim); }
+.traza-ok .traza-estado { color: var(--ok); }
+.traza-falla .traza-estado { color: var(--dang); font-weight: 600; }
+.traza-ms { font-size: 10.5px; color: var(--dim); text-align: right;
+            font-variant-numeric: tabular-nums; }
+
+.traza-detalle {
+  margin: 0; padding: 8px 10px 10px 48px;
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--gr) 55%, transparent);
+  font-family: ui-monospace, Consolas, monospace; font-size: 11.5px;
+  line-height: 1.55; color: var(--txt);
+  white-space: pre-wrap; word-break: break-word;
+  max-height: 260px; overflow: auto;
+}
+.traza-falla .traza-detalle { color: var(--dang); }
+
+/* ---------------------------------------------------------------------
+   QUE LA VENTANA QUEPA EN UN TERCIO DE PANTALLA
+   Medido: con la ventana a 853 px de ancho —un tercio de 2560— el panel
+   derecho se cortaba a media palabra («Vista pre», «Gráfico HDC» partido) y
+   no había forma de leerlo ni de llegar a él. Las tres columnas llevaban
+   `minWidth` incrustado en el JSX (260 + 400 + 400 = 1060 px), así que
+   ninguna regla de CSS podía reflowar nada: los estilos en línea ganan
+   siempre. Ahora el tamaño vive aquí, que es donde se puede negociar.
+   --------------------------------------------------------------------- */
+.col.rail   { width: 260px; min-width: 260px; }
+.col.charla { flex: 1; min-width: 400px; border-right: 1px solid var(--gr);
+              display: flex; flex-direction: column; }
+.col.canvas { flex: 1; min-width: 400px; }
+
+/* Por debajo de 1100 px no caben tres columnas. En vez de encogerlas hasta
+   que se rompan, se apilan: la conversación ocupa el ancho entero y el panel
+   derecho pasa a ser una franja bajo ella. Es la diferencia entre una ventana
+   estrecha y una ventana rota. */
+@media (max-width: 1100px) {
+  .app { flex-direction: column; overflow: auto; }
+  .col.rail {
+    width: 100%; min-width: 0;
+    max-height: 132px; overflow: auto;
+    border-right: 0; border-bottom: 1px solid var(--gr);
+  }
+  .col.charla, .col.canvas {
+    width: 100%; min-width: 0; border-right: 0;
+  }
+  .col.charla { flex: 1 1 62%; min-height: 0; border-bottom: 1px solid var(--gr); }
+  .col.canvas { flex: 1 1 38%; min-height: 0; }
+  /* Las pestañas dejan de cortarse: pasan a una fila que se desplaza. */
+  .tabs { overflow-x: auto; flex-wrap: nowrap; scrollbar-width: thin; }
+  .tabs .tab { white-space: nowrap; }
+  /* Y la traza aprieta las columnas fijas para que el argumento siga
+     teniendo sitio: es el dato que más informa de la fila. */
+  .traza-cabeza { grid-template-columns: 10px 70px 104px minmax(0, 1fr) 60px 44px;
+                  gap: 7px; font-size: 11.5px; }
+  .traza-detalle { padding-left: 20px; }
+}
+
+/* A pantalla muy estrecha el rótulo del nodo sobra antes que la herramienta. */
+@media (max-width: 760px) {
+  .traza-cabeza { grid-template-columns: 10px 104px minmax(0, 1fr) 56px; }
+  .traza-agente, .traza-ms { display: none; }
+}
