@@ -548,6 +548,29 @@ def build_registry() -> ToolRegistry:
         logging.getLogger(__name__).warning(
             "[tools] busqueda en memoria no disponible: %s", e)
 
+    # LILIM — la capa local que contesta en milisegundos lo que ya se sabe.
+    #
+    # POR QUÉ ESTO ES LO QUE MÁS ACELERA EL SISTEMA
+    # =============================================
+    # Medido en el proyecto de origen: los proveedores gratuitos tardan entre
+    # 3 y 22 segundos por llamada y fallan a menudo. El coste dominante de
+    # VeniceMAGI no es pensar: es ESPERAR. Cada pregunta que se resuelve con
+    # un índice local es una llamada de red que no se hace, y no hay
+    # optimización de prompt que compita con no llamar.
+    #
+    # Lilim no es un modelo y no razona: es un índice sobre memoria versionada
+    # que responde con `fuente:` y con la URL que lo puede desmentir. Su valor
+    # está en la mitad que casi nadie implementa — cuando no sabe algo, dice
+    # «NO LO SÉ» y escala al enjambre, en vez de inventarlo. Un índice que
+    # rellena huecos sería más rápido y peor que no tenerlo.
+    try:
+        from .lilim_tools import registrar as registrar_lilim
+        registrar_lilim(reg)
+    except Exception as e:            # pragma: no cover
+        import logging
+        logging.getLogger(__name__).warning(
+            "[tools] la capa local Lilim no está disponible: %s", e)
+
     # Los nombres que el README de VeniceMAGI promete (`patch_file`,
     # `delete_file`, `run_python`, `shell`) más `hardware_info`, que no
     # existía. Va al FINAL a propósito: los alias necesitan que su original

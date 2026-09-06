@@ -17,17 +17,17 @@ import pytest
 
 from vmagi.core.obs.metrics import canary_probe
 from vmagi.core.providers.backends.echo import EchoProvider
-from vmagi.core.providers.backends.g4f_backend import _por_que_es_inservible
+from vmagi.core.providers.backends.g4f_backend import por_que_es_inservible
 from vmagi.core.providers.base import CompletionRequest, Message
 from vmagi.core.providers.registry import ProviderError, ProviderRegistry
 
 
 def test_la_respuesta_corta_se_rechaza_para_trafico_y_se_acepta_para_sonda():
     """'51' es inservible en una tarea real y perfecta en un canario."""
-    assert _por_que_es_inservible("51") is not None
-    assert _por_que_es_inservible("51", minimo=1) is None
+    assert por_que_es_inservible("51") is not None
+    assert por_que_es_inservible("51", minimo=1) is None
     # Lo vacío jamás sirve, ni para sondear.
-    assert _por_que_es_inservible("   ", minimo=1) is not None
+    assert por_que_es_inservible("   ", minimo=1) is not None
 
 
 @pytest.mark.asyncio

@@ -324,5 +324,9 @@ def test_phase3_is_wired():
     assert "self.metrics.record_provider" in registry, "el registro no mide"
     assert "obs.alert" in naoko, "§3.4 Naoko no escucha alertas"
     assert "canary_probe" in naoko, "§3.4 sonda canaria sin conectar"
-    assert "default_bench" in naoko, "§3.5 banco sin conectar"
+    # Era `default_bench`, y con eso bastaba hasta el 2026-09-05: ese día
+    # `read_file` falló 8 de 8 veces y la nota de capacidad general no se
+    # habría movido, así que la auto-mejora podía conservar un cambio que
+    # dejaba ciego al enjambre. Ahora mide los dos ejes.
+    assert "mide_los_dos_ejes" in naoko, "§3.5 banco sin conectar"
     assert "naoko.self_improve" in kernel, "§3.5 auto-mejora no invocable"

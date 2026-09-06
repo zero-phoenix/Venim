@@ -61,6 +61,41 @@ jobs:
           exit 1
         fi
 
+    - name: Las notas son de ESTA version, y solo de esta
+      # DOS COSAS DISTINTAS, Y LAS DOS SE HAN ROTO EN PROYECTOS REALES.
+      #
+      # 1. Publicar las notas de la version anterior. `body_path` no comprueba
+      #    nada: coge el fichero tal cual. Si nadie lo actualizo, la release
+      #    nueva sale describiendo la vieja, y nadie se entera hasta que un
+      #    usuario pregunta por una funcion que no existe.
+      #
+      # 2. Arrastrar el historial. Las notas son para saber QUE CAMBIA HOY. Un
+      #    fichero que acumula versiones obliga a leer cuatro releases para
+      #    encontrar la linea que importa, asi que no se lee ninguna. El
+      #    historial completo ya esta en los tags y en el log de git.
+      #
+      # Este paso va en el job barato de Ubuntu a proposito: cuesta un segundo
+      # y evita gastar el runner de Windows —que se factura al doble— para
+      # acabar publicando notas equivocadas.
+      run: |
+        set -e
+        primera=$(head -1 RELEASE_NOTES.md)
+        echo "titular: $primera"
+        if ! grep -qF "$RELEASE_TAG" <<< "$primera"; then
+          echo "ERROR: RELEASE_NOTES.md no empieza por $RELEASE_TAG."
+          echo "Se publicarian las notas de otra version."
+          exit 1
+        fi
+        otras=$(grep -oE '\bv[0-9]+\.[0-9]+\.[0-9]+' RELEASE_NOTES.md \
+                | grep -vF "$RELEASE_TAG" | sort -u || true)
+        if [ -n "$otras" ]; then
+          echo "ERROR: las notas mencionan versiones anteriores:"
+          echo "$otras"
+          echo "Deben describir SOLO lo nuevo de $RELEASE_TAG."
+          exit 1
+        fi
+        echo "OK: las notas hablan de $RELEASE_TAG y de nada mas."
+
   build:
     runs-on: windows-latest
     needs: test          # sin tests verdes no hay release

@@ -59,7 +59,14 @@ TECHOS: dict[str, int] = {
     # el «0 de N»; el caso intermedio se coló y produjo dos alarmas críticas
     # —1/3 canarios en gpt y en gemini— sobre un sistema PARADO e intacto.
     # Treinta líneas, casi todas explicando por qué 1 de 3 es ruido y no señal.
-    "vmagi/modules/infrastructure/naoko.py": 1630,
+    # +10 el 2026-09-05: la auto-mejora mide en DOS ejes. Decidía solo con
+    # `default_bench` —capacidad general— y ese día `read_file` falló 8 de 8
+    # veces sin que la nota se moviera: 47 por 23 sigue siendo 1081 aunque el
+    # sistema no encuentre un fichero. Podía conservar un cambio que dejaba
+    # ciego al enjambre y llamarlo mejora. El código nuevo son dos líneas; el
+    # resto es el porqué, y ahí es exactamente donde tiene que estar: en el
+    # sitio donde alguien decidirá algún día «con un banco basta».
+    "vmagi/modules/infrastructure/naoko.py": 1640,
     # +45 en la ejecución del megaplan: la guarda C1 —que el árbitro no firme
     # lo que no ha leído— y el mensaje de entrega sin arbitraje (C2), que trae
     # la tesis y la crítica en vez de tirarlas. Son las líneas que separan
@@ -86,7 +93,11 @@ TECHOS: dict[str, int] = {
     # de atenderle. Ahora hay tregua de arranque, `_enjambre_ocupado()` cuenta
     # también lo encolado y lo que espera en admisión, y se vuelve a mirar
     # justo antes de gastar.
-    "vmagi/core/kernel.py": 1070,
+    # +5 el 2026-09-05: `eval.run` devuelve los dos bancos sin promediarlos.
+    # La media escondería justo lo que hay que ver —100% de aritmética con 0%
+    # de ver el proyecto—, y el trabajo de correrlos se fue a
+    # `banco_del_proyecto.mide_los_dos_ejes` para no tenerlo aquí y en Naoko.
+    "vmagi/core/kernel.py": 1075,
     # +48 en la v5.5.2: el filtro de idioma que se le inyecta a Yqcloud por
     # API (responde en chino cuando le apetece) y el catálogo de la familia
     # `gpt` con WeWordle de vuelta, cada entrada con el motivo escrito.

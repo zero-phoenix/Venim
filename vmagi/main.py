@@ -214,7 +214,15 @@ def main():
         width=1280,
         height=800,
         frameless=False,
-        easy_drag=False
+        easy_drag=False,
+        # El lienzo que pywebview pinta ANTES de que cargue nada.
+        #
+        # Por defecto es blanco, así que abrir la aplicación era un fogonazo
+        # blanco a pantalla completa y después el tema oscuro. Molesta de
+        # noche, que es cuando más se usa esto, y hace parecer que la ventana
+        # se ha colgado y recargado. Es `--paper` de `theme/magi.css`, el
+        # mismo fondo que va a aparecer: así no hay transición visible.
+        background_color="#1F1E1C",
     )
 
     # Esto bloqueará hasta que el usuario cierre la ventana

@@ -1,133 +1,156 @@
-# v2.2.0 — subagentes, percepción, memoria local y un automodelo que se puede tumbar
+# v2.3.0 — la ventana deja de esconder el trabajo, y una capa local que no llama
 
-**Qué cambia:** VeniceMAGI se sincroniza con el MAGI del que salió (estaba
-portado de v5.12.0, el upstream iba por v5.16.0) y estrena dos mecanismos
-propios: **subagentes por familia** y **mando de modelos en caliente**.
+**Qué cambia:** la interfaz se ha rehecho pieza a pieza comprobando cada una
+sobre la aplicación en marcha, no leyendo el código. Y el sistema estrena una
+forma de puntuarse que **baja cuando se queda ciego** — la anterior no.
 
-**Descarga:** en Assets, `VeniceMAGI-v2.2.0.zip`. Dentro hay **un solo
+**Descarga:** en Assets, `VeniceMAGI-v2.3.0.zip`. Dentro hay **un solo
 fichero**, `VeniceMAGI.exe`: onefile, con su propio Python 3.10 dentro.
 
 ---
 
-## Subagentes por familia
+## 25 de los 50 avisos del sistema se tiraban a la basura
 
-Un nodo es un solo hilo de pensamiento. Cuando el encargo tiene tres partes
-separables, las aborda en fila y las últimas salen peor porque llegan con el
-contexto ya gastado. Y mientras tanto los ocho núcleos están parados: el
-enjambre espera respuestas de **red**, no de CPU. Medido en el proyecto de
-origen: tres esperas independientes tardan **1,50 s en serie y 0,51 s en
-abanico**.
+El motor publicaba 50 sucesos distintos y la ventana solo atendía 25. Entre los
+descartados estaban los dos que más falta hacen mientras esperas:
 
-Ahora cada nodo abre un frente por parte, todos a la vez, y lo que vuelve entra
-como evidencia en su propia llamada.
+- `swarm.ronda` — qué ronda va, cuántas variantes hay, cuántas llamadas quedan
+- `agent.thought` — qué está pensando el nodo ahora mismo
 
-- **En su propia familia**, no repartidos entre varias. Repartirlos parecería
-  dar más diversidad y sería un error de los que no dan error: si los
-  subagentes de Melchior salieran por la familia de Balthasar, la tesis
-  llegaría contaminada con el sesgo de quien tiene que refutarla, y la
-  refutación encontraría menos porque parte de lo mismo.
-- **El troceo es determinista y no lo decide un modelo.** Cuesta una llamada de
-  la ración averiguar cómo gastar la ración — y con un troceo que cambia entre
-  corridas idénticas, la compuerta de la fase («tarda menos con la misma
-  calidad») deja de poder medirse.
-- **Nunca se pierde una promesa del encargo**: lo que pasa del máximo de cuatro
-  frentes se pega al último en vez de tirarse.
-- **Lo que no se cubrió, se dice.** Un texto fundido sin costuras esconde justo
-  el frente que falló.
-- **Un frente caído no se lleva a los demás**, que ya han gastado ración.
-- **Balthasar no abre subagentes**, a propósito: su turno ya es redundante por
-  diseño (varios ejes de refutación en paralelo), y abrirle un abanico encima
-  sería pagar dos veces la misma redundancia.
-- **Un abanico roto no tumba el turno.** Una optimización que puede dejarte sin
-  respuesta no es una optimización.
+El resultado medido era **veinte segundos de pantalla en blanco** mientras el
+registro tenía todo el detalle. Ahora hay un **pulso** por conversación que
+escribe una línea por suceso, y una **traza de herramientas** que dice quién
+llamó a qué, con qué argumento, qué salió y cuánto tardó.
 
-El abanico deja medido su ahorro (`ms_abanico` contra `ms_si_fuera_en_serie`).
-Esa es su compuerta: si no sale positivo de forma sostenida, se retira.
+Para que no vuelva a pasar hay un `contrato.py` que declara los 50 sucesos con
+su destino; los internos **exigen un motivo escrito** de por qué nadie los ve.
+Un test compara las dos listas y se pone rojo si se separan.
+
+> Mi propio recuento de esto estaba mal: dije 20 de 43 porque mi búsqueda no
+> veía la forma `emit("...")` del bucle de agente. Lo encontré revisando mi
+> propio trabajo y la cifra real era peor.
+
+## La ventana se puede pilotar sin ratón
+
+Las doce pestañas del panel derecho eran `<div onClick>`. Los dos controles más
+consecuentes de toda la aplicación —**PARAR ESTA** y **PARAR TODO**— eran
+`<span onClick>`. Cambiar de conversación, lo que más se hace, otro `<div>`.
+
+Nada de eso existía para `Tab`, ni para un lector de pantalla, ni para
+automatizar la ventana. Ahora son botones de verdad, con el patrón ARIA de
+pestañas: flechas para moverse, `Home`/`End`, y **una sola parada en el
+recorrido de Tab** en vez de doce.
+
+Verificado sobre el DOM de la aplicación en marcha: 12 pestañas, 31 controles
+enfocables, **0 sin nombre accesible**.
+
+> Y el error que cometí haciéndolo: le puse a cada botón su propio
+> `outline: 2px solid`, pisando el anillo de foco que el tema ya definía con
+> `box-shadow`. Funcionaba, y era un segundo sistema de foco montado encima del
+> que había. Lo encontré leyendo `getComputedStyle` en la ventana real.
+
+## Una sola decisión, y sin saltos de pestaña
+
+Había **tres controles de aprobación** compitiendo, con textos que se
+contradecían: uno decía «aplicar cambios» sobre una tarea que no tocaba ningún
+fichero. Ahora hay **una barra** que dice los hechos —cuántos ficheros, si los
+tests pasaron— y cambia el verbo cuando no hay nada que aplicar.
+
+Y la ventana ya no salta sola de pestaña mientras lees.
+
+## Cabe en un tercio de pantalla
+
+Las columnas llevaban `minWidth` en línea que sumaban 1060 px: por debajo de
+eso, la interfaz se rompía. Ahora se apilan y **funciona a 853 px de ancho**,
+que es un tercio de un monitor de 2560.
+
+## El banco que baja cuando el sistema se queda ciego
+
+Pilotando la aplicación, `read_file` falló **8 de 8 veces**: el enjambre
+buscaba el código en una carpeta vacía. El banco de evaluación habría dado
+exactamente la misma nota que el día anterior, porque 47 × 23 sigue siendo 1081
+aunque el sistema no encuentre un solo fichero.
+
+Hay un segundo banco cuyas **respuestas se leen del repositorio** al construirlo
+—si mañana una constante cambia, el banco espera el valor nuevo sin que nadie lo
+toque— y que se corre con un corredor **con herramientas de lectura**, porque
+con un modelo pelado su cero significaría «le tapamos los ojos» en vez de «está
+ciego».
+
+Las dos notas **no se promedian**: 100 % de saber y 0 % de ver da un 50 % que no
+describe nada. La auto-mejora de Naoko sí las funde, y así una lectura rota
+cuenta como la regresión que es y revierte el cambio.
+
+> Este banco corrige un fallo mío: en mi propio plan había propuesto medir el
+> sistema con un examen **escrito por mí**, que es el mismo jurado circular que
+> este repositorio ya había cazado y anotado como refutado.
+
+## La capa local: no llamar es más rápido que llamar rápido
+
+El coste dominante de este sistema no es pensar: es **esperar**. Los
+proveedores gratuitos tardan de 3 a 22 segundos por llamada y una vuelta del
+enjambre son tres como mínimo. Ninguna optimización de prompt compite con no
+hacer la llamada.
+
+Ahora hay un índice local —**LILIM**, traído del proyecto de origen— que
+contesta lo que ya se sabe **en 0,76 a 10,44 ms**, medido en esta máquina.
+Entre 300 y 25.000 veces más rápido que la vuelta que sustituye. Trae 9
+herramientas nuevas para el enjambre; el catálogo pasa de 71 a 80.
+
+No es un modelo y no razona: es un índice sobre memoria versionada. Cuando no
+sabe algo dice `NO LO SÉ` y escala al enjambre en vez de rellenar el hueco —
+un índice que inventa sería más rápido y peor que no tenerlo.
+
+El freno que lo hace seguro es una lista de verbos de trabajo: «¿qué controles
+tiene la Vita?» ataja, «arregla el mapeo de controles de la Vita» no, aunque
+lleve las mismas palabras. Seis encargos de trabajo cargados de términos
+indexados van en la suite intentando colarse.
+
+## La vaina de mielina, envolviendo a Balthasar
+
+Antes de que Balthasar critique, un analizador estático recorre el AST de la
+propuesta y le entrega los defectos objetivos —un `SyntaxError` con su línea,
+una función que solo tiene `pass`, un `except:` desnudo— en microsegundos y sin
+red. El prompt los da por ciertos y le pide lo que un AST no puede ver.
+
+Sin esto, la mitad de las críticas de la primera ronda eran «esto no compila»,
+cuatro veces en paralelo, a 3-22 s la llamada.
+
+Quien levante un **KoboldCpp** local (Qwen 2.5 1.5B, gratis, va en CPU sin
+AVX2) obtiene además una crítica neuronal local, activándola con
+`VENICEMAGI_KOBOLD=1`. Quien no, no paga nada: la sonda no se hace.
+
+> Esa activación explícita salió de un error mío. La primera versión sondeaba
+> siempre y memoizaba un minuto, que parecía barato; donde el puerto está
+> filtrado en vez de cerrado, el plazo se agota entero y la suite de tests se
+> arrastró. Un acelerador opcional que cobra peaje al que no lo usa está mal
+> hecho, por pequeño que sea el peaje.
+
+> **Lo que no se ha traído, y por qué.** El paquete original incluía sentidos
+> —ojos (PDF), oídos (audio), brazos (`.docx`)— y cuatro funciones de
+> lubricación neuronal. Al medirlo, ninguna tenía un solo llamante en
+> producción: tests verdes y cero uso. Traerlas habría sido mudar código muerto
+> de un repositorio a otro y llamarlo actualización.
+
+## Elegir la carpeta de trabajo
+
+El sistema apuntaba a una caja de arena vacía y no había forma de cambiarlo
+desde la ventana. Ahora se elige en ⚙, y el panel dice cuántos ficheros `.py`
+ve realmente donde apunta.
+
+## Otros arreglos
+
+- Una conversación reanudada se tragaba en silencio todos los mensajes
+  siguientes.
+- Casper podía entregar `tud.` —cuatro caracteres— como respuesta final, con la
+  capa de proveedores ya avisando de que no servía. Ahora la respuesta final
+  pasa por el mismo filtro antes de publicarse.
+- Los borradores de auto-ejecución se escribían en la raíz del repositorio y uno
+  llegó a colarse en un commit.
+- Icono nuevo: tres trazos que no se tocan y un punto en el centro, con los
+  colores del tema. Fondo transparente, legible a 16 px.
+- La ventana abre con su fondo oscuro definitivo en vez de un fogonazo blanco.
 
 ---
 
-## `/modelos`: las opciones de modelo, ampliadas
-
-El reparto vivía en un JSON y solo sabía decir qué familia le tocaba a cada
-nodo. Cambiarlo exigía editar el fichero y reiniciar; y la lista de lo
-disponible estaba repartida entre `sitios.py`, el catálogo y las constantes de
-g4f, sin que nadie la juntara.
-
-```
-/modelos                     inventario completo + reparto actual
-/modelos CASPER command      fija la familia de un nodo, en caliente
-/modelos CASPER auto         la suelta y vuelve a mandar el catálogo
-```
-
-- **Enumera las 13 familias** disponibles sin cuenta —2 guest operadas por
-  navegador y 11 de g4f— con su capacidad, sus candidatos vivos y la fecha de
-  su última medida.
-- **Se niega a poner dos nodos en la misma familia.** No se hacen eco: se dice
-  por qué. El sistema seguiría respondiendo, peor, sin dar un solo error — que
-  es exactamente la clase de fallo contra la que existe el registro.
-- **Naoko y Ritsuko no se tocan desde aquí**: Naoko rota a propósito según la
-  petición y Ritsuko tiene prohibidas las familias que audita. Ofrecer un mando
-  que rompe una garantía es peor que no ofrecerlo.
-- **Los agentes leen el reparto efectivo**, no el catálogo a secas. Leerlo a
-  secas reproduciría el fallo de v5.0.28 una capa más arriba: el usuario
-  cambiaría la familia, la interfaz diría que cambió, y los agentes seguirían
-  llamando a la de antes.
-
----
-
-## Sincronización con MAGI v5.16.0
-
-VeniceMAGI se portó de v5.12.0. Entre medias el upstream construyó cuatro
-subsistemas que aquí faltaban, y que encajan directamente con lo que el
-proyecto ya promete:
-
-- **Percepción** — oídos (loopback WASAPI: ¿suena? ¿sale entero?) y vista (qué
-  hay en pantalla, en qué idioma, qué botón pide). Es la mitad que le faltaba
-  al taller de arte, que hoy declara «no verificable» todo lo visual.
-- **Índice local FTS5** — buscar en la bitácora, la memoria, los docs y el
-  código sin gastar red **ni ración**. En VeniceMAGI esto vale doble: una
-  consulta de más no cuesta latencia, cuesta una llamada del cupo diario que
-  Venice raciona por IP.
-- **Memoria persistente entre proyectos** — mandos por consola (16 consolas) y
-  descartes con campo `rescatable`. Un enfoque que pierde deja conocimiento
-  igual que uno que gana, y suele dejar más.
-- **Mapa de interfaz** — qué topics de la GUI están conectados al núcleo.
-
----
-
-## Automodelo: lo que VeniceMAGI sabe que no sabe
-
-`docs/AUTOMODELO.json` llega **sembrado con lo de VeniceMAGI**, no con lo del
-proyecto de origen. Cada afirmación trae la prueba que la tumbaría y la
-evidencia de la última vez que la realidad dijo algo:
-
-- **Refutadas (5):** que una sonda pueda medir un sitio guest *(exige abrir
-  navegador: colgó el CI 124 s)*; que el crítico del taller pueda juzgar lo que
-  se ve; que el vídeo generativo funcione en modo cloud; que el prompt llegue
-  entero al proveedor *(se corta en 7000 caracteres sin avisar)*.
-- **Sin comprobar (4):** que el chat guest de Venice responda; que el de
-  notrack.ai responda; que el taller entregue de extremo a extremo; que la
-  percepción funcione contra un artefacto real.
-
-«Sin comprobar» **no es** «no funciona»: es que nadie lo ha puesto a prueba, y
-decirlo es más útil que inventar un veredicto.
-
----
-
-## Trinquetes: bajan, no suben
-
-El conteo de huérfanos llegó a 89 con un techo de 88. La respuesta no fue subir
-el techo: `familias_validas` pasa a `_familias_validas` porque la usa
-`fijar_familia` y nadie más. 88, y `vmagi/venice` vuelve a su techo de 6.
-
-Y un BOM más: escribir con PowerShell dejó un fichero con marca de orden de
-bytes y `test_wiring` murió con un `SyntaxError` sin línea. Se escribe con
-Python, `newline='\n'`.
-
----
-
-## Compatibilidad
-
-- **Sin cambios de interfaz.** Todos los comandos anteriores siguen igual.
-- **Nuevo**: `/modelos`, y `familias_por_nodo` en `config.json`.
-- **1719 tests en verde**, ruff limpio con la versión fijada.
+**1.920 tests en verde.** Sin eso, este `.zip` no existe.

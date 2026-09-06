@@ -981,6 +981,16 @@ class SwarmOrchestrator:
                 return task_id
 
 
+        # EL ATAJO LOCAL, y este es el último punto donde sirve de algo: una
+        # línea más abajo está `_spawn_loop` y el gasto ya está hecho. Una
+        # vuelta del enjambre son tres llamadas de red de 3 a 22 s cada una;
+        # preguntar «¿qué controles tiene Vita?» costaba una deliberación
+        # entera para devolver un dato escrito en el disco. Qué ataja, qué no,
+        # y por qué la condición es tan estrecha: `swarm/atajo.py`.
+        from vmagi.modules.swarm.atajo import intentar as _intentar_atajo
+        if await _intentar_atajo(self, task_id, command, entrada):
+            return task_id
+
         logger.info(f"[SWARM] Iniciando tarea {task_id}: {command}")
         self.latest_task_id = task_id
         # EL IDIOMA SE DECIDE AQUÍ, UNA VEZ, Y NO SE VUELVE A TOCAR.

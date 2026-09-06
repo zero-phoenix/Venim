@@ -171,6 +171,43 @@ async def critique_multi_axis(agent, *, task_id: str, proposal_text: str,
     selected = axes or list(CRITIQUE_AXES)
     result = MultiCritique()
 
+    # LA PRE-AUDITORÍA LOCAL: los defectos que no hay que pagar por descubrir.
+    #
+    # `pre_auditoria_estatica` recorre el AST de los bloques de código y
+    # devuelve lo objetivo —un `SyntaxError` con su línea, una función que solo
+    # tiene `pass`, un `except:` desnudo— en microsegundos y sin red.
+    #
+    # Va DENTRO del prompt de cada eje, no en un informe aparte, y ese detalle
+    # es el mecanismo entero: un modelo que ya sabe que la línea 42 no compila
+    # no gasta su turno descubriéndolo, lo gasta en lo que un AST no ve. Sin
+    # esto, la mitad de las críticas de la primera ronda eran «esto no
+    # compila», cuatro veces en paralelo, a 3-22 s la llamada.
+    #
+    # En el proyecto de origen esta función existía, tenía su test verde y
+    # CERO llamantes en producción. Aquí es este bloque, y por eso hay un test
+    # que comprueba que sigue enchufada.
+    defectos_locales = ""
+    try:
+        import re as _re
+
+        from vmagi.modules.lilim import lubricar_critica
+        bloques = _re.findall(r"```(?:python|py)?\n(.*?)```", proposal_text,
+                              _re.DOTALL)
+        hallados: list[str] = []
+        for b in bloques:
+            # `lubricar_critica` es la estática MÁS la neuronal local si hay un
+            # KoboldCpp levantado. Sin él devuelve solo la estática y no cuesta
+            # nada: la sonda se recuerda un minuto en vez de repetirse por
+            # crítica. Ver `lilim/mielina.py`.
+            hallados.extend(await lubricar_critica(b, selected))
+        if hallados:
+            lista = "\n".join(f"  - {d}" for d in dict.fromkeys(hallados))
+            defectos_locales = (
+                f"\n\nYA COMPROBADO POR UN ANALIZADOR ESTÁTICO (no lo repitas, "
+                f"dalo por cierto y busca lo que esto NO puede ver):\n{lista}")
+    except Exception as e:                            # pragma: no cover
+        logger.debug("[balthasar] sin pre-auditoría local: %s", e)
+
     async def one(axis: str):
         # Copia por eje, por lo mismo que en las variantes: estos cuatro van
         # por `gather` y mutar el agente compartido los haría pisarse.
@@ -188,7 +225,7 @@ async def critique_multi_axis(agent, *, task_id: str, proposal_text: str,
             f"no hay defectos reales, dilo en una frase — inventar objeciones "
             f"para parecer riguroso es peor que aprobar.\n"
             f"Máximo 8 líneas. Sin preámbulo.")
-        user = f"Propuesta a auditar:\n{proposal_text}"
+        user = f"Propuesta a auditar:\n{proposal_text}{defectos_locales}"
         if evidence:
             user += f"\n{evidence}"
         try:

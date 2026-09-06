@@ -110,12 +110,55 @@ export default function SystemPanel({ fetchHealth, runBenchmark, runSelfImprovem
           <h4 style={{ color: "var(--acc)", margin: "0 0 6px" }}>
             Banco de evaluación
           </h4>
-          <div>
-            {banco.passed}/{banco.total} tareas superadas
-            {typeof banco.score === "number" &&
-              ` · ${Math.round(banco.score * 100)}%`}
-          </div>
-          <div style={{ color: "var(--dim)", marginTop: 4 }}>
+
+          {/* Dos notas, sin promediar.
+
+              La media escondería justo lo que hay que ver. El 2026-09-05 el
+              sistema falló `read_file` 8 de 8 veces y su nota de capacidad
+              general no se movió: 47 por 23 sigue siendo 1081 aunque el
+              sistema esté ciego. Un número por pregunta, y cada uno con la
+              suya escrita al lado. */}
+          {(banco.bancos || []).map((b: any) => {
+            const pct = Math.round((b.score ?? 0) * 100);
+            return (
+              <div key={b.label} style={{ marginBottom: 8 }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+                  <b style={{ color: pct >= 80 ? "#7dfaa8"
+                                    : pct >= 50 ? "#ffcc66" : "#ff9a9a" }}>
+                    {b.passed}/{b.total}
+                  </b>
+                  <span>{b.label}</span>
+                  <span style={{ color: "var(--dim)" }}>
+                    {pct}% · {b.mean_latency_s}s de media
+                  </span>
+                </div>
+                <div style={{ color: "var(--dim)", fontSize: 11, marginTop: 2 }}>
+                  {b.label === "ve el proyecto"
+                    ? "Las respuestas se leen del repositorio al construir el "
+                      + "banco, así que esta nota baja en cuanto el sistema "
+                      + "deja de encontrar los ficheros."
+                    : "Aritmética, código y formato. No depende del proyecto: "
+                      + "mide el modelo, no si el sistema ve."}
+                </div>
+                {b.tasks && Object.keys(b.tasks).length > 0 && (
+                  <div style={{ marginTop: 4, display: "flex", flexWrap: "wrap",
+                                gap: "2px 10px" }}>
+                    {Object.entries(b.tasks).map(([id, ok]) => (
+                      <span key={id} style={{ fontSize: 11,
+                              color: ok ? "#7dfaa8" : "#ff9a9a" }}>
+                        {ok ? "·" : "×"} {id}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {banco.aviso && (
+            <div style={{ color: "#ffcc66", marginTop: 6 }}>{banco.aviso}</div>
+          )}
+          <div style={{ color: "var(--dim)", marginTop: 6 }}>
             Las tareas se corrigen con código, no pidiéndole a un modelo que se
             puntúe a sí mismo.
           </div>

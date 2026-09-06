@@ -105,7 +105,34 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    # UPX NO, y el motivo NO es el que escribí primero aquí.
+    #
+    # El 2026-09-06 un .exe recién compilado moría en el arranque, antes de
+    # ejecutar una línea del proyecto:
+    #
+    #     File "pyimod01_archive.py", line 134, in extract
+    #     zlib.error: Error -3 while decompressing data: incorrect header check
+    #
+    # Escribí en este mismo sitio que la culpa era de UPX recomprimiendo el
+    # archivo del arranque. Sonaba bien y era mentira: `Get-Command upx` dice
+    # que UPX NO ESTÁ INSTALADO en esta máquina, así que `upx=True` nunca llegó
+    # a aplicarse. La causa real era otra —dos instancias del programa abiertas
+    # impedían a PyInstaller sobrescribir `dist/VeniceMAGI.exe`, y lo que se
+    # estaba probando era un binario viejo y a medio escribir—. Dejo escrito mi
+    # error porque es el que más veces se repite: una explicación plausible que
+    # nadie comprobó.
+    #
+    # El `False` se queda, con el argumento que sí se sostiene: `upx=True` no
+    # significa «comprime», significa «comprime SI encuentras UPX en el PATH».
+    # El runner de GitHub no lo tiene y esta máquina tampoco, pero basta con que
+    # alguien lo instale para que su binario deje de ser el que se publica, sin
+    # tocar una línea. Es la sexta regla del proyecto: el binario publicado
+    # tiene que ser el mismo programa que el de desarrollo, y una bandera cuyo
+    # efecto depende del PATH lo impide en silencio.
+    #
+    # Además UPX dispara antivirus con regularidad y aquí no compraría nada: el
+    # peso lo domina el Python embebido, que ya viaja comprimido.
+    upx=False,
     upx_exclude=[],
     runtime_tmpdir=None,
     console=False,

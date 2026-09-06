@@ -99,11 +99,36 @@ def _raiz_repo(inicio: str | Path | None = None) -> Path | None:
     return None
 
 
+#: Comentarios. Se quitan ANTES de buscar topics, y el motivo es un fallo real.
+#:
+#: En `store.ts` había una explicación que decía «se descartaban aquí, en
+#: `c.tool`, antes de llegar a la pantalla»: prosa, con la expresión entre
+#: comillas invertidas porque nombra una variable. `_EN_UI` acepta el backtick
+#: —en TypeScript es un delimitador de cadena legítimo— y el mapa denunció
+#: `c.tool` como un panel de la interfaz que nadie alimenta. No existía tal
+#: panel: existía una frase.
+#:
+#: Se arregla aquí y no reescribiendo la frase porque el fallo vuelve: quien
+#: documente el siguiente evento lo nombrará igual, y con razón. Y el error
+#: simétrico es peor — un topic citado SOLO en un comentario contaría como
+#: atendido, y ese sí es un hueco que este módulo existe para encontrar.
+#:
+#: Se sustituye por espacios en vez de borrar para no juntar líneas que
+#: estaban separadas ni desplazar lo que viene detrás.
+_COMENTARIO = re.compile(r"/\*.*?\*/|(?<![:\w])//[^\n]*|^\s*#[^\n]*",
+                         re.DOTALL | re.MULTILINE)
+
+
+def _sin_comentarios(texto: str) -> str:
+    return _COMENTARIO.sub(lambda m: " " * len(m.group(0)), texto)
+
+
 def _recolectar(ficheros, *patrones) -> set[str]:
     fuera: set[str] = set()
     for p in ficheros:
         try:
-            texto = p.read_text(encoding="utf-8", errors="replace")
+            texto = _sin_comentarios(p.read_text(encoding="utf-8",
+                                                 errors="replace"))
         except OSError:
             continue
         for pat in patrones:

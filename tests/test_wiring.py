@@ -179,7 +179,16 @@ WIRING = [
     ("record_provider",     "vmagi/core/providers/registry.py",      "§3.4 el registro mide"),
     ("health_summary",      "vmagi/modules/infrastructure/naoko.py", "§3.4 salud en el prompt de Naoko"),
     ("canary_probe",        "vmagi/modules/infrastructure/naoko.py", "§3.4 sonda de deriva"),
-    ("default_bench",       "vmagi/modules/infrastructure/naoko.py", "§3.5 banco de evaluación"),
+    # `default_bench` estaba aquí, y era verdad hasta el 2026-09-05: Naoko
+    # decidía si conservar un cambio mirando SOLO capacidad general. Ese día
+    # `read_file` falló 8 de 8 veces y esa nota no se habría movido —47 por 23
+    # sigue siendo 1081 aunque el sistema no encuentre un fichero—, así que la
+    # auto-mejora podía aceptar un cambio que dejara al enjambre ciego. Ahora
+    # entra por `mide_los_dos_ejes`, que corre los dos bancos y funde el
+    # resultado para que una lectura rota cuente como la regresión que es.
+    ("mide_los_dos_ejes",   "vmagi/modules/infrastructure/naoko.py", "§3.5 banco de evaluación, los dos ejes"),
+    ("mide_los_dos_ejes",   "vmagi/core/kernel.py",                  "§3.5 el banco, invocable desde la ventana"),
+    ("corredor_que_ve",     "vmagi/core/eval/banco_del_proyecto.py", "§3.5 el examen se contesta mirando"),
     ("run_self_improvement","vmagi/core/kernel.py",                  "§3.5 auto-mejora invocable"),
     ("register_reverse_tools", "vmagi/core/tools/builtin.py",        "§5.3 toolchain de RE en el enjambre"),
     ("register_studio_tools",  "vmagi/core/tools/builtin.py",        "§5 fábrica de artefactos en el enjambre"),

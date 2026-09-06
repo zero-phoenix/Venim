@@ -330,20 +330,27 @@ class Kernel:
         return {"status": "ok", "verdict": verdict}
 
     async def _handle_eval_run(self, payload, websocket):
-        """Ejecuta el banco de evaluación y devuelve la puntuación."""
-        from vmagi.core.eval import default_bench
+        """Corre los DOS bancos y devuelve las dos notas SIN promediarlas.
+
+        Un solo número escondería justo lo que hay que ver: que se puede estar
+        al 100% de capacidad general y al 0% de ver el proyecto, que es lo que
+        pasaba el 2026-09-05 cuando `read_file` falló 8 de 8 veces. El porqué
+        entero, en `vmagi/core/eval/banco_del_proyecto.py`.
+        """
+        from vmagi.core.eval.banco_del_proyecto import mide_los_dos_ejes
+        from vmagi.core.paths import workspace_dir
         from vmagi.core.providers.cloud import FreeCloudLLM
 
         llm = FreeCloudLLM()
 
-        async def runner(prompt: str) -> str:
+        async def sin_herramientas(prompt: str) -> str:
             content, _ = await llm.generate("Responde de forma directa.", prompt)
             return content
 
-        result = await default_bench().run(runner, label="manual")
-        await self.bus.publish(BusEvent(topic="eval.result",
-                                        payload=result.to_dict()))
-        return result.to_dict()
+        medida = await mide_los_dos_ejes(llm, sin_herramientas)
+        salida = {**medida.to_dict(), "workspace": str(workspace_dir())}
+        await self.bus.publish(BusEvent(topic="eval.result", payload=salida))
+        return salida
 
     async def _handle_naoko_chat(self, payload, websocket):
         msg = payload.get("message", "") if isinstance(payload, dict) else str(payload)

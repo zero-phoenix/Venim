@@ -32,7 +32,7 @@ import pytest
 
 from vmagi.core.providers.backends.g4f_backend import (
     MINIMO_UTIL,
-    _por_que_es_inservible,
+    por_que_es_inservible,
 )
 
 
@@ -45,7 +45,7 @@ from vmagi.core.providers.backends.g4f_backend import (
     "a",
 ])
 def test_lo_que_no_es_una_respuesta_se_rechaza(basura):
-    motivo = _por_que_es_inservible(basura)
+    motivo = por_que_es_inservible(basura)
     assert motivo, f"{basura!r} debería rechazarse"
 
 
@@ -54,7 +54,7 @@ def test_el_motivo_dice_QUE_llego_no_solo_que_esta_mal():
     El motivo acaba en el log y en el error de «familia agotada». Un booleano
     obliga a reproducir el fallo para saber qué pasó; el texto lo cuenta.
     """
-    motivo = _por_que_es_inservible("tud.")
+    motivo = por_que_es_inservible("tud.")
     assert "4 caracteres" in motivo
     assert "tud." in motivo
 
@@ -65,7 +65,7 @@ def test_None_no_revienta():
     convierte en una excepción distinta y más confusa justo en el punto donde
     se estaba intentando dar un diagnóstico claro.
     """
-    assert _por_que_es_inservible(None) is not None
+    assert por_que_es_inservible(None) is not None
 
 
 @pytest.mark.parametrize("valida", [
@@ -80,7 +80,7 @@ def test_las_respuestas_cortas_pero_LEGITIMAS_pasan(valida):
     produce respuestas cortas de verdad —una aprobación de CASPER, un «sí»— y
     rechazarlas costaría una llamada de red y un log confuso.
     """
-    assert _por_que_es_inservible(valida) is None
+    assert por_que_es_inservible(valida) is None
 
 
 def test_el_umbral_esta_entre_el_fallo_medido_y_una_respuesta_util():
@@ -113,7 +113,7 @@ def test_esta_conectado_donde_importa():
     arbol = ast.parse(fuente)
     llamadas = [n for n in ast.walk(arbol)
                 if isinstance(n, ast.Call)
-                and getattr(n.func, "id", "") == "_por_que_es_inservible"]
+                and getattr(n.func, "id", "") == "por_que_es_inservible"]
     assert llamadas, (
         "complete() no comprueba la respuesta: el guardián está escrito pero "
         "desconectado, que es la peor de las dos opciones porque parece puesto")

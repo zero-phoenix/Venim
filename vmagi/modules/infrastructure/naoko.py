@@ -937,10 +937,15 @@ planes de pago ni soporte técnico: eso es de otro sistema, no del mío."""
 
         `apply_change` / `revert_change` son callables async que aplican y
         deshacen el cambio propuesto.
-        """
-        from vmagi.core.eval import compare, default_bench
 
-        bench = default_bench()
+        Se mide en DOS ejes —lo que el sistema sabe y si además está viendo el
+        proyecto— porque hasta el 2026-09-05 solo se miraba el primero: aquel
+        día `read_file` falló 8 de 8 veces y la nota no se habría movido, así
+        que esto podía conservar un cambio que dejaba ciego al enjambre. El
+        porqué entero, en `vmagi/core/eval/banco_del_proyecto.py`.
+        """
+        from vmagi.core.eval import compare
+        from vmagi.core.eval.banco_del_proyecto import mide_los_dos_ejes
 
         async def runner(prompt: str) -> str:
             content, _ = await self.llm.generate(
@@ -950,11 +955,16 @@ planes de pago ni soporte técnico: eso es de otro sistema, no del mío."""
         await self.bus.publish(BusEvent(topic="naoko.log", payload={
             "agent": "NAOKO",
             "content": f"Midiendo antes del cambio: {hypothesis[:80]}"}))
-        before = await bench.run(runner, label="antes")
+        antes = await mide_los_dos_ejes(self.llm, runner, etiqueta="antes")
+        # El aviso se publica UNA vez: la carpeta no cambia entre las dos
+        # medidas, y repetirlo solo enseñaría a ignorarlo.
+        if antes.aviso:
+            await self.bus.publish(BusEvent(topic="naoko.log", payload={
+                "agent": "NAOKO", "content": f"Aviso: {antes.aviso}"}))
 
         await apply_change()
-        after = await bench.run(runner, label="después")
-        result = compare(before, after)
+        despues = await mide_los_dos_ejes(self.llm, runner, etiqueta="después")
+        result = compare(antes.fundido(), despues.fundido())
 
         if not result.significant:
             await revert_change()

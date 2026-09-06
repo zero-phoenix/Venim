@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- VeniceMAGI. Tres trazos que no se tocan: la tesis, la refutacion y la
+       sintesis son tres actos separados. El punto del centro es quien reparte
+       y supervisa. Colores tomados de vmagi-gui/src/theme/magi.css. -->
+  <g fill="none" stroke-linecap="round" stroke-width="88">
+    <line x1="550.3" y1="290.2" x2="768.1" y2="667.6" stroke="#5FC2B6"/>
+    <line x1="729.9" y1="733.9"  x2="294.1" y2="733.9" stroke="#E8927A"/>
+    <line x1="255.9" y1="667.6" x2="473.7" y2="290.2" stroke="#CC93C0"/>
+  </g>
+  <circle cx="512" cy="597.9" r="86" fill="#A6A2F0"/>
+</svg>

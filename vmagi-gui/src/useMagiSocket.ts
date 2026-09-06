@@ -70,9 +70,18 @@ export function useMagiSocket(port: number = 20128) {
                   + `no arranca. Devuelto al autor sin gastar ronda.\n`
                   + (payload.detail || ''));
               } else if (topic === 'eval.result') {
-                appendTerminal(
-                  `[BANCO] ${payload.passed}/${payload.total} `
-                  + `(${Math.round((payload.score || 0) * 100)}%)`);
+                // Una línea por eje, sin promediar. Esto leía
+                // `payload.passed/total/score`, que era correcto cuando el
+                // banco era uno solo; con dos, la media escondería justo lo
+                // que hay que ver — 100% de aritmética con 0% de encontrar
+                // los ficheros, que es el estado en que estaba el sistema el
+                // 2026-09-05 sin que ninguna nota lo dijera.
+                for (const b of payload.bancos || []) {
+                  appendTerminal(
+                    `[BANCO] ${b.label}: ${b.passed}/${b.total} `
+                    + `(${Math.round((b.score || 0) * 100)}%)`);
+                }
+                if (payload.aviso) appendTerminal(`[BANCO] ${payload.aviso}`);
               } else if (topic === 'task.cancelled') {
                 // El informe dice lo que se paró DE VERDAD, incluidos los
                 // procesos que no murieron. Un botón de parada no puede

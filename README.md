@@ -1,47 +1,285 @@
+<div align="center">
+
+<img src="assets/icon.png" width="120" alt="VeniceMAGI">
+
 # VeniceMAGI
 
-Un IDE con un **enjambre de inteligencias que debaten antes de actuar**
-(tesis → antítesis → síntesis), **herramientas reales sobre tu máquina** para
-ejecutar lo que deciden, y **anonimato absoluto** en todo el recorrido.
+**Un IDE donde cinco inteligencias discuten antes de tocar tu código.**
+Tesis, antítesis y síntesis — cada una en un modelo distinto, porque un crítico
+que piensa igual que el autor no es un crítico, es un eco.
 
-Operación **cloud-first gratuita**: proveedores guest **sin cuenta y sin clave**
-en el camino principal, orquestados por un contenedor virtual local.
+Sin cuenta. Sin clave. Sin instalador. Sin telemetría.
 
-**[⬇ Descargar para Windows](https://github.com/zero-phoenix/VeniceMAGI/releases/latest)** — un `.zip` con **un único `VeniceMAGI.exe`** dentro. Se descomprime y se ejecuta. Sin instalador, sin Python, sin dependencias.
+[**⬇ Descargar para Windows**](https://github.com/zero-phoenix/VeniceMAGI/releases/latest) · [Cómo está construido](#cómo-está-construido-esto) · [Lo que sabe que no sabe](#lo-que-el-sistema-sabe-que-no-sabe-hacer)
+
+</div>
 
 ---
 
-## Los principios del sistema
+## En una pantalla
 
-* **Sin cuenta ni key obligatoria** en modo `cloud`.
-* **Anonimato absoluto, en todo sentido.**
-* **Transparencia**: si el proveedor guest limita, se informa.
-* **Trazabilidad**: cada render guarda metadata reproducible.
+| | |
+|---|---|
+| **Qué es** | Un entorno de desarrollo con un enjambre dialéctico de 5 roles sobre proveedores de nube gratuitos |
+| **Qué cuesta** | Nada. Ni cuenta, ni tarjeta, ni clave de API en el camino principal |
+| **Cómo se instala** | Se descomprime un `.zip` y se ejecuta un `.exe`. No hay paso 3 |
+| **Qué lleva dentro** | Su propio Python 3.10, la interfaz compilada y **80 herramientas** reales sobre tu máquina |
+| **Cuánto código** | 47.695 líneas de Python · 6.997 de interfaz · **26.872 líneas de tests** |
+| **Cuántas pruebas** | **1900 tests en Python** (1.920 hoy). Sin verdes, no hay release — y eso lo decide el CI, no yo |
 
-Los cuatro son código, no intenciones. `tests/test_venice_guest.py` comprueba
-que ningún sitio del camino principal pida credenciales;
-`tests/test_ritsuko_vpn.py` comprueba que la salida de red sea **una sola** y
-que el modo estricto signifique lo que dice.
+---
 
-### Qué significa exactamente «anonimato absoluto»
+## Por qué un enjambre y no un modelo
 
-No es una postura. Es una lista de cosas concretas que el programa hace y deja
-de hacer, cada una con su freno en el código:
+Un modelo bueno contestando solo tiene un problema que no se ve: **está de
+acuerdo consigo mismo**. Le pides una solución, te la da, le preguntas si está
+bien, y te dice que sí. No miente — es que no tiene con qué contrastar.
 
-1. **Sin cuenta y sin clave.** El camino principal son sitios guest. No hay
-   login que filtre quién eres.
-2. **Una sola salida de red, para TODO.** Si configuras una VPN o un proxy,
-   sale por ahí el tráfico del enjambre, el de la ventana de Edge, el de las
-   descargas y el de los subprocesos.
+VeniceMAGI parte el trabajo en tres actos y lo reparte entre **tres nodos**
+—Melchior, Balthasar y Casper—, cada uno **anclado a una familia de modelos
+distinta**. Naoko y Ritsuko no son parte de la disputa: una la organiza y la
+otra la audita.
+
+```mermaid
+flowchart LR
+    U["Tu encargo"] --> N
+
+    N["<b>NAOKO</b><br/>clasifica el encargo<br/>y elige el estilo"]
+
+    N --> M["<b>MELCHIOR</b><br/>TESIS<br/><i>construye</i>"]
+    M -->|propuesta| B["<b>BALTHASAR</b><br/>ANTÍTESIS<br/><i>refuta ejecutando</i>"]
+    B -->|evidencia| C["<b>CASPER</b><br/>SÍNTESIS<br/><i>entrega</i>"]
+    C --> R(["Respuesta<br/>+ diff + tests"])
+
+    RI["<b>RITSUKO</b><br/>audita a Naoko<br/>gobierna la red"] -.vigila.-> N
+
+    style N fill:#A6A2F0,stroke:#1F1E1C,color:#1A1917
+    style M fill:#5FC2B6,stroke:#1F1E1C,color:#1A1917
+    style B fill:#E8927A,stroke:#1F1E1C,color:#1A1917
+    style C fill:#CC93C0,stroke:#1F1E1C,color:#1A1917
+    style RI fill:#DDB65C,stroke:#1F1E1C,color:#1A1917
+```
+
+**La restricción que hace que esto funcione:** el sistema **se niega** a poner
+dos nodos en la misma familia. Si Melchior propone con el mismo modelo con el
+que Balthasar refuta, el programa seguiría respondiendo —peor, y sin dar un
+solo error—. Por eso es una negativa y no un aviso.
+
+| Rol | Papel | Familias | Puede escribir |
+|---|---|---|---|
+| **Naoko** | Clasifica, supervisa, repara | rota entre `command` / `gpt` / `claude` | sí, verificado |
+| **Melchior** | Construye la tesis | `venice` + subagentes | sí |
+| **Balthasar** | Refuta ejecutando | `notrack` | **no, y es a propósito** |
+| **Casper** | Sintetiza y entrega | `gemini` + subagentes | sí |
+| **Ritsuko** | Audita a Naoko | `razonamiento` / `grok` / `perplexity` | **no, solo mira** |
+
+Balthasar no puede escribir porque **eso es lo que le da autoridad como
+crítico**. Un refutador que puede arreglar lo que critica acaba arreglándolo en
+vez de refutarlo, y se pierde la refutación.
+
+---
+
+## Cómo está montado por dentro
+
+```mermaid
+flowchart TB
+    subgraph V["Ventana única — pywebview, nunca un navegador"]
+        GUI["Interfaz React<br/>12 paneles · teclado completo · ARIA"]
+    end
+
+    GUI <-->|"WebSocket · 23 comandos<br/>50 sucesos declarados"| K
+
+    subgraph N2["Núcleo"]
+        K["<b>Kernel</b><br/>enruta, mide, para"]
+        BUS["<b>Bus de sucesos</b><br/>contrato.py declara<br/>quién escucha cada uno"]
+        ORQ["<b>Orquestador</b><br/>variantes en paralelo<br/>crítica multi-eje<br/>aprobación humana"]
+        K --- BUS --- ORQ
+    end
+
+    ORQ --> AG["<b>Bucle de agente</b><br/>pedir → ¿herramientas? →<br/>ejecutar → repetir"]
+    AG --> TOOLS["<b>80 herramientas</b><br/>acotadas por rol y por dominio"]
+    AG --> PROV
+
+    subgraph P["Capa de proveedores"]
+        PROV["Registro con cortafuegos<br/>por proveedor, cobertura<br/>y medida de latencia"]
+        PROV --> G1["Venice guest"]
+        PROV --> G2["notrack.ai"]
+        PROV --> G3["11 familias g4f"]
+    end
+
+    P -->|"TODO por la MISMA salida"| NET(["Red · /vpn"])
+
+    style GUI fill:#292724,stroke:#4E4A42,color:#EDE9E1
+    style K fill:#A6A2F0,stroke:#1F1E1C,color:#1A1917
+    style BUS fill:#292724,stroke:#4E4A42,color:#EDE9E1
+    style ORQ fill:#292724,stroke:#4E4A42,color:#EDE9E1
+    style NET fill:#DDB65C,stroke:#1F1E1C,color:#1A1917
+```
+
+**El contenedor de nube es virtual y local.** No ejecuta inferencia: decide
+**quién atiende cada capacidad**. Un proveedor que no hace vídeo figura con
+`video=False`, y pedírselo devuelve el motivo al instante en vez de esperar
+cuatro minutos para contestar «no apareció en el plazo».
+
+### El contrato del bus
+
+Los 50 sucesos que el sistema publica están **declarados en un fichero** con su
+destino: los que llegan a la ventana y los que son internos. Los internos
+**exigen un motivo escrito** de por qué nadie los ve.
+
+Existe porque en septiembre de 2026 se contaron: **25 de los 50 se estaban
+tirando a la basura**, incluidos `swarm.ronda` (qué ronda va, cuántas llamadas
+quedan) y `agent.thought` (qué está pensando ahora mismo). El usuario veía
+veinte segundos de pantalla en blanco mientras el registro tenía todo el
+detalle. Un test compara las dos listas y se pone rojo si vuelven a separarse.
+
+---
+
+## La medida: dos ejes que no se promedian
+
+El sistema se puntúa a sí mismo, y esta es la parte que más veces se ha
+equivocado. Hay **dos bancos de evaluación**, y sus notas **no se mezclan**:
+
+```mermaid
+flowchart LR
+    subgraph E1["Eje 1 — lo que SABE"]
+        B1["default_bench<br/><i>aritmética, código, formato,<br/>admitir que no sabe algo</i>"]
+        C1["corredor pelado<br/>sin herramientas"]
+        B1 --- C1
+    end
+
+    subgraph E2["Eje 2 — si además VE"]
+        B2["banco_del_proyecto<br/><i>respuestas leídas del repo<br/>al construir el banco</i>"]
+        C2["corredor con ojos<br/>read_file · grep · glob · list_dir"]
+        B2 --- C2
+    end
+
+    E1 --> D{"¿Promediar?"}
+    E2 --> D
+    D -->|"NO"| S["Dos notas separadas<br/>en la ventana"]
+    D -->|"fundidas solo aquí"| A["compare · auto-mejora<br/><i>una lectura rota cuenta<br/>como la regresión que es</i>"]
+
+    style B2 fill:#5FC2B6,stroke:#1F1E1C,color:#1A1917
+    style C2 fill:#5FC2B6,stroke:#1F1E1C,color:#1A1917
+    style S fill:#292724,stroke:#4E4A42,color:#EDE9E1
+    style A fill:#CC93C0,stroke:#1F1E1C,color:#1A1917
+```
+
+**Por qué dos y no uno.** El 5 de septiembre de 2026, pilotando la aplicación,
+`read_file` falló **8 de 8 veces**: el enjambre buscaba el código en una carpeta
+vacía. El banco de siempre habría dado exactamente la misma nota que el día
+anterior, porque 47 × 23 sigue siendo 1081 aunque el sistema esté ciego. **Un
+banco que no baja cuando el sistema se rompe no mide el sistema: mide al
+modelo.**
+
+**Por qué las respuestas no las escribo yo.** Cada tarea del segundo banco saca
+su solución **del repositorio, en el momento de construir el banco**. Si mañana
+`MUESTREO_FPS` pasa de 5.0 a 8.0, el banco espera 8.0 sin que nadie lo toque. Un
+banco cuyo autor es uno de los dos concursantes no mide: confirma.
+
+**Por qué no se promedian.** 100 % de saber y 0 % de ver da un 50 % que no
+describe nada de lo que está pasando.
+
+### El lazo cerrado
+
+```mermaid
+sequenceDiagram
+    participant U as Tú
+    participant N as Naoko
+    participant B as Los dos bancos
+    U->>N: «probar: subir la temperatura de Balthasar a 0.5»
+    N->>B: medir ANTES
+    B-->>N: saber 18/20 · ver 6/7
+    N->>N: aplicar el cambio
+    N->>B: medir DESPUÉS
+    B-->>N: saber 20/20 · ver 4/7
+    Note over N: rompió 3 lecturas
+    N->>N: REVERTIR
+    N-->>U: «Revertido: rompe casos que antes pasaban»
+```
+
+La regla de decisión es deliberadamente conservadora: **mejora neta de al menos
+dos tareas Y ninguna regresión**. Romper algo que funcionaba pesa más que
+arreglar algo que no.
+
+---
+
+## La capa local: no llamar es más rápido que llamar rápido
+
+El coste dominante de este sistema no es pensar: es **esperar**. Los
+proveedores gratuitos tardan entre 3 y 22 segundos por llamada, y una vuelta
+del enjambre son tres como mínimo. Ninguna optimización de prompt compite con
+no hacer la llamada.
+
+**LILIM** es la capa que contesta lo que ya se sabe, en milisegundos:
+
+```mermaid
+flowchart LR
+    P["Tu pregunta"] --> C{"¿pide<br/>trabajo?"}
+    C -->|"sí — arregla, compila,<br/>implementa, analiza…"| E
+    C -->|no| L{"¿lo sabe<br/>Lilim?"}
+    L -->|"sí, con procedencia"| R(["Respuesta en 0,8 ms<br/><i>0 llamadas de red</i>"])
+    L -->|"NO LO SÉ"| E["Enjambre<br/><i>3 llamadas · 9-66 s</i>"]
+
+    style R fill:#5FC2B6,stroke:#1F1E1C,color:#1A1917
+    style E fill:#DDB65C,stroke:#1F1E1C,color:#1A1917
+```
+
+Medido en esta máquina: **0,76 a 10,44 ms** para lo indexado. Entre 300 y
+25.000 veces más rápido que la vuelta que sustituye.
+
+Lilim **no es un modelo y no razona**: es un índice sobre memoria versionada.
+Su valor está en la mitad que casi nadie implementa — cuando no sabe algo dice
+`NO LO SÉ` y escala al enjambre, en vez de rellenar el hueco. Un índice que
+inventa sería más rápido y peor que no tenerlo, porque su invención llega con
+la misma cara de seguridad que un dato bueno.
+
+**El freno que lo hace seguro** es una lista de verbos de trabajo. «¿Qué
+controles tiene la Vita?» ataja; «arregla el mapeo de controles de la Vita»
+NO, aunque contenga las mismas palabras que el índice reconoce.
+`tests/test_atajo_local.py` empuja seis encargos de trabajo cargados de
+términos indexados: si alguno atajara, el mecanismo se retira.
+
+### La vaina de mielina
+
+En el sistema nervioso, la mielina envuelve el axón y multiplica la velocidad
+de conducción. Aquí envuelve a Balthasar: antes de que critique, un analizador
+estático recorre el AST de la propuesta y le entrega los defectos objetivos
+—un `SyntaxError` con su línea, una función que solo tiene `pass`, un
+`except:` desnudo— **en microsegundos y sin red**.
+
+El prompt los da por ciertos y pide lo que un AST no puede ver. Sin esto, la
+mitad de las críticas de la primera ronda eran «esto no compila», cuatro veces
+en paralelo, a 3-22 s la llamada.
+
+Si además levantas un **KoboldCpp** local (Qwen 2.5 1.5B, gratis, funciona en
+CPU sin AVX2), la mielina añade una crítica neuronal local. Sin él no cuesta
+nada: la sonda de disponibilidad se recuerda un minuto en vez de repetirse en
+cada turno.
+
+> **Lo que no se ha portado, y por qué.** En el proyecto de origen esta capa
+> incluía sentidos —ojos (PDF), oídos (audio), brazos (exportar a `.docx`)— y
+> cuatro funciones de lubricación neuronal. Al medirlo, **ninguna tenía un solo
+> llamante en producción**: tests verdes y cero uso. Portarlas habría sido
+> mudar código muerto de un repositorio a otro y llamarlo actualización. Aquí
+> está lo que se conecta, y lo que se conecta tiene su test de enganche.
+
+---
+
+## Anonimato, en concreto
+
+No es una postura. Es una lista de cosas que el programa hace y deja de hacer,
+cada una con su freno en el código:
+
+1. **Sin cuenta y sin clave.** El camino principal son sitios guest.
+2. **Una sola salida de red, para TODO** — enjambre, ventana de Edge, descargas
+   y subprocesos.
 3. **Nada de tráfico partido.** Media aplicación por la VPN y la otra media por
    la línea de casa correlaciona las dos rutas y anula la VPN. Con
-   `/vpn estricto on` no se sale por ninguna otra parte: si la salida no está,
-   el sistema **no sale**, en vez de caer a tu línea sin avisar.
-4. **Sin telemetría.** El programa no manda nada a nadie sobre su uso. Lo que
-   se mide se queda en `%LOCALAPPDATA%\VeniceMAGI`.
-5. **Sin huella entre sesiones.** `/vpn purgar` borra los perfiles de navegador
-   (donde el sitio guarda cookies que te reconocen aunque cambies de IP), la
-   caché y los logs.
+   `/vpn estricto on`, si la salida no está, el sistema **no sale**.
+4. **Sin telemetría.** Lo que se mide se queda en `%LOCALAPPDATA%\VeniceMAGI`.
+5. **Sin huella entre sesiones.** `/vpn purgar` borra perfiles de navegador,
+   caché y registros.
 6. **Credenciales fuera de los informes.** Un proxy con usuario y contraseña se
    enmascara antes de escribirse en ningún fichero.
 
@@ -52,190 +290,69 @@ de hacer, cada una con su freno en el código:
 /vpn estado                     :: qué salida hay y qué alcance tiene
 ```
 
----
-
-## v2.2.0 — subagentes, percepción, memoria y un automodelo que se puede tumbar
-
-* **Subagentes por familia.** Cuando el encargo tiene partes separables, cada
-  nodo abre un frente por parte **en su propia familia y todos a la vez**.
-  Medido en el proyecto de origen: tres esperas independientes tardan 1,50 s en
-  serie y **0,51 s en abanico**.
-* **Opciones de modelo ampliadas.** `/modelos` enumera todo lo que hay sin
-  cuenta —guest y g4f, con su capacidad y la fecha de su última medida— y deja
-  **fijar la familia de cada nodo en caliente**, sin recompilar ni reiniciar.
-* **Percepción.** Oídos (loopback WASAPI: ¿suena? ¿sale entero?) y vista
-  (qué hay en pantalla, en qué idioma, qué botón pide).
-* **Índice local FTS5.** Buscar en la bitácora, la memoria, los docs y el
-  código **sin gastar red ni ración**. Un dato que ya está escrito y se le
-  vuelve a preguntar a la nube es cupo tirado.
-* **Memoria persistente entre proyectos**: mandos por consola y descartes con
-  campo `rescatable`. Un enfoque que pierde deja conocimiento igual que uno que
-  gana, y suele dejar más.
-* **Automodelo falsable.** Lo que el sistema cree de sí mismo, con la prueba
-  que puede tumbarlo — y hoy VeniceMAGI ya declara **cinco afirmaciones
-  refutadas** y **cuatro sin comprobar**. Ver `docs/AUTOMODELO.json`.
-
-### Lo de antes, que sigue
-
-* **GUI de aplicación (pywebview)** con hilo del enjambre en vivo, workspace,
-  galería y cola de trabajo. `VeniceMAGI.exe` abre la ventana; `--consola`
-  mantiene el REPL.
-* **Puerta de Edge aparcada fuera de pantalla** por defecto: el navegador real
-  sigue resolviendo la atestación, sin estorbar.
-* **IDE real**: `read_file`, `list_dir`, `patch_file` quirúrgico, `delete_file`
-  a papelera con journal, `hardware_info`, `run_python` con plazo y `shell`
-  solo con tu aprobación clic a clic.
-* **Taller de arte**: Venice y notrack.ai crean **por separado**, y un tercer
-  modelo más estricto comprueba que lo entregado sea lo que pediste.
-* **Ración visible**: contador de llamadas de hoy y caché LRU.
-* **Vídeo generativo, solo Seedance 2.5+.**
+`tests/test_venice_guest.py` comprueba que ningún punto del camino principal
+pida credenciales. `tests/test_ritsuko_vpn.py` comprueba que la salida sea
+**una sola** y que el modo estricto signifique lo que dice.
 
 ---
 
-## Arquitectura
+## Qué sabe hacer
 
-```
-Usuario
-  └─ GUI (ventana propia)  ·  REPL (--consola)
-      └─ CloudModelContainer (virtual local, sin inferencia local)
-          ├─ Venice Guest    (chat + imagen)   ── puerta de Edge propia
-          ├─ notrack.ai      (chat)            ── puerta de Edge propia
-          └─ Familias g4f    (gemini, command, gpt, claude, razonamiento,
-                              grok, perplexity, llama, mistral, deepseek, hf)
-                            │
-                            └─ TODO sale por la MISMA salida de red (/vpn)
-```
+**80 herramientas** reales, repartidas por rol y **acotadas por dominio antes de
+entrar al prompt** — una tarea de emuladores no carga el compositor de manga.
 
-El contenedor es virtual y local: no ejecuta inferencia, **decide quién atiende
-cada capacidad**. Un proveedor que no hace vídeo figura con `video=False`, y
-pedírselo devuelve el motivo al instante en vez de esperar cuatro minutos para
-contestar «no apareció en el plazo».
+| Dominio | Qué hace |
+|---|---|
+| **Software** | Crear, modificar y ejecutar código; empaquetar a `.exe` portable |
+| **Ingeniería inversa** | Desensamblado (Capstone), emulación (Unicorn), entropía de Shannon por regiones, contraste entre corpus de emuladores |
+| **Percepción** | Oír si un artefacto suena; clasificar qué hay en pantalla y en qué idioma |
+| **Memoria** | Búsqueda FTS5 local sobre bitácora, documentación y código — sin gastar red |
+| **Artefactos** | especificar → generar → ejecutar → **observar** → criticar → iterar |
+| **Cine** | Mide dirección artística con una máquina (aspecto, duración de plano, movimiento de cámara, paleta, ritmo de diálogo), congela la referencia en una biblia de estilo y juzga cada corte contra ella |
+| **Mundo real** | Macro, geopolítica y finanzas con fuentes gratuitas y sin clave (FRED, BCE, Banco Mundial, SEC EDGAR) |
 
-### Los cinco roles
+### El taller de arte: dos autores, un crítico
 
-```
-NAOKO      clasifica y supervisa       rota entre command / gpt / claude
-MELCHIOR   construye        TESIS      venice      + subagentes
-BALTHASAR  refuta ejecutando ANTÍTESIS notrack
-CASPER     sintetiza        SÍNTESIS   gemini      + subagentes
-RITSUKO    audita a Naoko              razonamiento / grok / perplexity
-```
-
-```
-TU PETICIÓN
-    │
-    ▼
-NAOKO elige el estilo
-    │
-    ▼
-MELCHIOR  ──TESIS────▶  BALTHASAR  ──ANTÍTESIS────▶  CASPER
-(construye)            (refuta con evidencia)       (SÍNTESIS al usuario)
-  │  │  │                     ▲                          │
-  └──┴──┴─ subagentes         │                          │
-     (su familia, a la vez)   │                          │
-     ▲                        │                          │
-     └── BITÁCORA + ÍNDICE FTS5 + AUTOMODELO + R9 ───────┘
-                                                         │
-                                                         ▼
-                                              RESPUESTA DEFINITIVA (en español)
-
-RITSUKO  ──audita a NAOKO, gobierna la red y firma el anonimato──▶  informes
+```mermaid
+flowchart LR
+    E["Encargo:<br/>«un dragón rojo, de noche,<br/>sobre montaña nevada»"] --> CO["<b>Contrato</b><br/>4 promesas separables"]
+    CO --> A1["Autor 1 · Venice"]
+    CO --> A2["Autor 2 · notrack"]
+    A1 --> CR["<b>Crítico</b><br/>tercera familia, más estricto<br/>ante la duda: INCUMPLE"]
+    A2 --> CR
+    CR -->|"faltan 2 promesas"| RE["Reintento dirigido<br/><i>con la lista concreta</i>"]
+    RE --> CR
+    CR -->|"cumple"| OK(["Entrega + metadata"])
+    style CR fill:#E8927A,stroke:#1F1E1C,color:#1A1917
+    style OK fill:#5FC2B6,stroke:#1F1E1C,color:#1A1917
 ```
 
-**Cada nodo va anclado a una familia distinta**, y eso no es decoración: si
-Melchior propone con el mismo modelo con el que Balthasar refuta, no hay
-refutación, hay eco. `/modelos` te deja cambiarlo, y **se niega** a poner dos
-nodos en la misma familia — porque el sistema seguiría respondiendo, peor, sin
-dar un solo error.
-
----
-
-## Subagentes: un nodo, varios frentes
-
-Un nodo es un solo hilo de pensamiento. Cuando el encargo tiene tres partes
-separables, las aborda en fila y las últimas salen peor porque llegan con el
-contexto gastado. Y mientras tanto los ocho núcleos están parados: el enjambre
-espera respuestas de **red**, no de CPU.
-
-`subagentes.py` abre un frente por parte, todos a la vez:
-
-* **En su propia familia**, no repartidos entre varias. Si los subagentes de
-  Melchior salieran por la familia de Balthasar, la tesis llegaría contaminada
-  con el sesgo de quien tiene que refutarla. La diversidad está *entre* nodos;
-  dentro de un nodo, la coherencia vale más.
-* **El troceo es determinista** y no lo decide un modelo — cuesta una llamada
-  de la ración averiguar cómo gastar la ración, y con un troceo que cambia
-  entre corridas idénticas la compuerta de la fase no se puede medir.
-* **Lo que no se cubrió, se dice.** Un texto fundido sin costuras esconde
-  justo el frente que falló.
-* **Balthasar no abre subagentes**, a propósito: su turno ya es redundante por
-  diseño (varios ejes de refutación en paralelo), y abrirle un abanico encima
-  sería pagar dos veces la misma redundancia.
-
-**Compuerta:** el abanico deja medido su ahorro (`ms_abanico` contra
-`ms_si_fuera_en_serie`). Si no sale positivo de forma sostenida, el mecanismo
-se retira y se dice.
-
----
-
-## `/modelos`: qué hay sin cuenta, y quién usa qué
-
-```
-/modelos                     inventario completo + reparto actual
-/modelos CASPER command      fija la familia de un nodo, en caliente
-/modelos CASPER auto         la suelta y vuelve a mandar el catálogo
-```
-
-Naoko y Ritsuko **no se pueden tocar desde aquí**: Naoko rota a propósito según
-la petición, y Ritsuko tiene prohibidas las familias que audita. Ofrecer un
-mando que rompe una garantía es peor que no ofrecerlo.
-
----
-
-## El taller de arte: dos autores, un crítico
-
-Pedirle una imagen a un modelo y quedarse con lo que salga tiene dos fallos que
-no se ven hasta que se miran juntos. Un solo autor no tiene con quién
-contrastar. Y nadie comprueba que lo entregado sea lo pedido — «salió una
-imagen» se confunde con «salió LA imagen».
-
-1. **El encargo se vuelve contrato.** «Un dragón rojo, de noche, sobre una
-   montaña nevada» son cuatro promesas separables, no un tema.
-2. **Dos autores, en paralelo y sin verse.** Venice y notrack.ai reciben el
-   mismo encargo y cada uno redacta su propia lectura y su propio prompt.
-3. **Un crítico más estricto, en una tercera familia.** Cuenta promesas
-   cumplidas contra el contrato. Ante la duda, INCUMPLE.
-4. **Reintento dirigido**, con la lista concreta de promesas incumplidas.
-
-**Lo que el taller no finge.** notrack.ai **no genera imágenes**: es un chat.
-Entra como autor de pleno derecho y el pincel lo pone Venice. Y los modelos
+**Lo que el taller no finge:** notrack.ai **no genera imágenes**, es un chat —
+entra como autor de pleno derecho y el pincel lo pone Venice. Y los modelos
 guest **no tienen visión**: el crítico separa lo que **mide una máquina** de lo
-que juzga leyendo, y declara lo que **no ha podido verificar** en vez de
-aprobarlo por omisión. Cuando la máquina y el modelo discrepan, **manda la
-máquina**.
+que juzga leyendo, y declara lo que no ha podido verificar en vez de aprobarlo
+por omisión. Cuando la máquina y el modelo discrepan, **manda la máquina**.
 
 ---
 
-## Ritsuko: quien revisa a la revisora
+## Reversibilidad y parada
 
-Naoko corrige a los tres nodos. Nadie corregía a Naoko — y eso no es teórico:
-la auditoría del 20 de agosto la encontró declarando «deriva del modelo» en dos
-familias enteras justo después de una tarea que había agotado la cuota de esos
-mismos proveedores. Estaba midiendo su propia interferencia y llamándola avería.
+* **Deshacer.** Antes de tocar un fichero se copia. `undo` lo devuelve, por
+  operación o por tarea entera. `delete_file` va a papelera con diario.
+* **Parar.** `PARAR ESTA` cancela una conversación; `PARAR TODO` es la parada
+  de emergencia, con informe de lo que paró **de verdad**.
+* **Aprobar.** La misma copia alimenta el panel: qué ficheros toca el cambio,
+  el diff real, las órdenes que se ejecutarán y si los tests pasaron.
 
-* **Solo mira.** No escribe código, no cancela tareas, no toca el reparto.
-* **Familia propia**, que no comparte con ninguna de las cinco que audita —
-  `venice` y `notrack` incluidas.
-* **Gobierna la salida de red** del sistema entero.
-* **Audita el anonimato** (`anonimato()`): enumera las fugas reales.
-* **Inventaría proveedores y ración**.
-* **Informes descargables** en `%LOCALAPPDATA%\VeniceMAGI\informes-ritsuko`.
+Artefactos en `%LOCALAPPDATA%\VeniceMAGI`: `workspace`, `media`,
+`historial.db`, y un `.json` por render con el contrato, las dos lecturas de
+los autores, lo que midió la máquina y el veredicto.
 
 ---
 
 ## Lo que el sistema sabe que NO sabe hacer
 
-`docs/AUTOMODELO.json` — cada afirmación con la prueba que la tumbaría. Hoy:
+`docs/AUTOMODELO.json` — cada afirmación con la prueba que la tumbaría:
 
 | Estado | Afirmación |
 |---|---|
@@ -243,8 +360,7 @@ mismos proveedores. Estaba midiendo su propia interferencia y llamándola averí
 | **refutada** | El crítico del taller puede juzgar lo que se ve en la imagen |
 | **refutada** | El vídeo generativo funciona en modo cloud |
 | **refutada** | El prompt llega entero al proveedor guest *(se corta en 7000 caracteres)* |
-| **sin comprobar** | El chat guest de Venice / de notrack.ai responde de verdad |
-| **sin comprobar** | El taller de arte entrega de extremo a extremo |
+| **sin comprobar** | El chat guest de Venice / notrack.ai responde de verdad |
 | sostenida | Se compila un único exe onefile y se publica en Release |
 | sostenida | La salida de red del sistema es una sola para todas las capas |
 
@@ -253,14 +369,73 @@ todavía, y decirlo es más útil que inventar un veredicto.
 
 ---
 
-## Modos operativos
+## Instalación
 
-**`cloud`** (por defecto) — `CLOUD_ONLY_MODE=1`. Chat e imagen vía proveedor
-guest. Sin modelos locales. Sin key/login en el camino principal. Vídeo
-generativo solo con Seedance 2.5+.
+### Binario para Windows
 
-**`hybrid`** (opcional) — backends locales de imagen (`automatic1111`,
-`comfyui`). Se activa con `/modo hybrid`.
+```mermaid
+flowchart LR
+    T["git tag v5.x.x"] --> CI
+    subgraph CI["GitHub Actions"]
+        direction TB
+        T1["1.920 tests<br/>en Ubuntu"] --> T2["¿verdes?"]
+        T2 -->|no| X(["sin release"])
+        T2 -->|sí| BU["Compilar en Windows<br/>desde requirements.lock"]
+        BU --> VE["Verificar que el Python<br/>embebido viajó dentro"]
+        VE --> Z["Comprimir + SHA256"]
+    end
+    Z --> REL(["Release<br/>VeniceMAGI-vX.zip"])
+    style X fill:#E8927A,stroke:#1F1E1C,color:#1A1917
+    style REL fill:#5FC2B6,stroke:#1F1E1C,color:#1A1917
+```
+
+1. Abre **[Releases](https://github.com/zero-phoenix/VeniceMAGI/releases/latest)**
+   y descarga **`VeniceMAGI-<versión>.zip`**.
+2. Verifica (opcional): `certutil -hashfile VeniceMAGI-<versión>.zip SHA256`
+   contra **`CHECKSUMS.txt`**.
+3. Descomprime. Dentro hay **un solo fichero**: `VeniceMAGI.exe`.
+4. Ejecútalo.
+
+SmartScreen avisará porque el binario no está firmado: *Más información →
+Ejecutar de todas formas*. Va en `.zip` a propósito: Windows y muchos
+navegadores bloquean un `.exe` descargado suelto.
+
+El `.exe` es **onefile y lleva su propio Python 3.10 dentro**. **Hace falta
+Microsoft Edge** para el camino guest: es lo único que resuelve la atestación de
+cliente de Venice (medido: Chromium headless recibe 403; el Edge real, 200).
+
+### Desde el código
+
+```
+python -m venv .venv
+.venv\Scripts\pip install -r requirements.txt -r requirements-dev.txt
+.venv\Scripts\python -m pytest tests/ -q
+.venv\Scripts\pyinstaller VeniceMAGI.spec --noconfirm
+```
+
+Opcionales, detectados si están: `capstone` y `unicorn` (ingeniería inversa),
+`pygame` y `pillow` (**sin Pillow el taller de arte no aprueba nada**, y lo
+declara como no verificado), `ffmpeg` (vídeo y medidor de estilo),
+`opencv-python-headless` (escala de plano). Sin ellos el sistema funciona y
+**avisa de lo que no puede hacer**.
+
+### El cascarón local
+
+Lo único que corre en tu tarjeta, y es a propósito lo más pequeño posible. No
+genera: **percibe**. Hace lo que ningún proveedor guest puede hacer, porque
+ninguno acepta imágenes de entrada.
+
+| Pieza | Para qué | Peso |
+|---|---|---|
+| `opencv-python-headless` | escala de plano | pip |
+| `face_detection_yunet` | detector | 230 KB |
+| `face_recognition_sface` | continuidad de personaje | 37 MB |
+
+Van en `%LOCALAPPDATA%\VeniceMAGI\modelos`. **No se descargan solos**: bajar
+ficheros sin que nadie lo haya pedido rompería la promesa de una sola salida de
+red. Sin ellos, la escala de plano sale como **SIN MEDIR** — que no es lo mismo
+que «plano general», y confundirlas aprobaría un corte de primeros planos
+contra una biblia de planos generales sin que nadie hubiera mirado una imagen.
 
 ---
 
@@ -277,167 +452,84 @@ generativo solo con Seedance 2.5+.
 /sesion   /historial [n]   /galeria [n]   /ayuda   /salir
 ```
 
-## Configuración de entorno
+Naoko y Ritsuko **no se pueden reasignar** desde `/modelos`: Naoko rota a
+propósito según la petición, y Ritsuko tiene prohibidas las familias que
+audita. Ofrecer un mando que rompe una garantía es peor que no ofrecerlo.
+
+<details>
+<summary><b>Variables de entorno</b></summary>
 
 ```
 set CLOUD_ONLY_MODE=1
 set RITSUKO_VPN=socks5://127.0.0.1:9050
 set RITSUKO_VPN_ESTRICTA=1
 set VENICEMAGI_SIN_PUERTA=1          :: no abre la ventana de Edge (CI, tests)
+set VENICEMAGI_WORKSPACE=D:\mi\proyecto
 
 :: solo para hybrid
 set IMAGE_BACKEND=automatic1111
 set AUTOMATIC1111_URL=http://127.0.0.1:7860
 set COMFYUI_URL=http://127.0.0.1:8188
 set SDXL_CHECKPOINT=Realism Engine SDXL
-set LORAS_JSON=[{"name":"mi-lora","weight":0.8}]
 set SEEDANCE_MODEL=seedance-2.5-text-to-video
 ```
 
----
-
-## Qué sabe hacer
-
-El enjambre tiene **71 herramientas** reales sobre tu máquina, repartidas por
-rol y acotadas por dominio antes de entrar al prompt.
-
-* **Ingeniería de software**: crear, modificar y ejecutar código, empaquetar a
-  `.exe` portable.
-* **Ingeniería inversa y emuladores**: desensamblado (Capstone), emulación
-  (Unicorn), entropía de Shannon por regiones.
-* **Percepción**: oír si un artefacto suena y clasificar qué hay en pantalla.
-* **Memoria**: búsqueda FTS5 local sobre bitácora, docs y código.
-* **Rondas de optimización verificadas**: bitácora acumulativa inyectada al
-  prompt, corridas con capturas (imagen + movimiento + sonido), dos contadores
-  de FPS distinguibles.
-* **Fábrica de artefactos que se mira a sí misma**: especificar → generar →
-  ejecutar/renderizar → **observar** → criticar → iterar.
-* **Taller de cine**: mide la dirección artística de un vídeo con una máquina
-  (aspecto real, duración de plano, movimiento de cámara, paleta, ritmo de los
-  turnos de diálogo), congela la referencia en una biblia de estilo y juzga
-  cada corte contra ella. Se **audita a sí mismo** con material fabricado para
-  suspenderlo, interroga a un perito de visión local con preguntas de control
-  que delatan las alucinaciones, y **busca** los parámetros de montaje por
-  evolución en vez de por reglas escritas a mano.
-* **Mundo real**: macro, geopolítica y finanzas con fuentes gratuitas y sin
-  clave (FRED, BCE, Banco Mundial, SEC EDGAR).
-
----
-
-## Reversibilidad y parada
-
-* **Deshacer.** Antes de tocar un fichero se copia. `undo` lo devuelve, por
-  operación o por tarea entera. `delete_file` va a papelera con journal.
-* **Parar.** `PARAR ESTA` cancela una conversación; `PARAR TODO` es la parada
-  de emergencia, con informe de lo que paró **de verdad**.
-
-La misma copia alimenta el **panel de aprobación**: qué ficheros toca el
-cambio, el diff real, las órdenes que se ejecutarán y si los tests pasaron.
-
-## Artefactos
-
-* Workspace: `%LOCALAPPDATA%\VeniceMAGI\workspace`
-* Media: `%LOCALAPPDATA%\VeniceMAGI\media`
-* Historial: `%LOCALAPPDATA%\VeniceMAGI\historial.db`
-* Metadata por render: `archivo.ext.json` junto al artefacto — con el contrato,
-  las dos lecturas de los autores, lo que midió la máquina y el veredicto.
-
----
-
-## Instalación
-
-### Binario para Windows (recomendado)
-
-1. Abre **[Releases](https://github.com/zero-phoenix/VeniceMAGI/releases/latest)**
-   y descarga **`VeniceMAGI-<versión>.zip`** de **Assets**.
-2. Verifica (opcional): `certutil -hashfile VeniceMAGI-<versión>.zip SHA256`
-   contra **`CHECKSUMS.txt`**.
-3. Descomprime donde quieras. Dentro hay **un solo fichero**: `VeniceMAGI.exe`.
-4. Ejecútalo.
-
-SmartScreen avisará porque el binario no está firmado: *Más información →
-Ejecutar de todas formas*. Va en `.zip` a propósito: Windows y muchos
-navegadores bloquean un `.exe` descargado suelto. Lo compila **GitHub
-Actions** desde el tag, tras pasar la suite completa.
-
-El `.exe` es **onefile y lleva su propio Python 3.10 dentro**. **Hace falta
-Microsoft Edge** para el camino guest: es lo único que resuelve la atestación
-de cliente de Venice (medido: Chromium headless recibe 403; el Edge real, 200).
-
-### Desde el código
-
-```
-python -m venv .venv
-.venv\Scripts\pip install -r requirements.txt -r requirements-dev.txt
-.venv\Scripts\python -m pytest tests/ -q
-.venv\Scripts\pyinstaller VeniceMAGI.spec --noconfirm
-```
-
-Opcionales, detectados si están: `capstone` y `unicorn` (ingeniería inversa),
-`pygame` y `pillow` (**sin Pillow el taller de arte no aprueba nada**, lo
-declara como no verificado), `ffmpeg` (vídeo y **medidor de estilo**),
-`opencv-python-headless` (**escala de plano**), ComfyUI en `127.0.0.1:8188`.
-Sin ellos el sistema funciona y **avisa de lo que no puede hacer**.
-
-### El cascarón local
-
-Lo único que corre en tu tarjeta, y es a propósito lo más pequeño posible. No
-genera: **percibe**. Hace lo que ningún proveedor guest puede hacer, porque
-ninguno acepta imágenes de entrada.
-
-```
-opencv-python-headless          escala de plano                 pip install
-face_detection_yunet (230 KB)   detector                        opencv_zoo
-face_recognition_sface (37 MB)  continuidad de personaje        opencv_zoo
-```
-
-Los dos modelos van en `%LOCALAPPDATA%\VeniceMAGI\modelos`. `cascaron_estado`
-dice cuáles faltan, cuánto pesan y de dónde salen. **No se descargan solos**:
-bajar ficheros sin que nadie lo haya pedido rompería la promesa de una sola
-salida de red.
-
-Sin ellos, la escala de plano sale como **SIN MEDIR** — que no es lo mismo que
-«plano general», y confundir las dos cosas aprobaría un corte de primeros
-planos contra una biblia de planos generales sin que nadie hubiera mirado una
-sola imagen.
+</details>
 
 ---
 
 ## Cómo está construido esto
 
-Cada regla nació de un fallo real:
+Cada regla nació de un fallo real, no de un manual de estilo:
 
 1. **Todo cambio se conecta o se borra.** Nunca se añade sin conectar.
 2. **Un test sobre una pieza aislada no prueba que el sistema la use.**
 3. **Cada capacidad tiene que poder invocarse desde la interfaz**, y con el
-   nombre que el README promete.
+   nombre que este README promete.
 4. **Arrancar encuentra fallos que leer no encuentra.**
 5. **«No he podido comprobarlo» no es «está bien».** Sin Pillow, el observador
    devolvía «correcto» sobre una captura que nunca llegó a abrir.
 6. **El binario publicado no es el mismo programa que el de desarrollo.**
 7. **Arreglar algo no es lo mismo que arreglarlo donde importa.**
 8. **Lo que abre un navegador no se sondea.** Una sonda que lanza un Edge real
-   cuesta segundos, gasta ración y —medido— cuelga el CI 124 s hasta morir con
-   un `Timeout` sin diagnóstico.
+   cuesta segundos, gasta ración y —medido— cuelga el CI 124 s.
 9. **Los trinquetes bajan, no suben.** Cuando el conteo de huérfanos supera el
    techo, se conecta, se adelgaza o se borra. Nunca se sube el número.
 10. **Se escribe con Python, `newline='\n'` y sin BOM.** PowerShell mete BOM y
     ya rompió un módulo con un `SyntaxError` que no señalaba a ninguna línea.
 
-**Más de 1700 tests en Python · sin tests verdes no hay release.**
+### Los trinquetes
 
-Y esa regla no depende del CI. Lo mismo que ejecuta GitHub Actions se ejecuta
-aquí, con los mismos comandos:
+Números que **solo pueden bajar**. Si suben, el CI se pone rojo y hay que
+conectar, adelgazar o borrar — nunca subir el techo sin escribir por qué.
+
+| Trinquete | Qué vigila | Techo |
+|---|---|---|
+| `scripts/huerfanos.py` | Código público que nadie llama | 83 |
+| `tests/test_trinquete_de_lineas.py` | Ficheros que crecen sin control | 800 líneas |
+| `tests/test_wiring.py` | Capacidades sin cable a la interfaz | 0 sueltas |
+| `tests/test_interfaz_pilotable.py` | `<div onClick>` que el teclado no ve | 1, declarado |
+| `tests/test_contrato_del_bus.py` | Sucesos publicados que nadie escucha | 0 |
+
+### Reproducir el CI en local
 
 ```
 python scripts/verificar.py            # lo de cada push
 python scripts/verificar.py --todo     # + los que compilan un .exe
 ```
 
-O pieza a pieza, si quieres ver dónde falla:
+O pieza a pieza:
 
 ```
-python -m ruff check vmagi/ tests/    # ruff 0.16.5, fijado en requirements-dev
-python scripts/huerfanos.py --conteo  # techo 88
+python -m ruff check vmagi/ tests/    # ruff fijado en requirements-dev
+python scripts/huerfanos.py --conteo
 python -m pytest tests/ -q            # la compuerta entera
 ```
+
+---
+
+<div align="center">
+
+**1900 tests en Python · sin verdes no hay release.**
+
+</div>

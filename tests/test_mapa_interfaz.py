@@ -114,3 +114,40 @@ def test_sin_repo_no_revienta(tmp_path):
     vacio = M.mapa(inicio=tmp_path)
     assert vacio.interfaz == set()
     assert vacio.paneles_muertos == set()
+
+
+# ==================================================== la prosa no es código
+
+def test_un_evento_NOMBRADO_en_un_comentario_no_es_un_evento():
+    """EL FALSO POSITIVO QUE ESTE MÓDULO PRODUJO, Y QUE AQUÍ SE FIJA.
+
+    En `store.ts` había una explicación —«se descartaban aquí, en `c.tool`,
+    antes de llegar a la pantalla»— con la expresión entre comillas invertidas
+    porque nombra una variable. En TypeScript el backtick delimita cadenas, así
+    que el mapa la leyó como código y denunció un panel de la interfaz que
+    nadie alimentaba. No había tal panel: había una frase.
+
+    Reescribir la frase no habría arreglado nada: quien documente el siguiente
+    evento lo nombrará igual, y con razón.
+    """
+    assert "c.tool" not in M._sin_comentarios(
+        "// se descartaban aquí, en `c.tool`, antes de llegar\n")
+    assert "c.tool" not in M._sin_comentarios(
+        "/* varias líneas\n   citando `c.tool` de paso */\n")
+    assert "x.y" not in M._sin_comentarios("# un comentario de Python 'x.y'\n")
+
+
+def test_pero_el_codigo_de_al_lado_sigue_entero():
+    """Un filtro que se lleva por delante el código que rodea al comentario
+    escondería topics de verdad, que es el fallo simétrico y más grave: este
+    módulo existe para encontrar huecos, no para tapar los suyos."""
+    texto = ("const a = 1; // aquí se cita `foo.bar`\n"
+             "if (topic === 'swarm.round') hacer();\n"
+             "const url = \"https://ejemplo/x\"; // no es comentario\n")
+    limpio = M._sin_comentarios(texto)
+    assert "'swarm.round'" in limpio
+    assert "https://ejemplo/x" in limpio, (
+        "las dos barras de una URL se han comido el resto de la línea")
+    assert "foo.bar" not in limpio
+    assert len(limpio) == len(texto), (
+        "el filtro desplaza el texto: las posiciones dejan de cuadrar")
